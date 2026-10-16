@@ -10,6 +10,7 @@ rel|path|lens
 up|.|-
 self|tests|integration tests over public API, goldens copied from actlith
 sib|src|the library: grammar, YAML writer, systems, files, kinds, detect
+sib|dev|`pipelith-dev`, `publish = false`: commit rules, badges, notices, AGENTS step table
 
 ## §C CONSTRAINTS
 
