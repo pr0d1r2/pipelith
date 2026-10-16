@@ -29,6 +29,9 @@ rustdoc|lint|cargo|**/*.rs, Cargo.toml|cargo doc --workspace --no-deps --documen
 # release-time step, not a commit-time one.
 deny|supply|cargo-deny|Cargo.toml, Cargo.lock, deny.toml|cargo deny check --disable-fetch licenses bans sources|-|-|a license, ban or source rule failed
 
+# xenolith's Rust guards, copied from actlith (nix T26).
+rust-mirror|lint|-|**/*.rs, nix/guard/rust-mirror.sh|bash nix/guard/rust-mirror.sh|-|-|a Rust file with logic has no sibling tests.rs wired by #[cfg(test)] mod tests;
+
 ## types
 type|checks|min|exempt
 *|trailing-whitespace, final-newline, line-endings, no-bom, no-merge-conflict, no-case-conflict, no-broken-symlinks, no-private-key, ripsecrets, typos, editorconfig-checker, no-local-paths, ctrm|-|-
@@ -55,5 +58,5 @@ ctrm-sets|-|-|ctrm configuration; hygiene steps only
 path:AGENTS.md|markdownlint, rekall|-|-
 path:rekall.toml|taplo, rekall|-|-
 path:Cargo.lock|deny|-|-
-rs|rustfmt, clippy, doctest, rustdoc|-|-
+rs|rustfmt, clippy, rust-mirror, doctest, rustdoc|-|-
 LICENSE|-|-|license text, nothing to lint
