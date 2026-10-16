@@ -1,7 +1,7 @@
-DRAFT INPUT. This file is the prompt for the first ck:spec run. When that run
-lands SPEC.md, change this line to HISTORICAL INPUT: SPEC.md and the node
-specs it federates become the law, and where they differ from this file, they
-win. Keep the rest of this file unchanged for context.
+HISTORICAL INPUT. This file was the prompt for the first ck:spec run, which
+landed SPEC.md: SPEC.md and the node specs it federates are the law, and
+where they differ from this file, they win. The rest of this file is kept
+unchanged for context.
 
 Paradigm: paradigm, prompt round 5 (commit c0e6c6c, no tag yet). Process,
 guardrail roster and shared conventions come from there; this file states
