@@ -70,7 +70,10 @@ ctrm-sets|-|-|ctrm configuration; hygiene steps only
 path:AGENTS.md|markdownlint, rekall|-|-
 path:rekall.toml|taplo, rekall|-|-
 path:Cargo.lock|deny|-|-
-rs|rustfmt, clippy, rust-mirror, forge-neutral, tdd-order, doctest, rustdoc, test, coverage|-|-
+rs|rustfmt, clippy, rust-mirror, tdd-order, doctest, rustdoc, test, coverage|-|-
+# Only the library is held forge-neutral (SPEC.md V2); dev/ (pipelith-dev)
+# renders this repository's own GitHub-hosted README badges.
+path:src/**/*.rs|rustfmt, clippy, rust-mirror, forge-neutral, tdd-order, doctest, rustdoc, test, coverage|-|-
 LICENSE|-|-|license text, nothing to lint
 exempt|tdd-order|-|-
 yml|yamllint, actionlint, zizmor|-|-

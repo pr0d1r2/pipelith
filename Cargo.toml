@@ -39,3 +39,8 @@ cognitive_complexity = "deny"
 excessive_nesting = "deny"
 fn_params_excessive_bools = "deny"
 struct_excessive_bools = "deny"
+
+[workspace]
+# `dev/` maintains this repository's own files and ships to nobody: a
+# `publish = false` member cannot land on a consumer's PATH (D18, dev T18).
+members = ["dev"]
