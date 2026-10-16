@@ -7,6 +7,7 @@
 ## §F FEDERATION
 
 dir|owns|⊥owns|tokens
+registry|pipe-table grammar: format line, sections, header rows, cells, errors|what any section means|-
 
 ## §N NAV
 
