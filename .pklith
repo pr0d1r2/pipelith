@@ -44,6 +44,12 @@ test|coverage|cargo-nextest|**/*.rs, Cargo.toml, Cargo.lock|cargo nextest run --
 
 coverage|coverage|sherd|**/*.rs, Cargo.toml, .coverage|sherd coverage --check|-|-|line coverage fell below .coverage
 
+# Generated docs, rendered by pipelith-dev from the files that own their
+# facts (dev T18, V40), as actlith-dev does. Each fix is the generator, so
+# a commit that changes a source (pklith lay changing hk.pklith.pkl) gets
+# the doc rewritten rather than refused.
+agents-table|spec|-|hk.pkl, hk.pklith.pkl, AGENTS.md, dev/**|cargo run -q -p pipelith-dev -- agents --check|cargo run -q -p pipelith-dev -- agents|-|AGENTS.md step table is stale
+
 ## types
 type|checks|min|exempt
 *|trailing-whitespace, final-newline, line-endings, no-bom, no-merge-conflict, no-case-conflict, no-broken-symlinks, no-private-key, ripsecrets, typos, editorconfig-checker, no-local-paths, ctrm|-|-
@@ -67,7 +73,7 @@ path:flake.lock|-|-|written by `nix flake lock`; hygiene steps only
 context-limits|itok, sherd-budget|-|-
 ctrm|-|-|ctrm configuration; hygiene steps only
 ctrm-sets|-|-|ctrm configuration; hygiene steps only
-path:AGENTS.md|markdownlint, rekall|-|-
+path:AGENTS.md|markdownlint, rekall, agents-table|-|-
 path:rekall.toml|taplo, rekall|-|-
 path:Cargo.lock|deny|-|-
 rs|rustfmt, clippy, rust-mirror, tdd-order, doctest, rustdoc, test, coverage|-|-

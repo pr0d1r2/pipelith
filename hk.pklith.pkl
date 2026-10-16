@@ -166,6 +166,11 @@ steps: Mapping<String, Config.Step> = new {
     glob = List("**/*", ".context-limits")
     check = "command -v itok >/dev/null 2>&1 || { echo 'itok: itok is not on PATH; re-enter the dev shell. A MISSING TOOL, not a finding.' >&2; exit 1; }; itok check || { echo 'itok: a file registered in .context-limits is over its token ceiling' >&2; exit 1; }"
   }
+  ["agents-table"] {
+    glob = List("hk.pkl", "hk.pklith.pkl", "AGENTS.md", "dev/**")
+    check = "command -v cargo >/dev/null 2>&1 || { echo 'agents-table: cargo is not on PATH; re-enter the dev shell. A MISSING TOOL, not a finding.' >&2; exit 1; }; cargo run -q -p pipelith-dev -- agents --check || { echo 'agents-table: AGENTS.md step table is stale' >&2; exit 1; }"
+    fix = "cargo run -q -p pipelith-dev -- agents"
+  }
   ["doctest"] {
     glob = List("**/*.rs", "Cargo.toml")
     check = "command -v cargo >/dev/null 2>&1 || { echo 'doctest: cargo is not on PATH; re-enter the dev shell. A MISSING TOOL, not a finding.' >&2; exit 1; }; cargo test --doc -q || { echo 'doctest: a doc example failed' >&2; exit 1; }"
