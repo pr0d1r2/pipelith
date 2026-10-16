@@ -40,9 +40,9 @@ id|status|task|cites
 T19|x|dev shell FIRST: flake on `nixpkgs-lock`, 4 systems, cachix, fleet tools pinned, Rust toolchain, pklith `lib.devShell`; `.envrc`, `.gitignore` (`.claude/`, `target/`, `.direnv/`). ASK user reload|V42,V44
 T20|x|hk commit: `.pklith`, `hk.pklith.pkl`, `hk.pkl`, vendored `pkl/`, `.githooks/`; hooks live from this commit|V42,V43
 T21|x|`commit-msg` step; script until `pipelith-dev` (`dev:T18`)|V43
-T22|.|crate-free pklith catalog checks via `pklith lay`, 1 commit each|V43,V44
-T23|.|spec gates: `mth`, `itok` + `.context-limits`, `sherd`|V43
-T24|.|`ctrm`, `rekall` (`AGENTS.md`), `xnl`|V43
+T22|x|crate-free pklith catalog checks via `pklith lay`, 1 commit each|V43,V44
+T23|x|spec gates: `mth`, `itok` + `.context-limits`, `sherd`|V43
+T24|x|`ctrm`, `rekall` (`AGENTS.md`), `xnl`|V43
 T25|.|seed crate through live hooks: LICENSE, `Cargo.toml` workspace, `clippy.toml`, `rustfmt.toml`, `deny.toml`, CHANGELOG; taplo, rustfmt, clippy, deny, rustdoc, doctest|V43,`.:V6`
 T26|.|`nix/guard/`: `rust-mirror`, `tdd-order` + exemptions, `forge-neutral`, `no-core-worktree`; `test` + `coverage` on push|V43,V46,V47,V50
 T27|.|hand-written `.github/workflows/ci.yml` (pklith shape); `actionlint`, `zizmor`, yamllint|V43
