@@ -4,7 +4,7 @@
 
 use std::fmt;
 
-use super::catalogue::{ArgSpec, KindSpec};
+use super::catalogue::{ArgSpec, CATALOGUE, KindSpec, lookup};
 use super::error::KindError;
 use super::raw::RawRow;
 
@@ -41,8 +41,15 @@ impl<'a> Extras<'a> {
     /// The forge-only kind `name`, if the forge declares one.
     #[must_use]
     pub fn kind(&self, name: &str) -> Option<&'a KindSpec> {
-        let _ = (self, name);
-        None
+        self.kinds.iter().find(|k| k.name == name)
+    }
+
+    /// The kinds a row may name: the catalogue's, then the forge's.
+    fn names(&self) -> String {
+        let all = CATALOGUE.iter().chain(self.kinds);
+        let quoted: Vec<String> =
+            all.map(|k| format!("`{}`", k.name)).collect();
+        quoted.join(", ")
     }
 }
 
@@ -55,8 +62,14 @@ pub fn resolve<'a>(
     row: &RawRow,
     extras: &Extras<'a>,
 ) -> Result<&'a KindSpec, KindError> {
-    let _ = (row, extras);
-    Err(KindError::default())
+    let kind = lookup(&row.kind).or_else(|| extras.kind(&row.kind));
+    kind.ok_or_else(|| {
+        KindError::new(
+            row.line,
+            format!("unknown kind `{}`", row.kind.escape_debug()),
+            format!("use one of {}", extras.names()),
+        )
+    })
 }
 
 /// One finding per forge-only kind and per forge-only arg key of `row`;
@@ -65,14 +78,50 @@ pub fn resolve<'a>(
 /// not a finding but a [`Row::check`](super::Row::check) error.
 #[must_use]
 pub fn portable(row: &RawRow, extras: &Extras<'_>) -> Vec<Finding> {
-    let _ = (row, extras);
-    Vec::new()
+    let neutral = lookup(&row.kind);
+    let forge = neutral.is_none().then(|| extras.kind(&row.kind)).flatten();
+    let kind = forge.map(|_| Finding::Kind {
+        line: row.line,
+        kind: row.kind.clone(),
+    });
+    let schema = neutral.or(forge).map_or(&[][..], |k| k.schema);
+    kind.into_iter()
+        .chain(forge_keys(row, schema, extras))
+        .collect()
+}
+
+/// The row's arg keys the forge declares and the row's kind lacks.
+fn forge_keys(
+    row: &RawRow,
+    schema: &[ArgSpec],
+    extras: &Extras<'_>,
+) -> Vec<Finding> {
+    let only = |key: &str| {
+        !schema.iter().any(|s| s.key == key)
+            && extras.keys.iter().any(|s| s.key == key)
+    };
+    let keys = row.args.iter().filter(|a| only(&a.key));
+    keys.map(|a| Finding::Key {
+        line: row.line,
+        key: a.key.clone(),
+    })
+    .collect()
 }
 
 impl fmt::Display for Finding {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let _ = self;
-        f.write_str("")
+        match self {
+            Self::Kind { line, kind } => write!(
+                f,
+                "line {line}: kind `{kind}` is forge-only; the other forge \
+                 refuses this row"
+            ),
+            Self::Key { line, key } => write!(
+                f,
+                "line {line}: arg `{key}` is forge-only; the other forge \
+                 refuses this row"
+            ),
+        }
     }
 }
 

@@ -158,13 +158,12 @@ pub const UPSTREAM: KindSpec = KindSpec {
 };
 
 /// Every neutral kind, in `docs/KINDS.md` order (V11).
-pub const CATALOGUE: &[KindSpec] = &[];
+pub const CATALOGUE: &[KindSpec] = &[GATE, BUILD, UPDATE_PINS, UPSTREAM];
 
 /// The catalogue kind `name`, if there is one.
 #[must_use]
 pub fn lookup(name: &str) -> Option<&'static KindSpec> {
-    let _ = name;
-    CATALOGUE.first()
+    CATALOGUE.iter().find(|k| k.name == name)
 }
 
 impl KindSpec {
@@ -172,8 +171,12 @@ impl KindSpec {
     /// push only when the row names a cache (V32).
     #[must_use]
     pub fn purposes(&self, row: &Row) -> Vec<Purpose> {
-        let _ = (self, row);
-        Vec::new()
+        let cached = row.cache.is_some();
+        self.secrets
+            .iter()
+            .copied()
+            .filter(|&p| cached || p != Purpose::CachePush)
+            .collect()
     }
 }
 

@@ -15,6 +15,12 @@ consumers will see change.
   config)`, `write` (only listed paths, unchanged files untouched),
   `check` (stale or missing files sorted by path, writes nothing) and
   `target` (refuses any path that could leave the root).
+- `src/kind`: the neutral kind catalogue (`gate`, `build`,
+  `update-pins`, `upstream`) with actlith's arg schemas, default
+  systems and secret purposes; the `## workflows` section and
+  `RawRow::from_cells`; `Row::check` (systems, cachix cache, args,
+  timeout) with errors naming the row's line and key; forge `Extras`
+  and `portable`, one finding per forge-only kind or arg key.
 - `src/registry`: the pipe-table registry grammar. `parse` checks a
   file against a caller `Schema` (format line, sections, headers, cell
   counts, repeated keys) and returns sections of rows of cells; errors

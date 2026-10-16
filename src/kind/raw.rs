@@ -2,7 +2,10 @@
 //! `id|kind|systems|cache|args`, cells typed by the registry readers,
 //! nothing checked against a kind yet.
 
-use crate::registry::{Arg, RegistryError, Row as Cells, SectionSpec};
+use crate::registry::{
+    Arg, RegistryError, Row as Cells, SectionSpec, args, list, optional,
+    required,
+};
 
 /// The section's name: `## workflows` on every forge.
 pub const SECTION: &str = "workflows";
@@ -45,9 +48,35 @@ impl RawRow {
     /// An empty `id` or `kind`, an id that is not a file name, a
     /// malformed `systems` list or `args` cell.
     pub fn from_cells(file: &str, row: &Cells) -> Result<Self, RegistryError> {
-        let _ = (file, row);
-        Ok(Self::default())
+        let id = required(file, row, 0, "id")?;
+        Ok(Self {
+            line: row.line,
+            id: file_name(file, row, id)?,
+            kind: required(file, row, 1, "kind")?,
+            systems: list(file, row, 2, "systems")?,
+            cache: optional(row, 3),
+            args: args(file, row, 4, "args")?,
+        })
     }
+}
+
+/// An id is a plain file stem: `[A-Za-z0-9._-]`, no leading dot.
+fn file_name(
+    file: &str,
+    row: &Cells,
+    id: String,
+) -> Result<String, RegistryError> {
+    let plain = |c: char| c.is_ascii_alphanumeric() || "._-".contains(c);
+    if id.chars().all(plain) && !id.starts_with('.') {
+        return Ok(id);
+    }
+    Err(RegistryError {
+        file: file.to_owned(),
+        line: row.line,
+        column: row.cells.first().map_or(1, |c| c.column),
+        what: format!("id `{id}` is not a file name"),
+        fix: "use letters, digits, `.`, `_`, `-`; no leading `.`".to_owned(),
+    })
 }
 
 #[cfg(test)]

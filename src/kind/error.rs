@@ -25,23 +25,31 @@ impl KindError {
         what: impl Into<String>,
         fix: impl Into<String>,
     ) -> Self {
-        let _ = (line, what.into(), fix.into());
-        Self::default()
+        Self {
+            line,
+            what: what.into(),
+            fix: fix.into(),
+        }
     }
 
     /// The same error as a registry error in `file`, at the row's first
     /// column, so a forge crate reports every refusal one way.
     #[must_use]
     pub fn located(&self, file: &str) -> RegistryError {
-        let _ = (self, file);
-        RegistryError::default()
+        RegistryError {
+            file: file.to_owned(),
+            line: self.line,
+            column: 1,
+            what: self.what.clone(),
+            fix: self.fix.clone(),
+        }
     }
 }
 
 impl fmt::Display for KindError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let _ = self;
-        f.write_str("")
+        let Self { line, what, fix } = self;
+        write!(f, "line {line}: {what} ({fix})")
     }
 }
 
