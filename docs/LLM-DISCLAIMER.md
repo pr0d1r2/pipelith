@@ -28,8 +28,8 @@ something executes it.** The numbers in this file are such claims: the
 
 [`SPEC.md`](../SPEC.md) and one `SPEC.md` per node below it are the law,
 not a description written afterwards. Together they carry
-**54 invariants** (the `V` rows: what must stay true), `T` tasks (what is
-decided and what is not), **3 bugs** in their `B` tables (each paired
+**55 invariants** (the `V` rows: what must stay true), `T` tasks (what is
+decided and what is not), **5 bugs** in their `B` tables (each paired
 with the rule that now catches it), and `R` research (the measurements
 the constraints rest on). A rule and its checker land in the same
 commit, because a rule with no runner gates nothing.
@@ -70,6 +70,15 @@ write first; it is listed by full commit id in
 **B3: the first commit-message hook was a shell script copied without
 tests.** It predated the rule that every script has a test; the tested
 Rust port in `pipelith-dev` replaced it.
+
+**B5: an expression could stay unquoted when its YAML could not.** The
+writer, ported from actlith, judged an expression by its inner text, so
+`#a` came out reading as a comment and `a:` as a mapping. It now judges
+the rendered scalar. No golden byte changed.
+
+**B6: two literal parts could join into a live expression.** Each was
+escaped on its own, so `$` followed by `{{ x }}` opened one. Adjacent
+literals are now joined before they are escaped.
 
 ## What a reader should check
 
