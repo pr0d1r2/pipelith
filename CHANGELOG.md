@@ -20,3 +20,10 @@ consumers will see change.
   counts, repeated keys) and returns sections of rows of cells; errors
   name file, line and column with a fix; cell readers `required`,
   `optional`, `list` and `args` type a cell.
+- `pipelith::yaml`: the ordered YAML model and writer moved from actlith
+  (`Node`, `Entry`, `Text`, `Comment`, `document`), byte-identical to
+  actlith's output for the same tree. Expression syntax comes from a
+  `Dialect` the forge crate supplies. Two fixes against actlith: an
+  expression whose rendered text would read as a mapping or a comment
+  in a plain scalar is quoted, and adjacent literal parts are escaped as
+  one run.

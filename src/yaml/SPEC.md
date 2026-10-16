@@ -23,8 +23,8 @@ sib|src/detect|rows from tracked files, first config file
 
 ## §I INTERFACES
 
-- types: `Node` (`Map(Vec<Entry>)`, `Seq(Vec<Node>)`, `Scalar(Text)`, `Value` plain kinds), `Entry` (key, node, comments, inline comment), `Text` (`Part::Lit` | `Part::Expr`), `Comment`, trait `Dialect` (`expr(inner) -> Option<String>` validates & renders, `escape(lit) -> String` neutralizes literal text that would read as an expression).
-- fns: `document(&dyn Dialect, &[Comment], &[Entry]) -> String`; scalar helpers `quote`, `key`; const `WIDTH` = 120.
+- types: `Node` (`Value` `List` `Map` `Seq` of maps `Null`), `Value` (`Text` `Int` `Bool`), `Entry` (`Key`, node, comments, trailing), `Text` (`Part::Lit` | `Part::Expr`), `Expr::new(&dyn Dialect, inner)`, `Comment`, trait `Dialect` (`expr(inner) -> Option<String>` validates & renders, `escape(lit) -> String` ∴ literal ⊥ reads as expression).
+- fns: `document(&dyn Dialect, &[Comment], &[Entry]) -> String` from `---`; `quote`, `key`; `WIDTH` = 120.
 
 ## §V INVARIANTS
 
@@ -32,12 +32,15 @@ V23: output built from typed model only; ⊥ string substitution into YAML text 
 V24: 1 quoting rule: scalar plain only if safe chars, safe start, ⊥ reserved word (`true` `false` `yes` `no` `on` `off` `y` `n` `null` `~`, any case), ⊥ trailing space; else single-quoted; control chars → double-quoted w/ escapes. keys same rule
 V25: expression syntax only via `Dialect`; ∀ literal part passes `Dialect::escape` ∴ literal text ⊥ becomes an expression. pipelith ships ⊥ dialect (forge crates do); tests use a GitHub-shaped test dialect
 V26: fixed layout: map order = insertion order (caller sorts); comments attached to entries; same model → same bytes (`.:V1`)
+V56: expr part plain only if ⊥ flow & rendered ⊥ leading indicator; scalar ⊥ `:`+space, space+`#`, trailing `:`
 
 ## §T TASKS
 
 id|status|task|cites
-T12|.|`Dialect` trait + port `text` (Expr → dialect parts), `scalar`, `node`, `render` w/ unit tests; golden-bytes tests incl. pklith `ci.yml` shape replayed w/ test dialect|V23,V24,V25,V26,`.:V3`,`.:V10`
+T12|x|`Dialect` trait + port `text` (Expr → dialect parts), `scalar`, `node`, `render` w/ unit tests; golden-bytes tests incl. pklith `ci.yml` shape replayed w/ test dialect|V23,V24,V25,V26,`.:V3`,`.:V10`
 
 ## §B BUGS
 
 id|date|cause|fix
+B5|2026-10-17|expr judged on inner: `#a`, `a:` went plain|V56
+B6|2026-10-17|literals escaped apart: `$`+`{{` opened expr|V25
