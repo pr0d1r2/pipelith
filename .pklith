@@ -40,6 +40,8 @@ no-core-worktree|gate|-|-|bash nix/guard/no-core-worktree.sh|-|-|.git/config set
 
 tdd-order|coverage|-|**/*.rs, nix/guard/tdd-order.sh, nix/guard/tdd-order.exempt|bash nix/guard/tdd-order.sh|-|-|a commit adds Rust code with no test: commit before it in the push range
 
+test|coverage|cargo-nextest|**/*.rs, Cargo.toml, Cargo.lock|cargo nextest run --workspace --no-fail-fast --status-level fail --final-status-level fail|-|-|a test failed, or the suite is empty
+
 ## types
 type|checks|min|exempt
 *|trailing-whitespace, final-newline, line-endings, no-bom, no-merge-conflict, no-case-conflict, no-broken-symlinks, no-private-key, ripsecrets, typos, editorconfig-checker, no-local-paths, ctrm|-|-
@@ -66,7 +68,7 @@ ctrm-sets|-|-|ctrm configuration; hygiene steps only
 path:AGENTS.md|markdownlint, rekall|-|-
 path:rekall.toml|taplo, rekall|-|-
 path:Cargo.lock|deny|-|-
-rs|rustfmt, clippy, rust-mirror, forge-neutral, tdd-order, doctest, rustdoc|-|-
+rs|rustfmt, clippy, rust-mirror, forge-neutral, tdd-order, doctest, rustdoc, test|-|-
 LICENSE|-|-|license text, nothing to lint
 exempt|tdd-order|-|-
 yml|yamllint, actionlint, zizmor|-|-
