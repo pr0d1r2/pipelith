@@ -24,7 +24,7 @@ sib|src/detect|rows from tracked files, first config file
 
 ## §I INTERFACES
 
-- types: `Schema { sections: &[SectionSpec] }`, `SectionSpec { name, columns: &[&str], required }`, `Document { format, sections }`, `Section { name, line, rows }`, `Row { line, cells }`, `Cell { column, text }`, `Arg { key, value }`, `RegistryError { file, line, column, what, fix }` (`Display` = `file:line:column: what (fix)`).
+- types: `Schema { sections: &[SectionSpec] }`, `SectionSpec { name, columns: &[&str], required, key: Option<usize> }` (key column ∴ unique), `Document { format, sections }`, `Section { name, line, rows }`, `Row { line, cells }`, `Cell { column, text }`, `Arg { key, value }`, `RegistryError { file, line, column, what, fix }` (`Display` = `file:line:column: what (fix)`).
 - consts: `SUPPORTED_FORMAT` = 1.
 - fns: `parse(file, text, &Schema) -> Result<Document, RegistryError>`; `Document::section(name) -> &[Row]` (absent optional = empty); cell readers `required`, `optional` (`-` → `None`), `list` (`,`-split, trimmed, `-` = empty), `args` (`key=value`, `,`-split).
 
@@ -36,10 +36,12 @@ V17: shape ! match schema: unknown section → error naming known ones; duplicat
 V18: cell text trimmed; `\|` → literal `|`, ⊥ splits; `-` alone = empty; `#` starts a comment only at line start
 V19: `list` & `args` split on `,` ∴ ⊥ comma inside a value; `args` cell w/o `=` | empty key → error naming cell; order kept
 
+V51: section w/ `key` column: repeated key → error at 2nd row naming 1st row's line (actlith `rows::unique`)
+
 ## §T TASKS
 
 id|status|task|cites
-T10|.|port `format`, `cells`, `parse`, `error` w/ unit tests from actlith; replace `Table` w/ `Schema`; fixtures 1-to-1 incl. actlith `.actlith` fixtures parsed via an actlith-shaped test schema|V15,V16,V17,V18,V19,`.:V10`
+T10|.|port `format`, `cells`, `parse`, `error` w/ unit tests from actlith; replace `Table` w/ `Schema`; fixtures 1-to-1 incl. actlith `.actlith` fixtures parsed via an actlith-shaped test schema|V15,V16,V17,V18,V19,V51,`.:V10`
 
 ## §B BUGS
 

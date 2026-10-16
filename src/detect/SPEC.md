@@ -23,7 +23,7 @@ sib|src/kind|neutral kind catalogue, row & arg validation, secret purposes, port
 
 ## §I INTERFACES
 
-- fns: `detect(&[path], flake_lock: Option<&str>) -> Vec<kind::Row>` (ids `ci` → `gate`, `update-pins` → `update-pins`); `text(&[Row]) -> String` (`format 1`, `## workflows`, header, 1 line per row); `row_line(&Row)`; `seed_init(root, config, &[Row]) -> Result<PathBuf, SeedError>`; `SeedError::code()` 1 exists | 2 I/O.
+- fns: `detect(&[path], flake_lock: Option<&str>) -> Vec<kind::RawRow>` (ids `ci` → `gate`, `update-pins` → `update-pins`); `text(&[RawRow]) -> String` (`format 1`, `## workflows`, header, 1 line per row); `row_line(&RawRow)`; `seed_init(root, config, &[RawRow]) -> Result<PathBuf, SeedError>`; `SeedError::code()` 1 exists | 2 I/O.
 
 ## §V INVARIANTS
 
