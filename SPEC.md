@@ -57,3 +57,17 @@ R3|pklith grammar|`.pklith` uses same pipe-table grammar w/ own parser ∴ later
 R4|rejected designs|1 tool w/ `--forge` (pins, hardening, layout, linters per forge ∴ most code per forge) · copy into lablith (2 copies drift) · 1 cargo workspace for 3 crates (fleet = 1 repo per tool; actlith gate & release assume 1 crate) · extract after copy (2nd consumer certain)|`SPEC-PROMPT.md` Prior art
 R5|actlith ties|actlith spec already plans its side: byte-identical switch, both-forge kinds rule, rows & KINDS split, git pin of pipelith (its `tests` `src/kind` `nix` nodes)|actlith `SPEC.md` tree 2026-10-16
 R6|expressions|actlith `yaml::text::Expr` renders `${{ }}` & escapes literal `${{` as `${{ '${{' }}` = GitHub syntax ∴ ⊥ neutral; GitLab expands `$VAR`, escapes `$$` ∴ forge supplies `Dialect`|actlith `src/yaml/text.rs` @ `7ce69c6`
+
+## §V INVARIANTS
+
+V1: deterministic: same input + same pipelith version → byte-identical output. ⊥ clock, ⊥ host, ⊥ env, ⊥ network, ⊥ rng anywhere in crate (D7)
+V2: forge-neutral: ⊥ forge key (`runs-on`, `uses:`, `stages:`, `image:`), runner label, action pin, `${{`, API host in `src/` code; pipelith ⊥ deps on forge crate (D1). gate step greps for them
+V3: byte-identical extraction: actlith goldens unchanged when actlith switches to pipelith; golden diff in switch commit = extraction bug (D3). pipelith `tests/golden/` replays them first (`tests`)
+V4: neutral rows: row passing `kind` validation renders on both forges; ∀ forge-only key | section declared by forge crate & reported by portability check (D4)
+V5: kind ∈ catalogue only when it renders on both forges; forge-only kind lives in forge crate, refused by other forge's portability check (D6, refines `actlith/V24`)
+V6: runtime deps = std only; ∀ dep incl. dev-deps ! §R row (D8)
+V7: rendered bytes of YAML writer | generated header change for same input → ≥ minor version + CHANGELOG entry naming the change (D9, `actlith/V18`)
+V8: crate `pipelith`, lib only, ⊥ bin. rejected names → R2
+V9: public API = node modules declared in `lib.rs`; ∀ pub item documented (`missing_docs` = deny); `lib.rs` ⊥ logic (D15)
+V10: moved code keeps its unit tests & §V rows; moved rule cites actlith origin id (`actlith/V<n>`) ∴ moved rule keeps its proof (D2)
+V11: `docs/KINDS.md` ↔ `kind` catalogue parity: ∀ kind in doc has §V & code & vice versa; doc ≠ code = bug (as `actlith/V25`)
