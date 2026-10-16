@@ -12,5 +12,6 @@ catalog: [
   catalog.sherd
   catalog.shfmt
   catalog.statix
+  catalog.taplo
   catalog.typos
 ]
