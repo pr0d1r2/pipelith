@@ -24,9 +24,9 @@ sib|src/detect|rows from tracked files, first config file
 
 ## §I INTERFACES
 
-- types: `KindSpec { name, schema: &[ArgSpec], default_systems, secrets: &[Purpose] }`, `ArgSpec { key, required, default: ArgDefault }`, `ArgDefault::{None, Value(&str), Forge}` (forge fills: e.g. `token`), `Purpose::{CachePush, OpenChange}`, `RawRow { line, id, kind, systems, cache, args }` (cells), `Row { line, id, systems: Vec<System>, cache: Option<Cache>, args }` (checked), `Cache { name, key }`, `Args`, `KindError`, `Extras { kinds, keys }` (forge-only), `Finding`.
-- consts: `SECTION` = `workflows`, `COLUMNS`, `CATALOGUE` = `gate` `build` `update-pins` `upstream`, `TIMEOUT` spec.
-- fns: `RawRow::from_cells(&registry::Row)`, `Row::check(&KindSpec, &RawRow, &Extras) -> Result<Row, KindError>`, `Cache::parse(line, name)`, `lookup(name)`, `parse_args(&KindSpec, &RawRow, &Extras) -> Result<Args, KindError>`, `Args::{get, number, line}`, `portable(&RawRow, &Extras) -> Vec<Finding>`.
+- types: `KindSpec { name, schema: &[ArgSpec], default_systems, secrets: &[Purpose] }`, `ArgSpec { key, required, default: ArgDefault }`, `ArgDefault::{None, Value(&str), Forge}` (forge fills: e.g. `token`; absent from `Args`), `Purpose::{CachePush, OpenChange}`, `RawRow { line, id, kind, systems, cache, args }` (cells), `Row { line, id, systems: Vec<System>, cache: Option<Cache>, args }` (checked), `Cache` (`name()`, `key()`, `nix_config()`), `Args`, `KindError { line, what, fix }` (`located(file)` → `RegistryError`), `Extras<'a> { kinds: &[KindSpec], keys: &[ArgSpec] }` (forge-only; key valid on ∀ kind), `Finding::{Kind, Key}`.
+- consts: `SECTION` = `workflows`, `COLUMNS`, `WORKFLOWS` (`SectionSpec`, key col 0), `CATALOGUE` = `GATE` `BUILD` `UPDATE_PINS` `UPSTREAM`, `TIMEOUT` spec, `DEFAULT_TIMEOUT`, `MAX_TIMEOUT`.
+- fns: `RawRow::from_cells(file, &registry::Row) -> Result<RawRow, RegistryError>` (id = file stem), `lookup(name)`, `resolve(&RawRow, &Extras) -> Result<&KindSpec, KindError>`, `Row::check(&KindSpec, &RawRow, &Extras) -> Result<Row, KindError>` (+ timeout range), `Cache::parse(line, name)`, `parse_args(&KindSpec, &RawRow, &Extras) -> Result<Args, KindError>`, `Args::{get, number, line, timeout}`, `KindSpec::purposes(&Row)`, `portable(&RawRow, &Extras) -> Vec<Finding>`.
 - schemas: `gate` command?=`nix develop --command hk check --all --check`, timeout · `build` package!, timeout · `update-pins` cron?=`50 6 * * *`, build?=`.#default`, token?=forge, timeout · `upstream` script!, cron?=`20 6 * * *`, branch-prefix?=`upstream/`, token?=forge, timeout. timeout?=`30`, 1..=360.
 
 ## §V INVARIANTS
@@ -42,8 +42,8 @@ V53: cache = cachix name w/ public key from built-in table (v1 `pr0d1r2`); other
 ## §T TASKS
 
 id|status|task|cites
-T14|.|`Row`, `ArgSpec`, `parse_args`, `Args` port w/ tests; `Purpose`; `CATALOGUE` w/ 4 kinds|V31,V32,V34,V52,V53,`.:V5`,`.:V10`
-T15|.|`Extras` & `portable` w/ tests: forge-only kind, forge-only key, clean row|V33,`.:V4`
+T14|x|`Row`, `ArgSpec`, `parse_args`, `Args` port w/ tests; `Purpose`; `CATALOGUE` w/ 4 kinds|V31,V32,V34,V52,V53,`.:V5`,`.:V10`
+T15|x|`Extras` & `portable` w/ tests: forge-only kind, forge-only key, clean row|V33,`.:V4`
 
 ## §B BUGS
 
