@@ -34,7 +34,7 @@ V37: `text(rows)` parses back via `registry` + `kind` to same rows (round trip);
 ## §T TASKS
 
 id|status|task|cites
-T16|.|port `detect`, `has_node`, `text`, `row_line`, `seed_init` w/ tests; round-trip test|V35,V36,V37,`.:V10`
+T16|x|port `detect`, `has_node`, `text`, `row_line`, `seed_init` w/ tests; round-trip test|V35,V36,V37,`.:V10`
 
 ## §B BUGS
 

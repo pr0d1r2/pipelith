@@ -89,4 +89,5 @@ LICENSE|-|-|license text, nothing to lint
 exempt|tdd-order|-|-
 yml|yamllint, actionlint, zizmor|-|-
 coverage|coverage|-|-
-actlith|-|-|registry grammar fixtures copied 1-to-1 from actlith; src/registry unit tests read them
+actlith|-|-|registry grammar and detect fixtures copied 1-to-1 from actlith; src/registry and src/detect unit tests read them
+path:tests/fixtures/**/*.lock|-|-|src/detect test fixtures: flake.lock samples read by its tests
