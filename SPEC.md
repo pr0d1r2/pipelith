@@ -16,6 +16,7 @@ SOURCES: `SPEC-PROMPT.md` (decisions D1–D18), actlith @ `7ce69c6` (extraction 
 
 dir|owns|⊥owns|tokens
 src|the library: grammar, YAML writer, systems, files, kinds, detect|forge code, repo gate|-
+tests|integration tests over public API, goldens copied from actlith|unit tests (beside their module)|-
 
 ## §N NAV
 

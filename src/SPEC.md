@@ -19,6 +19,7 @@ detect|rows from tracked files, first config file|rendering, listing files|-
 rel|path|lens
 up|.|-
 self|src|the library: grammar, YAML writer, systems, files, kinds, detect
+sib|tests|integration tests over public API, goldens copied from actlith
 
 ## §C CONSTRAINTS
 
