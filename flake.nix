@@ -201,6 +201,36 @@
         }
       );
 
+      # The library as a consumer's nix build sees it (nix T29): the crate
+      # alone, built and its unit, integration and doc tests run in the
+      # sandbox. No network, no clock, no host (SPEC.md V1), so the suite
+      # needs nothing the sandbox lacks.
+      checks = forAll (pkgs: {
+        crate = pkgs.rustPlatform.buildRustPackage {
+          pname = "pipelith";
+          version = (builtins.fromTOML (builtins.readFile ./Cargo.toml)).package.version;
+          src = pkgs.lib.fileset.toSource {
+            root = ./.;
+            fileset = pkgs.lib.fileset.unions [
+              ./Cargo.toml
+              ./Cargo.lock
+              ./src
+              ./tests
+              # Read by the kind catalogue's parity test (SPEC.md V11).
+              ./docs/KINDS.md
+              # A workspace member cargo must find, though only pipelith
+              # is built and tested here.
+              ./dev
+            ];
+          };
+          cargoLock.lockFile = ./Cargo.lock;
+          cargoTestFlags = [
+            "--package"
+            "pipelith"
+          ];
+        };
+      });
+
       formatter = forAll (pkgs: pkgs.nixfmt);
 
     };
