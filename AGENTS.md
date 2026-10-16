@@ -25,3 +25,62 @@ Instructions for coding agents working in this repository.
   per check, after proving it rejects a planted violation.
 - Never push, publish, or open issues or pull requests on another
   repository without the owner's explicit approval.
+
+## The gate
+
+Generated from `hk.pkl`; the `agents-table` step fails when it is stale.
+
+<!-- BEGIN steps: generated from hk.pkl by `cargo run -p pipelith-dev -- agents`; do not edit -->
+45 steps run on every commit and 48 on push and `hk check`; the commit-msg hook checks the message.
+
+| step | runs on | files | fixes |
+| --- | --- | --- | --- |
+| `trailing-whitespace` | commit | `**/*` | yes |
+| `final-newline` | commit | `**/*` | yes |
+| `line-endings` | commit | `**/*` | yes |
+| `no-bom` | commit | `**/*` | - |
+| `no-merge-conflict` | commit | `**/*` | - |
+| `no-case-conflict` | commit | `**/*` | - |
+| `no-broken-symlinks` | commit | whole tree | - |
+| `no-private-key` | commit | `**/*` | - |
+| `ripsecrets` | commit | `**/*` | - |
+| `no-local-paths` | commit | `**/*` | - |
+| `nixfmt` | commit | `**/*.nix` | yes |
+| `shfmt` | commit | `**/*.sh` `**/*.bash` | yes |
+| `taplo` | commit | `**/*.toml` | yes |
+| `rustfmt` | commit | `**/*.rs` | yes |
+| `typos` | commit | `**/*` | - |
+| `shellcheck` | commit | `.githooks/*` `.envrc` `**/*.sh` | - |
+| `clippy` | commit | `**/*.rs` `Cargo.toml` `clippy.toml` | - |
+| `actionlint` | commit | `.github/workflows/*.yml` `.github/workflows/*.yaml` | - |
+| `zizmor` | commit | `.github/workflows/*.yml` `.github/workflows/*.yaml` | - |
+| `statix` | commit | `**/*.nix` | yes |
+| `deadnix` | commit | `**/*.nix` | yes |
+| `markdownlint` | commit | `**/*.md` | yes |
+| `yamllint` | commit | `**/*.yml` `**/*.yaml` | - |
+| `editorconfig-checker` | commit | `**/*` | - |
+| `ctrm` | commit | `**/*` | yes |
+| `rekall` | commit | `AGENTS.md` `CLAUDE.md` `rekall.toml` | - |
+| `xnl-check` | commit | `**/*.nix` `**/*.pkl` `.envrc` `.githooks/*` | - |
+| `xnl-lint` | commit | `**/*.nix` `**/*.pkl` `.envrc` `.githooks/*` | yes |
+| `rustdoc` | commit | `**/*.rs` `Cargo.toml` | - |
+| `rust-mirror` | commit | `**/*.rs` `nix/guard/rust-mirror.sh` | - |
+| `forge-neutral` | commit | `src/**/*.rs` `nix/guard/forge-neutral.sh` | - |
+| `mth-fmt` | commit | `**/SPEC.md` | yes |
+| `mth-check` | commit | `**/SPEC.md` | - |
+| `sherd-check` | commit | `**/SPEC.md` `**/*.rs` | - |
+| `sherd-nav` | commit | `**/SPEC.md` | yes |
+| `sherd-budget` | commit | `**/SPEC.md` `.context-limits` | - |
+| `itok` | commit | `**/*` `.context-limits` | - |
+| `agents-table` | commit | `hk.pkl` `hk.pklith.pkl` `AGENTS.md` `dev/**` | yes |
+| `readme-badges` | commit | `README.md` `Cargo.toml` `.coverage` `hk.pkl` `hk.pklith.pkl` `flake.lock` `**/SPEC.md` `docs/LLM-DISCLAIMER.md` `.github/workflows/ci.yml` `dev/**` | yes |
+| `notices` | commit | `Cargo.toml` `Cargo.lock` `docs/THIRD-PARTY-NOTICES.md` `dev/**` | yes |
+| `doctest` | commit | `**/*.rs` `Cargo.toml` | - |
+| `deny` | commit | `Cargo.toml` `Cargo.lock` `deny.toml` | - |
+| `gen-check` | commit | `.pklith` `hk.pklith.pkl` `nix/pklith.nix` | yes |
+| `pklith-check` | commit | whole tree | - |
+| `no-core-worktree` | commit | whole tree | - |
+| `tdd-order` | push | `**/*.rs` `nix/guard/tdd-order.sh` `nix/guard/tdd-order.exempt` | - |
+| `test` | push | `**/*.rs` `Cargo.toml` `Cargo.lock` | - |
+| `coverage` | push | `**/*.rs` `Cargo.toml` `.coverage` | - |
+<!-- END steps -->

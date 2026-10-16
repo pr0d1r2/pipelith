@@ -166,6 +166,21 @@ steps: Mapping<String, Config.Step> = new {
     glob = List("**/*", ".context-limits")
     check = "command -v itok >/dev/null 2>&1 || { echo 'itok: itok is not on PATH; re-enter the dev shell. A MISSING TOOL, not a finding.' >&2; exit 1; }; itok check || { echo 'itok: a file registered in .context-limits is over its token ceiling' >&2; exit 1; }"
   }
+  ["agents-table"] {
+    glob = List("hk.pkl", "hk.pklith.pkl", "AGENTS.md", "dev/**")
+    check = "command -v cargo >/dev/null 2>&1 || { echo 'agents-table: cargo is not on PATH; re-enter the dev shell. A MISSING TOOL, not a finding.' >&2; exit 1; }; cargo run -q -p pipelith-dev -- agents --check || { echo 'agents-table: AGENTS.md step table is stale' >&2; exit 1; }"
+    fix = "cargo run -q -p pipelith-dev -- agents"
+  }
+  ["readme-badges"] {
+    glob = List("README.md", "Cargo.toml", ".coverage", "hk.pkl", "hk.pklith.pkl", "flake.lock", "**/SPEC.md", "docs/LLM-DISCLAIMER.md", ".github/workflows/ci.yml", "dev/**")
+    check = "command -v cargo >/dev/null 2>&1 || { echo 'readme-badges: cargo is not on PATH; re-enter the dev shell. A MISSING TOOL, not a finding.' >&2; exit 1; }; cargo run -q -p pipelith-dev -- readme --check || { echo 'readme-badges: README badges or the numbers docs/LLM-DISCLAIMER.md quotes are stale' >&2; exit 1; }"
+    fix = "cargo run -q -p pipelith-dev -- readme"
+  }
+  ["notices"] {
+    glob = List("Cargo.toml", "Cargo.lock", "docs/THIRD-PARTY-NOTICES.md", "dev/**")
+    check = "command -v cargo >/dev/null 2>&1 || { echo 'notices: cargo is not on PATH; re-enter the dev shell. A MISSING TOOL, not a finding.' >&2; exit 1; }; cargo run -q -p pipelith-dev -- notices --check || { echo 'notices: docs/THIRD-PARTY-NOTICES.md crate table is stale' >&2; exit 1; }"
+    fix = "cargo run -q -p pipelith-dev -- notices"
+  }
   ["doctest"] {
     glob = List("**/*.rs", "Cargo.toml")
     check = "command -v cargo >/dev/null 2>&1 || { echo 'doctest: cargo is not on PATH; re-enter the dev shell. A MISSING TOOL, not a finding.' >&2; exit 1; }; cargo test --doc -q || { echo 'doctest: a doc example failed' >&2; exit 1; }"
