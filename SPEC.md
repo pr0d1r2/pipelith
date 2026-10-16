@@ -12,6 +12,11 @@ NAME: pipe(line) + lith; pipe tables = the grammar it owns. fleet family `pklith
 
 SOURCES: `SPEC-PROMPT.md` (decisions D1–D18), actlith @ `7ce69c6` (extraction source, D2). this spec wins where they differ.
 
+## §F FEDERATION
+
+dir|owns|⊥owns|tokens
+src|the library: grammar, YAML writer, systems, files, kinds, detect|forge code, repo gate|-
+
 ## §N NAV
 
 rel|path|lens
