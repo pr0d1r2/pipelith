@@ -12,6 +12,7 @@ system|nix system names, CI coverage set, `x86_64-darwin` refusal|runner labels|
 yaml|ordered YAML model & writer: quoting, layout, comments, `Dialect` trait|pipeline keys, expression syntax|-
 files|generated header, write, drift check, path safety|file contents, forge layout|-
 kind|neutral kind catalogue, row & arg validation, secret purposes, portability check|pipeline shapes, secret names|-
+detect|rows from tracked files, first config file|rendering, listing files|-
 
 ## §N NAV
 
