@@ -32,6 +32,9 @@ deny|supply|cargo-deny|Cargo.toml, Cargo.lock, deny.toml|cargo deny check --disa
 # xenolith's Rust guards, copied from actlith (nix T26).
 rust-mirror|lint|-|**/*.rs, nix/guard/rust-mirror.sh|bash nix/guard/rust-mirror.sh|-|-|a Rust file with logic has no sibling tests.rs wired by #[cfg(test)] mod tests;
 
+# Forge tokens stay out of the library (SPEC.md V2, nix V50).
+forge-neutral|lint|-|src/**/*.rs, nix/guard/forge-neutral.sh|bash nix/guard/forge-neutral.sh|-|-|forge-specific text in the library; it belongs in actlith or lablith
+
 ## types
 type|checks|min|exempt
 *|trailing-whitespace, final-newline, line-endings, no-bom, no-merge-conflict, no-case-conflict, no-broken-symlinks, no-private-key, ripsecrets, typos, editorconfig-checker, no-local-paths, ctrm|-|-
@@ -58,5 +61,5 @@ ctrm-sets|-|-|ctrm configuration; hygiene steps only
 path:AGENTS.md|markdownlint, rekall|-|-
 path:rekall.toml|taplo, rekall|-|-
 path:Cargo.lock|deny|-|-
-rs|rustfmt, clippy, rust-mirror, doctest, rustdoc|-|-
+rs|rustfmt, clippy, rust-mirror, forge-neutral, doctest, rustdoc|-|-
 LICENSE|-|-|license text, nothing to lint
