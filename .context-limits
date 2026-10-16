@@ -12,7 +12,7 @@
 # Files
 SPEC.md                      3280
 nix/SPEC.md                  1930
-src/kind/SPEC.md             1490
+src/kind/SPEC.md             1750
 src/registry/SPEC.md         1070
 src/yaml/SPEC.md             860
 src/SPEC.md                  730
