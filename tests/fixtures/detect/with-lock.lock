@@ -1,0 +1,35 @@
+{
+  "nodes": {
+    "hk": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs-lock",
+          "nixpkgs"
+        ],
+        "nixpkgs-lock": [
+          "nixpkgs-lock"
+        ]
+      },
+      "locked": {
+        "owner": "example",
+        "repo": "hk",
+        "type": "github"
+      }
+    },
+    "nixpkgs-lock": {
+      "locked": {
+        "owner": "pr0d1r2",
+        "repo": "nixpkgs-lock",
+        "type": "github"
+      }
+    },
+    "root": {
+      "inputs": {
+        "hk": "hk",
+        "nixpkgs-lock": "nixpkgs-lock"
+      }
+    }
+  },
+  "root": "root",
+  "version": 7
+}

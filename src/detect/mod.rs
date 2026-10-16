@@ -1,12 +1,19 @@
 //! `src/detect`: proposed rows from tracked files and the first config
 //! file.
 //!
-//! Scaffold: the node lands in wave 3 (src/detect T16).
-#![allow(
-    unused_imports,
-    reason = "build-order edges for sherd wave until the real imports land"
-)]
+//! A forge crate lists its tracked paths and reads `flake.lock`, then
+//! [`detect()`] proposes `## workflows` rows, [`text()`] writes them as a
+//! registry file and [`seed_init`] writes that file once under the root,
+//! never over an existing one. Composition only (src C): the lock scan
+//! lives in `lock`, the rows in `rows`, the text in `text`, the write in
+//! `seed`. Pure except [`seed_init`] (detect C).
 
-// Build-order edges for `sherd wave` (src C), one per line.
-use crate::kind as _;
-use crate::registry as _;
+mod lock;
+mod rows;
+mod seed;
+mod text;
+
+pub use lock::has_node;
+pub use rows::detect;
+pub use seed::{SeedError, seed_init};
+pub use text::{FIRST_ROW, header, row_line, text};
