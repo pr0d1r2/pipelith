@@ -4,7 +4,7 @@
 //! repositories.
 
 use std::path::Path;
-use std::process::Command;
+use std::process::{Command, Output};
 
 /// An exit code and the reason: 1 a broken rule, 2 usage or I/O.
 pub(crate) type Failed = (u8, String);
@@ -19,13 +19,21 @@ pub(crate) fn run(
     program: &str,
     args: &[&str],
 ) -> Result<String, Failed> {
-    let _ = (repo, program, args);
-    Ok(String::new())
+    let out = spawn(repo, program, args)?;
+    if !out.status.success() {
+        let err = String::from_utf8_lossy(&out.stderr);
+        let why =
+            format!("{program} {} failed: {}", args.join(" "), err.trim());
+        return Err((2, why));
+    }
+    Ok(String::from_utf8_lossy(&out.stdout).into_owned())
 }
 
 /// The variables git exports to hooks that pin a command to one
-/// repository; a call aimed at another directory must drop them
-/// (actlith nix:B4; nix V47).
+/// repository. A hook runs this crate with them set; a call aimed at
+/// another directory (a scratch repository in tests) must drop them,
+/// or git acts on the hooked repository instead and re-enters its
+/// hooks, which forked without bound once (actlith nix:B4; nix V47).
 pub(crate) const GIT_REPO_VARS: [&str; 6] = [
     "GIT_DIR",
     "GIT_WORK_TREE",
@@ -38,18 +46,34 @@ pub(crate) const GIT_REPO_VARS: [&str; 6] = [
 /// The command for `program` in `repo`, with the repository variables
 /// dropped unless `repo` is the current directory.
 pub(crate) fn command(repo: &Path, program: &str, args: &[&str]) -> Command {
-    let _ = (repo, args);
-    Command::new(program)
+    let mut command = Command::new(program);
+    command.args(args).current_dir(repo);
+    if repo != Path::new(".") {
+        for var in GIT_REPO_VARS {
+            command.env_remove(var);
+        }
+    }
+    command
 }
 
-/// `git show OBJECT` in `repo`, or empty text when git has no such object.
+fn spawn(repo: &Path, program: &str, args: &[&str]) -> Result<Output, Failed> {
+    command(repo, program, args)
+        .output()
+        .map_err(|e| (2, format!("cannot run {program}: {e}")))
+}
+
+/// `git show OBJECT` in `repo`, or empty text when git has no such object
+/// (a first commit has no `HEAD~1`).
 ///
 /// # Errors
 ///
 /// (2, why) when git cannot start.
 pub(crate) fn show(repo: &Path, object: &str) -> Result<String, Failed> {
-    let _ = (repo, object);
-    Err((2, String::new()))
+    let out = spawn(repo, "git", &["show", object])?;
+    if !out.status.success() {
+        return Ok(String::new());
+    }
+    Ok(String::from_utf8_lossy(&out.stdout).into_owned())
 }
 
 /// The commit message: FILE relative to `repo`, or git's COMMIT_EDITMSG.
@@ -61,8 +85,20 @@ pub(crate) fn message(
     repo: &Path,
     file: Option<&str>,
 ) -> Result<String, Failed> {
-    let _ = (repo, file);
-    Ok(String::new())
+    let path = match file {
+        Some(f) => f.to_owned(),
+        None => {
+            run(repo, "git", &["rev-parse", "--git-path", "COMMIT_EDITMSG"])?
+                .trim()
+                .to_owned()
+        }
+    };
+    std::fs::read_to_string(repo.join(&path)).map_err(|_| {
+        (
+            2,
+            format!("no message file at {path}, so nothing was checked"),
+        )
+    })
 }
 
 /// A generated file and the verb that writes it.
@@ -79,11 +115,13 @@ pub(crate) struct Doc {
 ///
 /// (2, why) naming the path when it cannot be read.
 pub(crate) fn read(repo: &Path, path: &str) -> Result<String, Failed> {
-    let _ = (repo, path);
-    Ok(String::new())
+    std::fs::read_to_string(repo.join(path))
+        .map_err(|e| (2, format!("cannot read {path}: {e}")))
 }
 
-/// Make `doc` hold `wanted`: written, or with `check` compared.
+/// Make `doc` hold `wanted`: written, or with `check` compared, drift
+/// being exit 1 naming the verb that fixes it (equality, never a
+/// heuristic).
 ///
 /// # Errors
 ///
@@ -95,8 +133,18 @@ pub(crate) fn update(
     wanted: &str,
     check: bool,
 ) -> Result<(), Failed> {
-    let _ = (repo, doc, wanted, check);
-    Ok(())
+    let (path, verb) = (doc.path, doc.verb);
+    if read(repo, path)? == wanted {
+        return Ok(());
+    }
+    if check {
+        let fix = format!(
+            "{path} drifted from its sources; run `cargo run -p pipelith-dev -- {verb}`"
+        );
+        return Err((1, fix));
+    }
+    std::fs::write(repo.join(path), wanted)
+        .map_err(|e| (2, format!("cannot write {path}: {e}")))
 }
 
 /// Steps in one hook, as `pkl` evaluates `hk.pkl` in `repo`.
@@ -105,8 +153,11 @@ pub(crate) fn update(
 ///
 /// (2, why) when `pkl` fails or prints something other than a number.
 pub(crate) fn steps(repo: &Path, hook: &str) -> Result<usize, Failed> {
-    let _ = (repo, hook);
-    Ok(0)
+    let expr = format!("hooks[\"{hook}\"].steps.length");
+    let text = run(repo, "pkl", &["eval", "-x", &expr, "hk.pkl"])?;
+    text.trim()
+        .parse()
+        .map_err(|_| (2, format!("pkl printed `{}` for {expr}", text.trim())))
 }
 
 /// Steps on commit and on push.
@@ -115,8 +166,7 @@ pub(crate) fn steps(repo: &Path, hook: &str) -> Result<usize, Failed> {
 ///
 /// As [`steps`].
 pub(crate) fn hooks(repo: &Path) -> Result<(usize, usize), Failed> {
-    let _ = repo;
-    Ok((0, 0))
+    Ok((steps(repo, "pre-commit")?, steps(repo, "pre-push")?))
 }
 
 #[cfg(test)]

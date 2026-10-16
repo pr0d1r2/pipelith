@@ -3,9 +3,6 @@
 //! step table, each with a drift check. Never published (SPEC.md C, D18).
 //! Ported from actlith-dev at `7ce69c6`. Re-exports only.
 
-// RED: the verbs are signatures only, so nothing reaches them yet.
-#![allow(dead_code)]
-
 mod agents;
 mod badges;
 mod block;
