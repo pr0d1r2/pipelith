@@ -44,6 +44,7 @@ V53: cache = cachix name w/ public key from built-in table (v1 `pr0d1r2`); other
 id|status|task|cites
 T14|x|`Row`, `ArgSpec`, `parse_args`, `Args` port w/ tests; `Purpose`; `CATALOGUE` w/ 4 kinds|V31,V32,V34,V52,V53,`.:V5`,`.:V10`
 T15|x|`Extras` & `portable` w/ tests: forge-only kind, forge-only key, clean row|V33,`.:V4`
+T32|.|move actlith build-time row rules here: `build` ! cache, `package` = flake attr name, `cron` = 5 fields, `token` = secret name, bump kinds exactly 1 system ∴ portable row ⊥ refused later by a forge|`.:V4`
 
 ## §B BUGS
 
