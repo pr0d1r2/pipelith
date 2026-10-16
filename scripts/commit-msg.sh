@@ -12,7 +12,10 @@ set -euo pipefail
 
 f="${1:-$(git rev-parse --git-path COMMIT_EDITMSG)}"
 # A missing file means nothing was checked, which is a failure, not a pass.
-[ -f "$f" ] || { echo "commit-msg: no message file at $f, so nothing was checked." >&2; exit 1; }
+[ -f "$f" ] || {
+  echo "commit-msg: no message file at $f, so nothing was checked." >&2
+  exit 1
+}
 
 # Judge only what git keeps: drop everything from the `git commit -v`
 # scissors line down (pklith found a diff there counted as a body), then
