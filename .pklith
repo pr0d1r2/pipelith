@@ -19,6 +19,10 @@ rekall|lint|-|AGENTS.md, CLAUDE.md, rekall.toml|rekall check|-|-|agent prose dri
 # xenolith: one language per file (nix T24), as in actlith.
 xnl-check|lint|-|**/*.nix, **/*.pkl, .envrc, .githooks/*|xnl check {{files}}|-|-|a host file embeds a non-trivial program in another language; extract it with xnl extract
 xnl-lint|lint|-|**/*.nix, **/*.pkl, .envrc, .githooks/*|xnl lint {{files}}|xnl lint --fix {{files}}|-|an embedded or extracted program fails its own language's linter
+# The registry judges itself, as in pklith and actlith: generated steps
+# match .pklith, and every tracked file type has a row.
+gen-check|gate|-|.pklith, hk.pklith.pkl, nix/pklith.nix|pklith gen --check|pklith gen|-|hk.pklith.pkl or nix/pklith.nix no longer matches .pklith; run pklith gen
+pklith-check|gate|-|-|pklith check|-|-|a tracked file type has no row in .pklith, a row matches nothing, or a claimed check never reaches its files
 
 ## types
 type|checks|min|exempt
@@ -28,7 +32,7 @@ gitattributes|-|-|written by pklith (seed or gen)
 md|markdownlint|-|-
 nix|nixfmt, statix, deadnix, xnl-check, xnl-lint|-|-
 path:**/SPEC.md|markdownlint, mth-fmt, mth-check, sherd-check, sherd-nav, sherd-budget, itok|-|-
-pklith|-|-|written by pklith (seed or gen)
+pklith|pklith-check, gen-check|-|-
 pkl|xnl-check, xnl-lint|-|-
 pre-commit|shellcheck, xnl-check, xnl-lint|-|-
 pre-push|shellcheck, xnl-check, xnl-lint|-|-
