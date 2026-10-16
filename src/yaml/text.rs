@@ -30,8 +30,13 @@ impl Expr {
     /// when it is empty, holds a control character, or `dialect`
     /// refuses it.
     pub fn new(dialect: &dyn Dialect, inner: &str) -> Option<Self> {
-        let _ = (dialect, inner);
-        None
+        let inner = inner.trim();
+        let broken = inner.is_empty() || inner.chars().any(char::is_control);
+        let text = if broken { None } else { dialect.expr(inner) }?;
+        Some(Self {
+            inner: inner.to_owned(),
+            text,
+        })
     }
 
     /// The expression as it is written in a pipeline file.
@@ -56,6 +61,18 @@ pub enum Part {
     Expr(Expr),
 }
 
+impl Part {
+    /// The part as written in a pipeline file: a literal escaped by
+    /// `dialect`, so it never opens an expression; an expression as built.
+    #[must_use]
+    pub fn render(&self, dialect: &dyn Dialect) -> String {
+        match self {
+            Self::Lit(s) => dialect.escape(s),
+            Self::Expr(e) => e.text.clone(),
+        }
+    }
+}
+
 /// A string value: literal parts and expression parts, in order. Two
 /// literal parts are never adjacent: a literal after a literal joins
 /// it, so the dialect sees (and escapes) the whole run at once.
@@ -66,28 +83,29 @@ impl Text {
     /// A text of one literal part.
     #[must_use]
     pub fn lit(s: &str) -> Self {
-        let _ = s;
-        Self::default()
+        Self::default().then_lit(s)
     }
 
     /// A text of one expression.
     #[must_use]
     pub fn expr(e: Expr) -> Self {
-        drop(e);
-        Self::default()
+        Self(vec![Part::Expr(e)])
     }
 
     /// This text followed by the literal `s`.
     #[must_use]
-    pub fn then_lit(self, s: &str) -> Self {
-        let _ = s;
+    pub fn then_lit(mut self, s: &str) -> Self {
+        match self.0.last_mut() {
+            Some(Part::Lit(last)) => last.push_str(s),
+            _ => self.0.push(Part::Lit(s.to_owned())),
+        }
         self
     }
 
     /// This text followed by the expression `e`.
     #[must_use]
-    pub fn then_expr(self, e: Expr) -> Self {
-        drop(e);
+    pub fn then_expr(mut self, e: Expr) -> Self {
+        self.0.push(Part::Expr(e));
         self
     }
 
@@ -101,8 +119,7 @@ impl Text {
     /// literal parts escaped by `dialect`, expressions as built.
     #[must_use]
     pub fn render(&self, dialect: &dyn Dialect) -> String {
-        let _ = dialect;
-        String::new()
+        self.0.iter().map(|p| p.render(dialect)).collect()
     }
 }
 
@@ -122,21 +139,36 @@ impl Comment {
     /// A comment of the lines of `text`.
     #[must_use]
     pub fn new(text: &str) -> Self {
-        let _ = text;
-        Self(Vec::new())
+        Self(text.split('\n').map(clean).collect())
     }
 
     /// The comment's lines, each as written: `# text`, or `#` when empty.
     #[must_use]
     pub fn lines(&self) -> Vec<String> {
-        self.0.clone()
+        self.0.iter().map(|l| hash(l)).collect()
     }
 
     /// The comment on one line, its lines joined by a space: the form a
     /// comment takes after a value.
     #[must_use]
     pub fn inline(&self) -> String {
-        String::new()
+        hash(self.0.join(" ").trim())
+    }
+}
+
+fn clean(line: &str) -> String {
+    let spaced: String = line
+        .chars()
+        .map(|c| if c.is_control() { ' ' } else { c })
+        .collect();
+    spaced.trim_end().to_owned()
+}
+
+fn hash(line: &str) -> String {
+    if line.is_empty() {
+        "#".to_owned()
+    } else {
+        format!("# {line}")
     }
 }
 

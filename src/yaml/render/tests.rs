@@ -130,7 +130,7 @@ fn trailing_comment_counts_toward_width() {
 #[test]
 fn literal_text_passes_the_dialect_escape() {
     let out = write(&[], &[fixed("run", text("echo ${{ x }}"))]);
-    assert_eq!(out, "---\nrun: 'echo ${{ '${{' }} x }}'\n");
+    assert_eq!(out, "---\nrun: 'echo ${{ ''${{'' }} x }}'\n");
 }
 
 const SKIP_FORK: &str = "github.event_name == 'pull_request' && \

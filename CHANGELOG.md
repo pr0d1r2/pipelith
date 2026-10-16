@@ -8,3 +8,13 @@ input is at least a minor version (SPEC.md V7), and its entry names what
 consumers will see change.
 
 ## [Unreleased]
+
+### Added
+
+- `pipelith::yaml`: the ordered YAML model and writer moved from actlith
+  (`Node`, `Entry`, `Text`, `Comment`, `document`), byte-identical to
+  actlith's output for the same tree. Expression syntax comes from a
+  `Dialect` the forge crate supplies. Two fixes against actlith: an
+  expression whose rendered text would read as a mapping or a comment
+  in a plain scalar is quoted, and adjacent literal parts are escaped as
+  one run.

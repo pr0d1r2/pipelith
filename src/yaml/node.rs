@@ -58,28 +58,26 @@ impl Entry {
     /// An entry with a schema key and no comments.
     #[must_use]
     pub fn fixed(key: &'static str, node: Node) -> Self {
-        let _ = key;
-        Self::new(Key::Fixed(""), node)
+        Self::new(Key::Fixed(key), node)
     }
 
     /// An entry with a caller's key and no comments.
     #[must_use]
     pub fn user(key: &str, node: Node) -> Self {
-        let _ = key;
-        Self::new(Key::Fixed(""), node)
+        Self::new(Key::User(key.to_owned()), node)
     }
 
     /// This entry with `comment` added above it.
     #[must_use]
-    pub fn above(self, comment: Comment) -> Self {
-        drop(comment);
+    pub fn above(mut self, comment: Comment) -> Self {
+        self.comments.push(comment);
         self
     }
 
     /// This entry with `comment` after its first line.
     #[must_use]
-    pub fn after(self, comment: Comment) -> Self {
-        drop(comment);
+    pub fn after(mut self, comment: Comment) -> Self {
+        self.trailing = Some(comment);
         self
     }
 
