@@ -33,6 +33,7 @@ V47: child git in tests drops `GIT_*` & scratch repos run w/ `core.hooksPath=/de
 V48: change to `hk.pkl` | `hk.pklith.pkl` ! show hk itself runs expected step set; `pkl eval` passing ⊥ proof (`actlith/V42`)
 V49: tests run at pre-push ∴ ∀ merge ! pass `hk check --all` BEFORE commit (`actlith/V43`)
 V50: `forge-neutral` step: grep `src/` for forge tokens (`${{`, `runs-on`, `uses:`, `stages:`, `image:`, runner labels) → fail (`.:V2`)
+V54: once `gen-check` is laid, a new check lands as ONE commit holding its `.pklith` row + regenerated `hk.pklith.pkl` + `nix/pklith.nix`; ⊥ claim a check in `.pklith` w/o its step; after any `.pklith` commit `pklith gen --check` ! exit 0
 
 ## §T TASKS
 
@@ -54,3 +55,4 @@ T31|.|`README.md`, `AGENTS.md`, `CHANGELOG.md` (Keep a Changelog), `docs/LLM-DIS
 ## §B BUGS
 
 id|date|cause|fix
+B1|2026-10-17|crate seed `2ecfbc1` claimed 5 checks in `.pklith`; pre-commit ran `gen-check` in fix mode, `pklith gen` rewrote `hk.pklith.pkl` but left it unstaged ∴ seed landed w/ `gen-check` red & `pklith lay` saw nothing to lay; repaired in `a5ce7b8`|V54
