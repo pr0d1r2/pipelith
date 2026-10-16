@@ -13,13 +13,13 @@ hooks {
     stash = "none"
     steps = generated.steps
   }
-  // nix T21: subject `type(scope): claim`, at most 72 characters, a body
-  // that says why. hk passes the file git gave the hook (MERGE_MSG on a
-  // merge).
+  // nix T21, dev V41: subject `type(scope): claim`, at most 72 characters,
+  // a body that says why; tested Rust in pipelith-dev. hk passes the file
+  // git gave the hook (MERGE_MSG on a merge).
   ["commit-msg"] {
     steps {
       ["commit-msg"] {
-        check = "scripts/commit-msg.sh {{commit_msg_file}}"
+        check = "cargo run -q -p pipelith-dev -- commit-msg {{commit_msg_file}}"
       }
     }
   }
