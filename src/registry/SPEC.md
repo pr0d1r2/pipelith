@@ -32,9 +32,9 @@ sib|src/detect|rows from tracked files, first config file
 
 V15: first non-comment non-blank line ! be `format N`; missing → error; N > `SUPPORTED_FORMAT` → error naming both versions, ⊥ best-effort parse (`actlith/V11`)
 V16: ∀ error names file, line & column (1-based) + a fix hint; ⊥ panic on any input
-V17: shape ! match schema: unknown section → error naming known ones; duplicate section → error; header row ≠ declared columns → error; row cell count ≠ columns → error at row; missing required section → error; missing optional section = empty (`actlith/V12`)
-V18: cell text trimmed; `\|` → literal `|`, ⊥ splits; `-` alone = empty; `#` starts a comment only at line start
-V19: `list` & `args` split on `,` ∴ ⊥ comma inside a value; `args` cell w/o `=` | empty key → error naming cell; order kept
+V17: shape ! match schema: unknown section → error naming known ones; duplicate section → error; header row ≠ declared columns → error; row cell count ≠ columns → error at row; missing required section → error; missing optional section = empty (`actlith/V12`); heading w/o header row = empty section
+V18: cell text trimmed; `\|` → literal `|`, ⊥ splits; `-` alone = empty; `#` first non-blank char → comment line
+V19: `list` & `args` split on `,` ∴ ⊥ comma inside a value; `args` cell w/o `=` | empty key | empty value | repeated key → error naming cell; order kept
 
 V51: section w/ `key` column: repeated key → error at 2nd row naming 1st row's line (actlith `rows::unique`)
 

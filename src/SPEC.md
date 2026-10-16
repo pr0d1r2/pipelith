@@ -26,7 +26,7 @@ sib|nix|repo gate: dev shell, guardrails, hk steps, CI, release
 ## §C CONSTRAINTS
 
 - module = dir + `mod.rs`. `mod.rs` composes & re-exports, ⊥ implements.
-- dep order (waves): `registry`, `system`, `yaml`, `files` → `kind` → `detect`. edges = `use crate::<node> as _;` lines in each `mod.rs`, 1 per line (sherd reads 1st line only).
+- dep order (waves): `registry`, `system`, `yaml`, `files` → `kind` → `detect`. edges = `use crate::<node>` imports between siblings; scaffold used `use crate::<node> as _;` until real imports landed.
 - port from actlith @ `7ce69c6` = `pub(crate)` → `pub` + rustdoc; behaviour & bytes unchanged unless a §V here says otherwise.
 
 ## §V INVARIANTS

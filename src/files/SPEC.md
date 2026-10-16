@@ -30,7 +30,7 @@ sib|src/detect|rows from tracked files, first config file
 
 V27: header bytes for (`actlith`, `.actlith`) == actlith @ `7ce69c6` header; ∀ `#`-comment generated file (YAML, shell) starts w/ it (`actlith/V8`)
 V28: `check` writes ⊥; returns each stale | missing file, sorted by path (`actlith/V6`)
-V29: path empty | absolute | `.` | `..` | empty segment → `InvalidInput` naming it, ⊥ write; check textual on `/` segments
+V29: path empty | absolute | `.` | `..` | empty segment | `\` → `InvalidInput` naming it, ⊥ write; check textual on `/` segments
 V30: `write` touches ONLY listed paths; unchanged bytes ⊥ rewritten (mtime kept)
 
 ## §T TASKS

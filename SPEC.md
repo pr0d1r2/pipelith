@@ -54,7 +54,7 @@ self|.|-
 - forge crate supplies: config file name, forge-only sections & columns & arg keys, pipeline YAML model, `yaml::Dialect`, runner table, pin table, file layout.
 - doc: `docs/KINDS.md` = neutral kind catalogue (intent, triggers as events, secrets as purposes, row values). forge pages `docs/KINDS-GITHUB.md` (actlith), `docs/KINDS-GITLAB.md` (lablith) map intent → syntax (D5).
 - consumer: before publish, forge crate takes git dep pinned to full commit, allowed in its `deny.toml` `[sources]`, nix `outputHashes` entry. pipelith published before actlith `0.1.0-rc.1` (D11).
-- nix: flake `checks.<system>` build, test & doc the crate; `devShells` from pklith `lib.devShell`. ⊥ `packages` app (library).
+- nix: flake `checks.<system>` build & test the crate (doctests incl.); `devShells` from pklith `lib.devShell`. ⊥ `packages` app (library).
 
 ## §R RESEARCH
 

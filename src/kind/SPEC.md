@@ -39,9 +39,9 @@ V34: catalogue values (names, keys, defaults) == actlith @ `7ce69c6` except `Arg
 V52: systems `-` → kind default; ∀ system via `system::parse_system` + `ci_system` (`x86_64-darwin` refused); duplicate → error
 V53: cache = cachix name w/ public key from built-in table (v1 `pr0d1r2`); other name refused w/ fix hint, ⊥ guessed key. cachix serves both forges ∴ neutral
 
-V75: `Row::check` refuses what actlith refused only at build: `build` w/o cache; `package` ∉ flake attr name (`[A-Za-z_][A-Za-z0-9_-]*`); `cron` ≠ 5 fields of `[A-Za-z0-9*/-]`; `token` ∉ secret name (`[A-Za-z_][A-Za-z0-9_]*`) ∴ passing row ⊥ refused by a forge (`.:V4`); messages = actlith's
+V75: `Row::check` refuses what actlith refused only at build: `build` w/o cache; `package` ∉ flake attr name (`[A-Za-z_][A-Za-z0-9_-]*`); `cron` ≠ 5 fields of `[A-Za-z0-9*/-]`; `token` ∉ secret name (`[A-Za-z_][A-Za-z0-9_]*`) ∴ passing row ⊥ refused by a forge (`.:V4`); messages = actlith's (`token` hint also names leading-digit rule)
 V76: kind w/ `Purpose::OpenChange` (bump) runs 1 job ∴ exactly 1 system; else error naming count
-V77: `build` (update-pins), `script` & `branch-prefix` (upstream) ∉ `[A-Za-z0-9._/#+:@-]+` | leading `-` → refused by `Row::check` (actlith `plain()` at build); message = actlith's
+V77: arg keys `build`, `script`, `branch-prefix` (any kind; today update-pins & upstream) ∉ `[A-Za-z0-9._/#+:@-]+` | leading `-` → refused by `Row::check` (actlith `plain()` at build); message = actlith's
 
 ## §T TASKS
 

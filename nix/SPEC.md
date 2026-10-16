@@ -49,7 +49,7 @@ T25|x|seed crate through live hooks: LICENSE, `Cargo.toml` workspace, `clippy.to
 T26|x|`nix/guard/`: `rust-mirror`, `tdd-order` + exemptions, `forge-neutral`, `no-core-worktree`; `test` + `coverage` on push|V43,V46,V47,V50
 T27|x|hand-written `.github/workflows/ci.yml` (pklith shape); `actionlint`, `zizmor`, yamllint|V43
 T28|.|`no-commit-to-branch` main; guardrails done → ASK user reload|V42
-T29|x|nix `checks.<system>`: build, test, doc; `release.toml` w/ pre-release `hk check --all`|`.:V7`
+T29|x|nix `checks.<system>`: build, test incl. doctests (rustdoc = gate step); `release.toml` w/ pre-release `hk check --all`|`.:V7`
 T30|.|AFTER actlith public: `.actlith` + generated `ci.yml`, `actlith gen --check` step same commit (dogfood, D10)|V43
 T31|x|`README.md`, `AGENTS.md`, `CHANGELOG.md` (Keep a Changelog), `docs/LLM-DISCLAIMER.md` as actlith; AFTER T19|`dev:V40`,`.:V7`
 
