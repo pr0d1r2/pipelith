@@ -180,4 +180,8 @@ steps: Mapping<String, Config.Step> = new {
 }
 
 push: Mapping<String, Config.Step> = new {
+  ["tdd-order"] {
+    glob = List("**/*.rs", "nix/guard/tdd-order.sh", "nix/guard/tdd-order.exempt")
+    check = "command -v bash >/dev/null 2>&1 || { echo 'tdd-order: bash is not on PATH; re-enter the dev shell. A MISSING TOOL, not a finding.' >&2; exit 1; }; bash nix/guard/tdd-order.sh || { echo 'tdd-order: a commit adds Rust code with no test: commit before it in the push range' >&2; exit 1; }"
+  }
 }

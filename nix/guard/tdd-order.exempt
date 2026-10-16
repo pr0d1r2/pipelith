@@ -1,0 +1,5 @@
+# Commits exempt from tdd-order (nix V46): full id, then the reason. Only a
+# commit already made that cannot be rewritten belongs here, each with a
+# nix/SPEC.md B row.
+2ecfbc182cd142631ea128d68f10b3427d20d0bb crate seed by hand: lib.rs is a doc-only stub, so there was no behaviour for a RED test to pin (B2)
+786733391026cfc0ff8771ab234061fa0b926339 commit-msg script copied from actlith before tdd-order existed, without a bats mirror; its tested Rust port lands in pipelith-dev (dev T18, B3)

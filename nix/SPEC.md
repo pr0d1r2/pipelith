@@ -56,3 +56,5 @@ T31|.|`README.md`, `AGENTS.md`, `CHANGELOG.md` (Keep a Changelog), `docs/LLM-DIS
 
 id|date|cause|fix
 B1|2026-10-17|crate seed `2ecfbc1` claimed 5 checks in `.pklith`; pre-commit ran `gen-check` in fix mode, `pklith gen` rewrote `hk.pklith.pkl` but left it unstaged ∴ seed landed w/ `gen-check` red & `pklith lay` saw nothing to lay; repaired in `a5ce7b8`|V54
+B2|2026-10-17|crate seed `2ecfbc1` added `src/lib.rs` before `tdd-order` existed; doc-only stub ∴ ⊥ RED to write first|V46
+B3|2026-10-17|`scripts/commit-msg.sh` (`7867333`) copied from actlith before `tdd-order` existed, ⊥ bats mirror; tested Rust port in `pipelith-dev` (`dev:T18`) replaces it|V46
