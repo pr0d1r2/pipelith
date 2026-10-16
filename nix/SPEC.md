@@ -46,7 +46,7 @@ T23|x|spec gates: `mth`, `itok` + `.context-limits`, `sherd`|V43
 T24|x|`ctrm`, `rekall` (`AGENTS.md`), `xnl`|V43
 T25|.|seed crate through live hooks: LICENSE, `Cargo.toml` workspace, `clippy.toml`, `rustfmt.toml`, `deny.toml`, CHANGELOG; taplo, rustfmt, clippy, deny, rustdoc, doctest|V43,`.:V6`
 T26|.|`nix/guard/`: `rust-mirror`, `tdd-order` + exemptions, `forge-neutral`, `no-core-worktree`; `test` + `coverage` on push|V43,V46,V47,V50
-T27|.|hand-written `.github/workflows/ci.yml` (pklith shape); `actionlint`, `zizmor`, yamllint|V43
+T27|x|hand-written `.github/workflows/ci.yml` (pklith shape); `actionlint`, `zizmor`, yamllint|V43
 T28|.|`no-commit-to-branch` main; guardrails done → ASK user reload|V42
 T29|.|nix `checks.<system>`: build, test, doc; `release.toml` w/ pre-release `hk check --all`|`.:V7`
 T30|.|AFTER actlith public: `.actlith` + generated `ci.yml`, `actlith gen --check` step same commit (dogfood, D10)|V43

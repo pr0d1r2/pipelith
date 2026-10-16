@@ -22,4 +22,5 @@ catalog: [
   catalog.taplo
   catalog.typos
   catalog.yamllint
+  catalog.zizmor
 ]
