@@ -1,0 +1,35 @@
+# Per-path token ceilings, gated by `itok check` (file rows) and
+# `sherd budget` (directory rows = chain: root + hub + node), as in actlith.
+#
+# A ceiling caps ENTRY COST: what a session loads before any work begins.
+# Set ~15% over measured so ordinary edits fit; raising one is a reviewed
+# commit with its reason (paradigm V12). A node that would pass its cap
+# splits, it does not raise.
+#
+# MEASURED 2026-10-17 after the spec run: file rows with `itok estimate --bpe`, chain
+# rows with `sherd budget --format json`.
+
+# Files
+SPEC.md                      3280
+nix/SPEC.md                  1590
+src/kind/SPEC.md             1260
+src/registry/SPEC.md         1070
+src/yaml/SPEC.md             860
+src/SPEC.md                  730
+src/files/SPEC.md            700
+src/detect/SPEC.md           650
+src/system/SPEC.md           630
+tests/SPEC.md                410
+dev/SPEC.md                  370
+
+# Chains
+dev                          2680
+nix                          3730
+src                          2860
+src/detect                   3310
+src/files                    3350
+src/kind                     3920
+src/registry                 3730
+src/system                   3280
+src/yaml                     3520
+tests                        2720

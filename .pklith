@@ -19,7 +19,7 @@ editorconfig|-|-|written by pklith (seed or gen)
 gitattributes|-|-|written by pklith (seed or gen)
 md|markdownlint|-|-
 nix|nixfmt, statix, deadnix|-|-
-path:**/SPEC.md|markdownlint, mth-fmt, mth-check, sherd-check, sherd-nav, sherd-budget|-|-
+path:**/SPEC.md|markdownlint, mth-fmt, mth-check, sherd-check, sherd-nav, sherd-budget, itok|-|-
 pklith|-|-|written by pklith (seed or gen)
 pkl|-|-|written by pklith (seed or gen)
 pre-commit|shellcheck|-|-
@@ -32,3 +32,4 @@ yaml|yamllint|-|-
 gitignore|-|-|git configuration; hygiene steps only
 markdownlintignore|-|-|markdownlint configuration; hygiene steps only
 path:flake.lock|-|-|written by `nix flake lock`; hygiene steps only
+context-limits|itok, sherd-budget|-|-

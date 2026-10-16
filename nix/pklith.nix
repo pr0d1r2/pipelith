@@ -5,6 +5,7 @@ catalog: [
   catalog.deadnix
   catalog.editorconfig-checker
   catalog.gnugrep
+  catalog.itok
   catalog.markdownlint-cli
   catalog.microlith
   catalog.nixfmt
