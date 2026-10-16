@@ -8,8 +8,11 @@ import "hk.pklith.pkl" as generated
 local all = (generated.steps) { ...generated.push }
 
 hooks {
+  // Check, never fix (nix B4, V55): with stash = "none" a fix rewrote
+  // files the commit then left unstaged, so commits landed with their own
+  // gate red. A finding refuses the commit; run `hk fix` and restage.
   ["pre-commit"] {
-    fix = true
+    fix = false
     stash = "none"
     steps = generated.steps
   }

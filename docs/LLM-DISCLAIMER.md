@@ -28,8 +28,8 @@ something executes it.** The numbers in this file are such claims: the
 
 [`SPEC.md`](../SPEC.md) and one `SPEC.md` per node below it are the law,
 not a description written afterwards. Together they carry
-**55 invariants** (the `V` rows: what must stay true), `T` tasks (what is
-decided and what is not), **5 bugs** in their `B` tables (each paired
+**56 invariants** (the `V` rows: what must stay true), `T` tasks (what is
+decided and what is not), **6 bugs** in their `B` tables (each paired
 with the rule that now catches it), and `R` research (the measurements
 the constraints rest on). A rule and its checker land in the same
 commit, because a rule with no runner gates nothing.
@@ -70,6 +70,11 @@ write first; it is listed by full commit id in
 **B3: the first commit-message hook was a shell script copied without
 tests.** It predated the rule that every script has a test; the tested
 Rust port in `pipelith-dev` replaced it.
+
+**B4: the pre-commit hook fixed a file and then left the fix out.** A
+README regenerated during the commit stayed unstaged, so the commit
+landed with stale badges, the same way B1 happened. The pre-commit hook
+now only checks; a fixable finding refuses the commit and names the fix.
 
 **B5: an expression could stay unquoted when its YAML could not.** The
 writer, ported from actlith, judged an expression by its inner text, so

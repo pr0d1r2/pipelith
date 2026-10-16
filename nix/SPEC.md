@@ -34,6 +34,7 @@ V48: change to `hk.pkl` | `hk.pklith.pkl` ! show hk itself runs expected step se
 V49: tests run at pre-push ∴ ∀ merge ! pass `hk check --all` BEFORE commit (`actlith/V43`)
 V50: `forge-neutral` step: grep `src/` for forge tokens (`${{`, `runs-on`, `uses:`, `stages:`, `image:`, runner labels) → fail (`.:V2`)
 V54: once `gen-check` is laid, a new check lands as ONE commit holding its `.pklith` row + regenerated `hk.pklith.pkl` + `nix/pklith.nix`; ⊥ claim a check in `.pklith` w/o its step; after any `.pklith` commit `pklith gen --check` ! exit 0
+V55: pre-commit runs `fix = false`: a fixable finding REFUSES the commit; `hk fix` + restage by hand. ⊥ hook rewrites files it then leaves unstaged
 
 ## §T TASKS
 
@@ -58,3 +59,4 @@ id|date|cause|fix
 B1|2026-10-17|crate seed `2ecfbc1` claimed 5 checks in `.pklith`; pre-commit ran `gen-check` in fix mode, `pklith gen` rewrote `hk.pklith.pkl` but left it unstaged ∴ seed landed w/ `gen-check` red & `pklith lay` saw nothing to lay; repaired in `a5ce7b8`|V54
 B2|2026-10-17|crate seed `2ecfbc1` added `src/lib.rs` before `tdd-order` existed; doc-only stub ∴ ⊥ RED to write first|V46
 B3|2026-10-17|`scripts/commit-msg.sh` (`7867333`) copied from actlith before `tdd-order` existed, ⊥ bats mirror; tested Rust port in `pipelith-dev` (`dev:T18`) replaces it|V46
+B4|2026-10-17|pre-commit `fix = true` w/ `stash = "none"`: `readme-badges` fix rewrote `README.md` after staging ∴ `6d533e8` landed w/ stale badges (same mechanism as B1)|V55
