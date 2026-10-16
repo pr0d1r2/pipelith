@@ -47,3 +47,13 @@ self|.|-
 - doc: `docs/KINDS.md` = neutral kind catalogue (intent, triggers as events, secrets as purposes, row values). forge pages `docs/KINDS-GITHUB.md` (actlith), `docs/KINDS-GITLAB.md` (lablith) map intent → syntax (D5).
 - consumer: before publish, forge crate takes git dep pinned to full commit, allowed in its `deny.toml` `[sources]`, nix `outputHashes` entry. pipelith published before actlith `0.1.0-rc.1` (D11).
 - nix: flake `checks.<system>` build, test & doc the crate; `devShells` from pklith `lib.devShell`. ⊥ `packages` app (library).
+
+## §R RESEARCH
+
+id|topic|finding|src
+R1|actlith survey|LoC @ `7ce69c6`: `registry` 686 split (`format` `table` `cells` `parse` `error` move; `rows` `model` stay) · `yaml` 1071 split (`node` `scalar` `text` `render` move; `workflow` `job` `step` stay) · `kind` 878 split (`row` `args` `contract` & names move; `secret` split) · `gen` 164 neutral · `system` 118 split · `detect` 209 neutral · `script` 38 mechanism neutral|`SPEC-PROMPT.md` Survey; recount `cat src/<node>/*.rs \| wc -l`
+R2|name|`pipelith` free 2026-10-16: crates.io API 404, ⊥ GitHub repo `pr0d1r2/pipelith`. rejected `piplith` (reads as Python `pip`), `lithcore` `corelith` (break `<purpose>lith`)|`curl https://crates.io/api/v1/crates/pipelith`, `gh repo view pr0d1r2/pipelith`
+R3|pklith grammar|`.pklith` uses same pipe-table grammar w/ own parser ∴ later `registry` consumer; proposal = pklith issue after ship (D12)|pklith source
+R4|rejected designs|1 tool w/ `--forge` (pins, hardening, layout, linters per forge ∴ most code per forge) · copy into lablith (2 copies drift) · 1 cargo workspace for 3 crates (fleet = 1 repo per tool; actlith gate & release assume 1 crate) · extract after copy (2nd consumer certain)|`SPEC-PROMPT.md` Prior art
+R5|actlith ties|actlith spec already plans its side: byte-identical switch, both-forge kinds rule, rows & KINDS split, git pin of pipelith (its `tests` `src/kind` `nix` nodes)|actlith `SPEC.md` tree 2026-10-16
+R6|expressions|actlith `yaml::text::Expr` renders `${{ }}` & escapes literal `${{` as `${{ '${{' }}` = GitHub syntax ∴ ⊥ neutral; GitLab expands `$VAR`, escapes `$$` ∴ forge supplies `Dialect`|actlith `src/yaml/text.rs` @ `7ce69c6`
