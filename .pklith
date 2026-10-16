@@ -49,6 +49,7 @@ coverage|coverage|sherd|**/*.rs, Cargo.toml, .coverage|sherd coverage --check|-|
 # a commit that changes a source (pklith lay changing hk.pklith.pkl) gets
 # the doc rewritten rather than refused.
 agents-table|spec|-|hk.pkl, hk.pklith.pkl, AGENTS.md, dev/**|cargo run -q -p pipelith-dev -- agents --check|cargo run -q -p pipelith-dev -- agents|-|AGENTS.md step table is stale
+notices|spec|-|Cargo.toml, Cargo.lock, docs/THIRD-PARTY-NOTICES.md, dev/**|cargo run -q -p pipelith-dev -- notices --check|cargo run -q -p pipelith-dev -- notices|-|docs/THIRD-PARTY-NOTICES.md crate table is stale
 
 ## types
 type|checks|min|exempt
@@ -74,6 +75,7 @@ context-limits|itok, sherd-budget|-|-
 ctrm|-|-|ctrm configuration; hygiene steps only
 ctrm-sets|-|-|ctrm configuration; hygiene steps only
 path:AGENTS.md|markdownlint, rekall, agents-table|-|-
+path:docs/THIRD-PARTY-NOTICES.md|markdownlint, notices|-|-
 path:rekall.toml|taplo, rekall|-|-
 path:Cargo.lock|deny|-|-
 rs|rustfmt, clippy, rust-mirror, tdd-order, doctest, rustdoc, test, coverage|-|-
