@@ -25,7 +25,7 @@ V41: commit-msg & changelog rules = tested Rust here; hk `commit-msg` runs them 
 ## §T TASKS
 
 id|status|task|cites
-T18|.|port actlith-dev: commit-msg & changelog rules (RED, GREEN), AGENTS step table, README badges, notices + drift steps|V40,V41
+T18|x|port actlith-dev: commit-msg & changelog rules (RED, GREEN), AGENTS step table, README badges, notices + drift steps|V40,V41
 
 ## §B BUGS
 
