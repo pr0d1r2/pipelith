@@ -16,5 +16,17 @@ mod tests;
 /// empty, `.` or `..` segment (or a `\`). Checked on the `/`-separated
 /// text, not on `Path` components, which drop an inner `.`.
 pub fn target(root: &Path, rel: &str) -> io::Result<PathBuf> {
-    Ok(root.join(rel))
+    if rel.split('/').all(plain) {
+        Ok(root.join(rel))
+    } else {
+        Err(io::Error::new(
+            io::ErrorKind::InvalidInput,
+            format!("`{rel}`: not a plain relative path under the root"),
+        ))
+    }
+}
+
+/// One segment that names a file or directory, nothing else.
+fn plain(segment: &str) -> bool {
+    !matches!(segment, "" | "." | "..") && !segment.contains('\\')
 }

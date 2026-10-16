@@ -8,3 +8,10 @@ input is at least a minor version (SPEC.md V7), and its entry names what
 consumers will see change.
 
 ## [Unreleased]
+
+### Added
+
+- `src/files`: the generated-file set ported from actlith: `header(tool,
+  config)`, `write` (only listed paths, unchanged files untouched),
+  `check` (stale or missing files sorted by path, writes nothing) and
+  `target` (refuses any path that could leave the root).
