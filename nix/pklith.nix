@@ -9,7 +9,11 @@ catalog: [
   catalog.microlith
   catalog.nixfmt
   catalog.ripsecrets
+  catalog.shellcheck
   catalog.sherd
+  catalog.shfmt
   catalog.statix
+  catalog.taplo
   catalog.typos
+  catalog.yamllint
 ]
