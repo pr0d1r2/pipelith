@@ -25,7 +25,7 @@ V39: public API usable as actlith will: parse `.actlith` fixture via `registry` 
 ## §T TASKS
 
 id|status|task|cites
-T17|.|end-to-end test: actlith `.actlith` fixture → rows → test-built model → bytes == actlith golden `ci.yml`|V38,V39,`.:V3`
+T17|x|end-to-end test: actlith `.actlith` fixture → rows → test-built model → bytes == actlith golden `ci.yml`|V38,V39,`.:V3`
 
 ## §B BUGS
 
