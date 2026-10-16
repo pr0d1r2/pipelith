@@ -35,6 +35,9 @@ rust-mirror|lint|-|**/*.rs, nix/guard/rust-mirror.sh|bash nix/guard/rust-mirror.
 # Forge tokens stay out of the library (SPEC.md V2, nix V50).
 forge-neutral|lint|-|src/**/*.rs, nix/guard/forge-neutral.sh|bash nix/guard/forge-neutral.sh|-|-|forge-specific text in the library; it belongs in actlith or lablith
 
+# Shared git config stays clean for parallel workers (nix V47).
+no-core-worktree|gate|-|-|bash nix/guard/no-core-worktree.sh|-|-|.git/config sets core.worktree, which every worktree shares
+
 ## types
 type|checks|min|exempt
 *|trailing-whitespace, final-newline, line-endings, no-bom, no-merge-conflict, no-case-conflict, no-broken-symlinks, no-private-key, ripsecrets, typos, editorconfig-checker, no-local-paths, ctrm|-|-
@@ -43,7 +46,7 @@ gitattributes|-|-|written by pklith (seed or gen)
 md|markdownlint|-|-
 nix|nixfmt, statix, deadnix, xnl-check, xnl-lint|-|-
 path:**/SPEC.md|markdownlint, mth-fmt, mth-check, sherd-check, sherd-nav, sherd-budget, itok|-|-
-pklith|pklith-check, gen-check|-|-
+pklith|pklith-check, gen-check, no-core-worktree|-|-
 pkl|xnl-check, xnl-lint|-|-
 pre-commit|shellcheck, xnl-check, xnl-lint|-|-
 pre-push|shellcheck, xnl-check, xnl-lint|-|-
