@@ -16,6 +16,7 @@ mod error;
 mod portable;
 mod raw;
 mod row;
+mod rules;
 
 pub use args::{Args, parse_args};
 pub use cache::Cache;
