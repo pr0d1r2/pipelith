@@ -71,3 +71,18 @@ V8: crate `pipelith`, lib only, ⊥ bin. rejected names → R2
 V9: public API = node modules declared in `lib.rs`; ∀ pub item documented (`missing_docs` = deny); `lib.rs` ⊥ logic (D15)
 V10: moved code keeps its unit tests & §V rows; moved rule cites actlith origin id (`actlith/V<n>`) ∴ moved rule keeps its proof (D2)
 V11: `docs/KINDS.md` ↔ `kind` catalogue parity: ∀ kind in doc has §V & code & vice versa; doc ≠ code = bug (as `actlith/V25`)
+
+## §T TASKS
+
+id|status|task|cites
+T1|.|create public GitHub repo `pr0d1r2/pipelith`, push ! user approval|V8
+T2|.|publish `0.1.0` to crates.io before actlith `0.1.0-rc.1` ! user approval|V7,V8
+T3|.|actlith switch to pipelith (git dep pinned, `deny.toml` `[sources]`, `outputHashes`), goldens unchanged — PR on actlith ! user approval|V3,V10
+T4|.|lablith takes pipelith; neutral rows render there ! user approval|V4,V5
+T5|.|pklith issue proposing `registry` reuse, ⊥ naming private repos, after ship ! user approval|-
+T6|.|`docs/KINDS.md` neutral catalogue from actlith `docs/KINDS.md`: intent, events, secret purposes, row values; GitHub syntax stays in actlith|V11,V5
+T7|.|owner review of prompt round 2 (D13–D18) & neutral section name `## workflows`; OQ1 answer (`.actlith`/`.lablith` vs `.pipelith`) → new round|-
+
+## §B BUGS
+
+id|date|cause|fix
