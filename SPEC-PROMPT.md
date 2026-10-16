@@ -152,6 +152,39 @@ table and its file layout.
     pklith is an issue on pklith after pipelith ships, without naming
     private repositories. Not part of this build. Local.
 
+# Decisions, round 2 (2026-10-16, gap answers)
+
+Answered by the agent running the spec, from the survey and actlith's
+code, while the owner was away. Each is a default for the owner to
+review; a reversal is a later round, not an edit here.
+
+13. Open question 1 does not block the `files` node: the generated
+    header and `check` take the tool name and the config file name as
+    arguments, so both answers fit. Default until the owner decides:
+    each tool keeps its own file (`.actlith`, `.lablith`). Local.
+14. The seeded-script mechanism has no node of its own. A seeded
+    script is a generated file whose comment character is `#`, so
+    `files` owns its header and drift check; the script bodies stay in
+    the forge crates. Local.
+15. Public surface: pipelith is a library, so its node modules are
+    `pub` and documented, unlike actlith where every node is private.
+    `lib.rs` declares the nodes and owns no logic. The public items are
+    the semver surface. Local.
+16. Registry schema: the caller passes a schema (section names, column
+    headers, which sections are required), and `registry` returns
+    sections of rows of trimmed cells with line numbers. The typed cell
+    readers that actlith's `cells` holds (required, optional `-`,
+    comma list, `key=value` args) are neutral and move with it. Local.
+17. Portability check: `kind` exposes a function that takes a row and
+    the forge's declared extra argument keys and returns one finding per
+    forge-only key or forge-only kind, so each forge crate can report
+    which rows would not survive a move. Local.
+18. Repository layout follows actlith: one published crate `pipelith`,
+    a `dev/` crate `pipelith-dev` with `publish = false`, a `nix/` gate
+    node and a `tests/` node holding the golden YAML bytes copied from
+    actlith, so the byte-identical gate (decision 3) is proven here
+    before actlith switches. Local.
+
 # Non-goals
 
 - No binary and no CLI. Users run actlith or lablith.
