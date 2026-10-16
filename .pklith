@@ -49,6 +49,7 @@ coverage|coverage|sherd|**/*.rs, Cargo.toml, .coverage|sherd coverage --check|-|
 # a commit that changes a source (pklith lay changing hk.pklith.pkl) gets
 # the doc rewritten rather than refused.
 agents-table|spec|-|hk.pkl, hk.pklith.pkl, AGENTS.md, dev/**|cargo run -q -p pipelith-dev -- agents --check|cargo run -q -p pipelith-dev -- agents|-|AGENTS.md step table is stale
+readme-badges|spec|-|README.md, Cargo.toml, .coverage, hk.pkl, hk.pklith.pkl, flake.lock, **/SPEC.md, docs/LLM-DISCLAIMER.md, .github/workflows/ci.yml, dev/**|cargo run -q -p pipelith-dev -- readme --check|cargo run -q -p pipelith-dev -- readme|-|README badges or the numbers docs/LLM-DISCLAIMER.md quotes are stale
 notices|spec|-|Cargo.toml, Cargo.lock, docs/THIRD-PARTY-NOTICES.md, dev/**|cargo run -q -p pipelith-dev -- notices --check|cargo run -q -p pipelith-dev -- notices|-|docs/THIRD-PARTY-NOTICES.md crate table is stale
 
 ## types
@@ -76,6 +77,8 @@ ctrm|-|-|ctrm configuration; hygiene steps only
 ctrm-sets|-|-|ctrm configuration; hygiene steps only
 path:AGENTS.md|markdownlint, rekall, agents-table|-|-
 path:docs/THIRD-PARTY-NOTICES.md|markdownlint, notices|-|-
+path:README.md|markdownlint, readme-badges|-|-
+path:docs/LLM-DISCLAIMER.md|markdownlint, readme-badges|-|-
 path:rekall.toml|taplo, rekall|-|-
 path:Cargo.lock|deny|-|-
 rs|rustfmt, clippy, rust-mirror, tdd-order, doctest, rustdoc, test, coverage|-|-

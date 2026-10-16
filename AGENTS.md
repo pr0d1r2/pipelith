@@ -31,7 +31,7 @@ Instructions for coding agents working in this repository.
 Generated from `hk.pkl`; the `agents-table` step fails when it is stale.
 
 <!-- BEGIN steps: generated from hk.pkl by `cargo run -p pipelith-dev -- agents`; do not edit -->
-44 steps run on every commit and 47 on push and `hk check`; the commit-msg hook checks the message.
+45 steps run on every commit and 48 on push and `hk check`; the commit-msg hook checks the message.
 
 | step | runs on | files | fixes |
 | --- | --- | --- | --- |
@@ -73,6 +73,7 @@ Generated from `hk.pkl`; the `agents-table` step fails when it is stale.
 | `sherd-budget` | commit | `**/SPEC.md` `.context-limits` | - |
 | `itok` | commit | `**/*` `.context-limits` | - |
 | `agents-table` | commit | `hk.pkl` `hk.pklith.pkl` `AGENTS.md` `dev/**` | yes |
+| `readme-badges` | commit | `README.md` `Cargo.toml` `.coverage` `hk.pkl` `hk.pklith.pkl` `flake.lock` `**/SPEC.md` `docs/LLM-DISCLAIMER.md` `.github/workflows/ci.yml` `dev/**` | yes |
 | `notices` | commit | `Cargo.toml` `Cargo.lock` `docs/THIRD-PARTY-NOTICES.md` `dev/**` | yes |
 | `doctest` | commit | `**/*.rs` `Cargo.toml` | - |
 | `deny` | commit | `Cargo.toml` `Cargo.lock` `deny.toml` | - |
