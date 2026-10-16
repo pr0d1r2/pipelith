@@ -48,7 +48,8 @@ both forges.
   schema; an unknown or repeated key is an error, never ignored. A
   forge-only key is accepted only by the forge that declares it. A
   `cron` arg is five cron fields (numbers, names, `*`, `-` ranges, `/`
-  steps).
+  steps). A `build`, `script` or `branch-prefix` arg is a plain word:
+  letters, digits and `._/#+:@-`, not empty, not starting with `-`.
 - A row that validates is never refused later by a forge: every rule a
   forge would apply while rendering is checked with the row.
 
