@@ -38,7 +38,7 @@ V50: `forge-neutral` step: grep `src/` for forge tokens (`${{`, `runs-on`, `uses
 
 id|status|task|cites
 T19|x|dev shell FIRST: flake on `nixpkgs-lock`, 4 systems, cachix, fleet tools pinned, Rust toolchain, pklith `lib.devShell`; `.envrc`, `.gitignore` (`.claude/`, `target/`, `.direnv/`). ASK user reload|V42,V44
-T20|.|hk commit: `.pklith`, `hk.pklith.pkl`, `hk.pkl`, vendored `pkl/`, `.githooks/`; hooks live from this commit|V42,V43
+T20|x|hk commit: `.pklith`, `hk.pklith.pkl`, `hk.pkl`, vendored `pkl/`, `.githooks/`; hooks live from this commit|V42,V43
 T21|.|`commit-msg` step; script until `pipelith-dev` (`dev:T18`)|V43
 T22|.|crate-free pklith catalog checks via `pklith lay`, 1 commit each|V43,V44
 T23|.|spec gates: `mth`, `itok` + `.context-limits`, `sherd`|V43
