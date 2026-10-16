@@ -11,6 +11,10 @@ consumers will see change.
 
 ### Added
 
+- `tests/golden/ci.yaml`: the `ci.yml` actlith rendered at `7ce69c6`
+  from its own `.actlith` `ci` row, byte for byte. The end-to-end test
+  rebuilds it through the public API (`registry`, `kind`, `yaml`,
+  `files`); a later change to these bytes needs its own entry here.
 - `src/files`: the generated-file set ported from actlith: `header(tool,
   config)`, `write` (only listed paths, unchanged files untouched),
   `check` (stale or missing files sorted by path, writes nothing) and
