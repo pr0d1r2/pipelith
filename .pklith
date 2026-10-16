@@ -69,4 +69,4 @@ path:Cargo.lock|deny|-|-
 rs|rustfmt, clippy, rust-mirror, forge-neutral, tdd-order, doctest, rustdoc|-|-
 LICENSE|-|-|license text, nothing to lint
 exempt|tdd-order|-|-
-yml|yamllint|-|-
+yml|yamllint, actionlint|-|-
