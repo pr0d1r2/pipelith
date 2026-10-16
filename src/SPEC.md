@@ -8,6 +8,7 @@
 
 dir|owns|⊥owns|tokens
 registry|pipe-table grammar: format line, sections, header rows, cells, errors|what any section means|-
+system|nix system names, CI coverage set, `x86_64-darwin` refusal|runner labels|-
 
 ## §N NAV
 

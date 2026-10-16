@@ -10,6 +10,7 @@ rel|path|lens
 up|.|-
 up|src|the library: grammar, YAML writer, systems, files, kinds, detect
 self|src/registry|pipe-table grammar: format line, sections, header rows, cells, errors
+sib|src/system|nix system names, CI coverage set, `x86_64-darwin` refusal
 
 ## §C CONSTRAINTS
 
