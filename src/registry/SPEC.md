@@ -13,6 +13,7 @@ self|src/registry|pipe-table grammar: format line, sections, header rows, cells,
 sib|src/system|nix system names, CI coverage set, `x86_64-darwin` refusal
 sib|src/yaml|ordered YAML model & writer: quoting, layout, comments, `Dialect` trait
 sib|src/files|generated header, write, drift check, path safety
+sib|src/kind|neutral kind catalogue, row & arg validation, secret purposes, portability check
 
 ## §C CONSTRAINTS
 
