@@ -14,6 +14,8 @@ shellcheck|lint|shellcheck|.githooks/*, .envrc, **/*.sh|shellcheck --shell=bash 
 # Not in pklith's catalog; ctrm comes from the flake (nix T24), as in
 # actlith.
 ctrm|lint|-|**/*|ctrm check {{files}}|ctrm fix {{files}}|-|a file holds a character its set does not grant; fix it, or grant it in .ctrm and say why in the commit
+# rekall: agent prose and the rules extracted from it (nix T24).
+rekall|lint|-|AGENTS.md, CLAUDE.md, rekall.toml|rekall check|-|-|agent prose drifted from the rules rekall extracted from it; run rekall scan and settle the drift
 
 ## types
 type|checks|min|exempt
@@ -38,3 +40,5 @@ path:flake.lock|-|-|written by `nix flake lock`; hygiene steps only
 context-limits|itok, sherd-budget|-|-
 ctrm|-|-|ctrm configuration; hygiene steps only
 ctrm-sets|-|-|ctrm configuration; hygiene steps only
+path:AGENTS.md|markdownlint, rekall|-|-
+path:rekall.toml|taplo, rekall|-|-
