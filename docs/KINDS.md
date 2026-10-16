@@ -46,14 +46,19 @@ both forges.
   `pr0d1r2`); `-` means no cache steps.
 - `args`: `key=value` pairs, comma-separated, checked against the kind's
   schema; an unknown or repeated key is an error, never ignored. A
-  forge-only key is accepted only by the forge that declares it.
+  forge-only key is accepted only by the forge that declares it. A
+  `cron` arg is five cron fields (numbers, names, `*`, `-` ranges, `/`
+  steps).
+- A row that validates is never refused later by a forge: every rule a
+  forge would apply while rendering is checked with the row.
 
 ## Secrets, by purpose
 
 - Cache push: the cachix auth token. Read-only cache use needs none.
 - Open a change request: a token allowed to push a branch and open a
   pull request (GitHub) or merge request (GitLab). Row arg `token` names
-  it; its default is the forge's built-in job token.
+  it (letters, digits and `_`, not starting with a digit); its default
+  is the forge's built-in job token.
 
 ## `gate`
 
@@ -81,7 +86,10 @@ has it. For packaging repositories.
 - Job `verify-cache` (after `build`, default branch only): every
   system's output path answers from the cache, since a failed cache push
   does not fail its job.
-- args: `package` (required), `timeout`.
+- Needs a cache: a row with `-` in `cache` is refused, since the
+  pipeline pushes there and asks it back.
+- args: `package` (required; a flake attribute name: letters, digits,
+  `_` and `-`, starting with a letter or `_`), `timeout`.
 
 ## `update-pins`
 
@@ -93,6 +101,8 @@ model: the consumer polls; nixpkgs-lock holds no cross-repository token.
 - Steps: checkout that keeps credentials, nix, the seeded update script:
   update the input, build, push branch `pins/nixpkgs-<short rev>`, open
   the change request; idempotent when the branch exists.
+- Runs one job on one system (default `x86_64-linux`); a row listing
+  more is refused.
 - args: `cron` (default `50 6 * * *`, after nixpkgs-lock refreshes),
   `build` (flake attribute built before proposing; default
   `.#default`), `token` (forge default), `timeout`.
@@ -103,6 +113,7 @@ Poll an upstream release and propose the bump as a change request. Same
 pull model and change-request mechanics as `update-pins`.
 
 - Events: a schedule (cron from args), manual runs.
+- Runs one job on one system, as `update-pins`.
 - Steps: checkout, nix, read-only cache, the repository's own bump
   script (path from args; it reports the new version), then the seeded
   open-change script.

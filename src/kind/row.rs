@@ -8,6 +8,7 @@ use super::catalogue::KindSpec;
 use super::error::KindError;
 use super::portable::Extras;
 use super::raw::RawRow;
+use super::rules;
 use crate::system::{System, ci_system, parse_system};
 
 /// A row a forge can build from.
@@ -45,6 +46,7 @@ impl Row {
             args: parse_args(kind, row, extras)?,
         };
         checked.args.timeout()?;
+        rules::check(kind, &checked)?;
         Ok(checked)
     }
 }
