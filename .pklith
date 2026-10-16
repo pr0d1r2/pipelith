@@ -11,10 +11,13 @@ id|category|nix|glob|check|fix|env|msg
 # Overrides the catalog row: its globs miss the extension-less hook shims
 # pklith seeds into .githooks/ (pklith overrides it the same way).
 shellcheck|lint|shellcheck|.githooks/*, .envrc, **/*.sh|shellcheck --shell=bash {{files}}|-|-|shell script finding
+# Not in pklith's catalog; ctrm comes from the flake (nix T24), as in
+# actlith.
+ctrm|lint|-|**/*|ctrm check {{files}}|ctrm fix {{files}}|-|a file holds a character its set does not grant; fix it, or grant it in .ctrm and say why in the commit
 
 ## types
 type|checks|min|exempt
-*|trailing-whitespace, final-newline, line-endings, no-bom, no-merge-conflict, no-case-conflict, no-broken-symlinks, no-private-key, ripsecrets, typos, editorconfig-checker, no-local-paths|-|-
+*|trailing-whitespace, final-newline, line-endings, no-bom, no-merge-conflict, no-case-conflict, no-broken-symlinks, no-private-key, ripsecrets, typos, editorconfig-checker, no-local-paths, ctrm|-|-
 editorconfig|-|-|written by pklith (seed or gen)
 gitattributes|-|-|written by pklith (seed or gen)
 md|markdownlint|-|-
@@ -33,3 +36,5 @@ gitignore|-|-|git configuration; hygiene steps only
 markdownlintignore|-|-|markdownlint configuration; hygiene steps only
 path:flake.lock|-|-|written by `nix flake lock`; hygiene steps only
 context-limits|itok, sherd-budget|-|-
+ctrm|-|-|ctrm configuration; hygiene steps only
+ctrm-sets|-|-|ctrm configuration; hygiene steps only

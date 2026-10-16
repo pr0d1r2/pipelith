@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# The commit message rule (nix §C, T21): subject `type(scope): claim`, at
+# The commit message rule (nix C, T21): subject `type(scope): claim`, at
 # most 72 characters, and a body that says why. Taken from pklith's shell
 # version; it moves into `pipelith-dev` as tested Rust once that crate
 # exists (dev T18), as pklith's did.
