@@ -75,3 +75,4 @@ LICENSE|-|-|license text, nothing to lint
 exempt|tdd-order|-|-
 yml|yamllint, actionlint, zizmor|-|-
 coverage|coverage|-|-
+actlith|-|-|registry grammar fixtures copied 1-to-1 from actlith; src/registry unit tests read them

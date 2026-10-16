@@ -1,0 +1,24 @@
+format 1
+
+# Every section, comments and blank lines between rows.
+
+## workflows
+id|kind|systems|cache|args
+# the hk gate everywhere
+ci|gate|x86_64-linux, aarch64-linux, aarch64-darwin|pr0d1r2|-
+
+update-pins|update-pins|-|-|cron=50 6 * * *, token=PIN_TOKEN
+check|gate|-|-|command=hk check --all \| tee log
+
+## actions
+action|version|sha
+actions/checkout|v4.2.2|11bd71901bbe5b1630ceea73d27597364c9af683
+
+## hand-written
+path|reason
+.github/workflows/release.yml|release flow not a kind yet (V24)
+
+## bots
+bot|args
+coderabbit|central=pr0d1r2/coderabbit
+socket|-

@@ -26,7 +26,7 @@ sib|src/detect|rows from tracked files, first config file
 
 - types: `Schema { sections: &[SectionSpec] }`, `SectionSpec { name, columns: &[&str], required, key: Option<usize> }` (key column ∴ unique), `Document { format, sections }`, `Section { name, line, rows }`, `Row { line, cells }`, `Cell { column, text }`, `Arg { key, value }`, `RegistryError { file, line, column, what, fix }` (`Display` = `file:line:column: what (fix)`).
 - consts: `SUPPORTED_FORMAT` = 1.
-- fns: `parse(file, text, &Schema) -> Result<Document, RegistryError>`; `Document::section(name) -> &[Row]` (absent optional = empty); cell readers `required`, `optional` (`-` → `None`), `list` (`,`-split, trimmed, `-` = empty), `args` (`key=value`, `,`-split).
+- fns: `parse(file, text, &Schema) -> Result<Document, RegistryError>`; `Document::section(name) -> &[Row]` (absent optional = empty); cell readers `required(file, &Row, index, name)`, `optional(&Row, index)` (`-` → `None`), `list(file, &Row, index, name)` (`,`-split, trimmed, `-` = empty), `args(file, &Row, index, name)` (`key=value`, `,`-split, key once). `Cell.column` = 1-based char column of its text.
 
 ## §V INVARIANTS
 
@@ -41,7 +41,7 @@ V51: section w/ `key` column: repeated key → error at 2nd row naming 1st row's
 ## §T TASKS
 
 id|status|task|cites
-T10|.|port `format`, `cells`, `parse`, `error` w/ unit tests from actlith; replace `Table` w/ `Schema`; fixtures 1-to-1 incl. actlith `.actlith` fixtures parsed via an actlith-shaped test schema|V15,V16,V17,V18,V19,V51,`.:V10`
+T10|x|port `format`, `cells`, `parse`, `error` w/ unit tests from actlith; replace `Table` w/ `Schema`; fixtures 1-to-1 incl. actlith `.actlith` fixtures parsed via an actlith-shaped test schema|V15,V16,V17,V18,V19,V51,`.:V10`
 
 ## §B BUGS
 

@@ -15,3 +15,8 @@ consumers will see change.
   config)`, `write` (only listed paths, unchanged files untouched),
   `check` (stale or missing files sorted by path, writes nothing) and
   `target` (refuses any path that could leave the root).
+- `src/registry`: the pipe-table registry grammar. `parse` checks a
+  file against a caller `Schema` (format line, sections, headers, cell
+  counts, repeated keys) and returns sections of rows of cells; errors
+  name file, line and column with a fix; cell readers `required`,
+  `optional`, `list` and `args` type a cell.
