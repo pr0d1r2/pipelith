@@ -1,0 +1,41 @@
+[package]
+name = "pipelith"
+# Unpublished until the owner approves the first release (T2).
+version = "0.0.0"
+edition = "2024"
+# The fleet pin: nixpkgs-lock (nixos-26.05) carries rustc 1.95.
+rust-version = "1.95"
+license = "MIT"
+description = "Forge-neutral core of CI materializers: pipe-table registry, YAML writer, generated-file drift check, kind catalogue"
+repository = "https://github.com/pr0d1r2/pipelith"
+readme = "README.md"
+keywords = ["ci", "yaml", "generator", "nix", "registry"]
+categories = ["development-tools", "parser-implementations"]
+
+# No runtime dependencies (SPEC.md V6): std only.
+[dependencies]
+
+[lints.rust]
+# No FFI anywhere, so no module needs to lift it (SPEC.md C).
+unsafe_code = "forbid"
+unreachable_pub = "deny"
+# The public items are the semver surface; each is documented (V9).
+missing_docs = "deny"
+
+# Code limits (nix C), thresholds in clippy.toml; the fleet deny list.
+[lints.clippy]
+all = { level = "deny", priority = -1 }
+pedantic = { level = "deny", priority = -1 }
+unwrap_used = "deny"
+expect_used = "deny"
+panic = "deny"
+indexing_slicing = "deny"
+todo = "deny"
+unimplemented = "deny"
+dbg_macro = "deny"
+arithmetic_side_effects = "deny"
+too_many_lines = "deny"
+cognitive_complexity = "deny"
+excessive_nesting = "deny"
+fn_params_excessive_bools = "deny"
+struct_excessive_bools = "deny"
