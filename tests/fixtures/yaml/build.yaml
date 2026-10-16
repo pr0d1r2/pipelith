@@ -1,0 +1,44 @@
+---
+name: build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions: {}
+
+env:
+  NIX_CONFIG: a = b
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            system: x86_64-linux
+          - os: macos-latest
+            system: aarch64-darwin
+    timeout-minutes: 10
+    env:
+      SYSTEM: ${{ matrix.system }}
+    steps:
+      - run: 'nix build --print-build-logs .#default'
+  # a cachix push failure does not fail its job
+  verify-cache:
+    name: verify-cache
+    needs: [build]
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: verify cache
+        id: verify
+        if: ${{ success() }}
+        run: scripts/actlith/verify-cache.sh
+        env:
+          CACHE: pr0d1r2
