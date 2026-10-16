@@ -4,10 +4,6 @@
 //! The grammar knows no section's meaning: the caller's [`Schema`] names
 //! the sections, their columns and keys, and the cell readers type each
 //! cell. Composition only (src C): the logic lives in the submodules.
-#![cfg_attr(
-    not(test),
-    allow(dead_code, reason = "RED: parse wires the helpers in GREEN")
-)]
 
 mod cells;
 mod document;

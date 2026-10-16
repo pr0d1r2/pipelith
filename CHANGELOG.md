@@ -8,3 +8,11 @@ input is at least a minor version (SPEC.md V7), and its entry names what
 consumers will see change.
 
 ## [Unreleased]
+
+### Added
+
+- `src/registry`: the pipe-table registry grammar. `parse` checks a
+  file against a caller `Schema` (format line, sections, headers, cell
+  counts, repeated keys) and returns sections of rows of cells; errors
+  name file, line and column with a fix; cell readers `required`,
+  `optional`, `list` and `args` type a cell.

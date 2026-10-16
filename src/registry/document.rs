@@ -42,8 +42,11 @@ pub struct Cell {
 impl Document {
     /// The rows of the section `name`; a section not in the file has none.
     #[must_use]
-    pub fn section(&self, _name: &str) -> &[Row] {
-        self.sections.first().map_or(&[], |s| s.rows.as_slice())
+    pub fn section(&self, name: &str) -> &[Row] {
+        self.sections
+            .iter()
+            .find(|s| s.name == name)
+            .map_or(&[], |s| s.rows.as_slice())
     }
 }
 

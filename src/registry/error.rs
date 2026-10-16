@@ -34,19 +34,29 @@ impl Pos<'_> {
     #[must_use]
     pub(crate) fn error(
         self,
-        _what: impl Into<String>,
-        _fix: impl Into<String>,
+        what: impl Into<String>,
+        fix: impl Into<String>,
     ) -> RegistryError {
         RegistryError {
+            file: self.file.to_owned(),
             line: self.line,
-            ..RegistryError::default()
+            column: self.column,
+            what: what.into(),
+            fix: fix.into(),
         }
     }
 }
 
 impl fmt::Display for RegistryError {
-    fn fmt(&self, _f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        Ok(())
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let Self {
+            file,
+            line,
+            column,
+            what,
+            fix,
+        } = self;
+        write!(f, "{file}:{line}:{column}: {what} ({fix})")
     }
 }
 

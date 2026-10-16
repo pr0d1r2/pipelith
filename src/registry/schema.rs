@@ -25,15 +25,19 @@ pub struct SectionSpec<'a> {
 impl<'a> Schema<'a> {
     /// The section a heading names, if any.
     #[must_use]
-    pub(crate) fn spec(&self, _name: &str) -> Option<&'a SectionSpec<'a>> {
-        self.sections.first()
+    pub(crate) fn spec(&self, name: &str) -> Option<&'a SectionSpec<'a>> {
+        self.sections.iter().find(|s| s.name == name)
     }
 
     /// The section names, as a fix hint lists them.
     #[must_use]
     pub(crate) fn names(&self) -> String {
-        let names: Vec<&str> = self.sections.iter().map(|s| s.name).collect();
-        names.concat()
+        let names: Vec<String> = self
+            .sections
+            .iter()
+            .map(|s| format!("## {}", s.name))
+            .collect();
+        names.join(", ")
     }
 }
 
@@ -41,7 +45,7 @@ impl SectionSpec<'_> {
     /// The header row: the columns joined by `|`.
     #[must_use]
     pub fn header(&self) -> String {
-        self.columns.concat()
+        self.columns.join("|")
     }
 }
 
