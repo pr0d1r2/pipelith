@@ -88,7 +88,7 @@ T2|.|publish `0.1.0` to crates.io before actlith `0.1.0-rc.1` ! user approval|V7
 T3|.|actlith switch to pipelith (git dep pinned, `deny.toml` `[sources]`, `outputHashes`), goldens unchanged — PR on actlith ! user approval|V3,V10
 T4|.|lablith takes pipelith; neutral rows render there ! user approval|V4,V5
 T5|.|pklith issue proposing `registry` reuse, ⊥ naming private repos, after ship ! user approval|-
-T6|.|`docs/KINDS.md` neutral catalogue from actlith `docs/KINDS.md`: intent, events, secret purposes, row values; GitHub syntax stays in actlith|V11,V5
+T6|x|`docs/KINDS.md` neutral catalogue from actlith `docs/KINDS.md`: intent, events, secret purposes, row values; GitHub syntax stays in actlith|V11,V5
 T7|.|owner review of prompt round 2 (D13–D18) & neutral section name `## workflows`; OQ1 answer (`.actlith`/`.lablith` vs `.pipelith`) → new round|-
 
 ## §B BUGS
