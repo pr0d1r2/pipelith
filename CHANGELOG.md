@@ -11,6 +11,11 @@ consumers will see change.
 
 ### Added
 
+- `src/kind`: `Row::check` refuses what actlith refused only while
+  rendering: a `build` row without a cache, a `package` that is not a
+  flake attribute name, a `cron` that is not five fields, a `token`
+  that is not a secret name, a bump kind on more than one system. A
+  row that passes is never refused later by a forge.
 - `src/files`: the generated-file set ported from actlith: `header(tool,
   config)`, `write` (only listed paths, unchanged files untouched),
   `check` (stale or missing files sorted by path, writes nothing) and
