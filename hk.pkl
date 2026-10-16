@@ -21,6 +21,15 @@ hooks {
       ["commit-msg"] {
         check = "cargo run -q -p pipelith-dev -- commit-msg {{commit_msg_file}}"
       }
+      // SPEC.md V7, nix C: a feat, fix or perf commit changing src/ adds a
+      // CHANGELOG entry. Here, not in pre-commit: only the message says
+      // which kind a change is.
+      ["changelog-touched"] {
+        check = "cargo run -q -p pipelith-dev -- changelog {{commit_msg_file}}"
+        // After commit-msg, never beside it: two cargo runs at once contend
+        // for the target directory lock.
+        depends = List("commit-msg")
+      }
     }
   }
   ["pre-push"] {
