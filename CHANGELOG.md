@@ -11,6 +11,13 @@ consumers will see change.
 
 ### Added
 
+- `src/detect`: proposed `## workflows` rows from tracked paths and
+  `flake.lock` text (`detect`: `ci|gate` for a tracked `flake.nix`,
+  then `update-pins` for a `nixpkgs-lock` node; `has_node`); `text`
+  and `row_line` write them as a `format 1` file that parses back to
+  the same rows; `seed_init(root, config, rows)` writes the caller's
+  config file once and never overwrites it (`SeedError::code`: 1
+  exists, 2 unwritable).
 - `src/files`: the generated-file set ported from actlith: `header(tool,
   config)`, `write` (only listed paths, unchanged files untouched),
   `check` (stale or missing files sorted by path, writes nothing) and
