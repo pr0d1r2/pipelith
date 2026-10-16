@@ -12,6 +12,7 @@ up|src|the library: grammar, YAML writer, systems, files, kinds, detect
 self|src/system|nix system names, CI coverage set, `x86_64-darwin` refusal
 sib|src/registry|pipe-table grammar: format line, sections, header rows, cells, errors
 sib|src/yaml|ordered YAML model & writer: quoting, layout, comments, `Dialect` trait
+sib|src/files|generated header, write, drift check, path safety
 
 ## §C CONSTRAINTS
 
