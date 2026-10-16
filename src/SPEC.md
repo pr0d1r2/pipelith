@@ -39,7 +39,7 @@ V14: ∀ node unit-tested 1-to-1 (`<node>/<file>/tests.rs` beside `<file>.rs`, `
 
 id|status|task|cites
 T8|x|scaffold `src/lib.rs` + `src/<node>/mod.rs` w/ wave edges ∴ `sherd wave` orders nodes|V12,V13
-T9|.|`lib.rs` declares each node as it lands; crate doc names the forge contract|V12,`.:V9`
+T9|x|`lib.rs` declares each node as it lands; crate doc names the forge contract|V12,`.:V9`
 
 ## §B BUGS
 
