@@ -11,6 +11,7 @@ up|.|-
 self|dev|`pipelith-dev`, `publish = false`: commit rules, badges, notices, AGENTS step table
 sib|src|the library: grammar, YAML writer, systems, files, kinds, detect
 sib|tests|integration tests over public API, goldens copied from actlith
+sib|nix|repo gate: dev shell, guardrails, hk steps, CI, release
 
 ## §C CONSTRAINTS
 

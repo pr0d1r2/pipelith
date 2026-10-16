@@ -18,6 +18,7 @@ dir|owns|⊥owns|tokens
 src|the library: grammar, YAML writer, systems, files, kinds, detect|forge code, repo gate|-
 tests|integration tests over public API, goldens copied from actlith|unit tests (beside their module)|-
 dev|`pipelith-dev`, `publish = false`: commit rules, badges, notices, AGENTS step table|anything a consumer runs|-
+nix|repo gate: dev shell, guardrails, hk steps, CI, release|the library|-
 
 ## §N NAV
 
