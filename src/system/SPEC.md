@@ -34,7 +34,7 @@ V22: `DEFAULT_SYSTEMS` = `x86_64-linux` `aarch64-linux` `aarch64-darwin` = set �
 ## §T TASKS
 
 id|status|task|cites
-T11|.|port `System`, parse & names w/ tests; `ci_system` refusal; ⊥ runner table|V20,V21,V22,`.:V10`
+T11|x|port `System`, parse & names w/ tests; `ci_system` refusal; ⊥ runner table|V20,V21,V22,`.:V10`
 
 ## §B BUGS
 

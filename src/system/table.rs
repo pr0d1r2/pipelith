@@ -28,19 +28,41 @@ pub enum SystemError {
     NoRunner(System),
 }
 
+/// One row: the system and its nix name.
+type Row = (System, &'static str);
+
+/// The table (V20).
+const TABLE: [Row; 4] = [
+    (System::X86_64Linux, "x86_64-linux"),
+    (System::Aarch64Linux, "aarch64-linux"),
+    (System::Aarch64Darwin, "aarch64-darwin"),
+    (System::X86_64Darwin, "x86_64-darwin"),
+];
+
 /// Every system, in table order.
-pub const ALL: [System; 4] = [System::X86_64Linux; 4];
+pub const ALL: [System; 4] = [
+    System::X86_64Linux,
+    System::Aarch64Linux,
+    System::Aarch64Darwin,
+    System::X86_64Darwin,
+];
 
 /// The systems a kind runs on when its row says `-`, and the set every
 /// forge's runner table must cover (V22).
-pub const DEFAULT_SYSTEMS: [System; 3] = [System::X86_64Linux; 3];
+pub const DEFAULT_SYSTEMS: [System; 3] = [
+    System::X86_64Linux,
+    System::Aarch64Linux,
+    System::Aarch64Darwin,
+];
 
 impl System {
     /// The nix name, exactly as nix spells it.
     #[must_use]
     pub fn name(self) -> &'static str {
-        let _ = self;
-        ""
+        TABLE
+            .into_iter()
+            .find(|&(s, _)| s == self)
+            .map_or("", |(_, n)| n)
     }
 }
 
@@ -50,7 +72,11 @@ impl System {
 ///
 /// [`SystemError::Unknown`] naming `name` when it is not in the table.
 pub fn parse_system(name: &str) -> Result<System, SystemError> {
-    Err(SystemError::Unknown(name.to_owned()))
+    TABLE
+        .into_iter()
+        .find(|&(_, n)| n == name)
+        .map(|(s, _)| s)
+        .ok_or_else(|| SystemError::Unknown(name.to_owned()))
 }
 
 /// `system` when some forge hosts a CI runner for it.
@@ -59,7 +85,11 @@ pub fn parse_system(name: &str) -> Result<System, SystemError> {
 ///
 /// [`SystemError::NoRunner`] for `x86_64-darwin` (V21).
 pub fn ci_system(system: System) -> Result<System, SystemError> {
-    Err(SystemError::NoRunner(system))
+    if system == System::X86_64Darwin {
+        Err(SystemError::NoRunner(system))
+    } else {
+        Ok(system)
+    }
 }
 
 impl fmt::Display for System {
@@ -70,8 +100,18 @@ impl fmt::Display for System {
 
 impl fmt::Display for SystemError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let _ = self;
-        f.write_str("")
+        match self {
+            Self::Unknown(name) => {
+                write!(f, "unknown system `{name}`; known: ")?;
+                let names: Vec<&str> = TABLE.iter().map(|r| r.1).collect();
+                f.write_str(&names.join(", "))
+            }
+            Self::NoRunner(system) => write!(
+                f,
+                "system `{system}` has no hosted CI runner on any forge; \
+                 build and verify it by hand on an Intel Mac"
+            ),
+        }
     }
 }
 
