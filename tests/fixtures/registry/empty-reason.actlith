@@ -1,0 +1,5 @@
+format 1
+
+## hand-written
+path|reason
+.github/workflows/release.yml|-
