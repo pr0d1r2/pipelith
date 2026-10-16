@@ -1,4 +1,4 @@
-//! actlith's build-time row rules (T32, V75, V76): actlith refused these
+//! actlith's build-time row rules (T32, T33, V75-V77): actlith refused these
 //! rows only while building a pipeline; checked with the row here, a row
 //! that passes is never refused by a forge later (`.:V4`). Messages are
 //! actlith's.
@@ -13,7 +13,35 @@ pub(super) fn check(kind: &KindSpec, row: &Row) -> Result<(), KindError> {
     cached(kind, row)?;
     package(row)?;
     cron(row)?;
-    token(row)
+    token(row)?;
+    plain(row)
+}
+
+/// The args that reach a bump script as a path, flake attribute or
+/// branch prefix (V77).
+const PLAIN: [&str; 3] = ["build", "script", "branch-prefix"];
+
+/// Each [`PLAIN`] arg the row has is a plain word (V77).
+fn plain(row: &Row) -> Result<(), KindError> {
+    let given = PLAIN.iter().filter_map(|k| Some((*k, row.args.get(k)?)));
+    match given.into_iter().find(|(_, value)| !plain_word(value)) {
+        Some((key, value)) => Err(KindError::new(
+            row.line,
+            format!(
+                "arg `{key}` is `{}`, not a plain word",
+                value.escape_debug()
+            ),
+            format!("write `{key}=` with letters, digits and `._/#+:@-`"),
+        )),
+        None => Ok(()),
+    }
+}
+
+/// `value` is ASCII letters, digits and `._/#+:@-`, not empty and not
+/// starting with `-`: readable in a script and never taken for a flag.
+fn plain_word(value: &str) -> bool {
+    let word = |c: char| c.is_ascii_alphanumeric() || "._/#+:@-".contains(c);
+    !value.is_empty() && !value.starts_with('-') && value.chars().all(word)
 }
 
 /// A kind that opens a change runs one job, so on one system (V76).

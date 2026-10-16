@@ -28,7 +28,7 @@ something executes it.** The numbers in this file are such claims: the
 
 [`SPEC.md`](../SPEC.md) and one `SPEC.md` per node below it are the law,
 not a description written afterwards. Together they carry
-**58 invariants** (the `V` rows: what must stay true), `T` tasks (what is
+**59 invariants** (the `V` rows: what must stay true), `T` tasks (what is
 decided and what is not), **6 bugs** in their `B` tables (each paired
 with the rule that now catches it), and `R` research (the measurements
 the constraints rest on). A rule and its checker land in the same

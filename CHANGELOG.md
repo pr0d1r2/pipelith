@@ -20,6 +20,10 @@ consumers will see change.
   flake attribute name, a `cron` that is not five fields, a `token`
   that is not a secret name, a bump kind on more than one system. A
   row that passes is never refused later by a forge.
+- `src/kind`: `Row::check` refuses a `build` (`update-pins`), `script`
+  or `branch-prefix` (`upstream`) arg that is not a plain word (letters,
+  digits and `._/#+:@-`, not empty, not starting with `-`), as actlith
+  did only while rendering, with actlith's message.
 - `src/detect`: proposed `## workflows` rows from tracked paths and
   `flake.lock` text (`detect`: `ci|gate` for a tracked `flake.nix`,
   then `update-pins` for a `nixpkgs-lock` node; `has_node`); `text`

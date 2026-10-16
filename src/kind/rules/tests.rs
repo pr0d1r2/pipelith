@@ -1,9 +1,9 @@
 //! actlith's build-time row rules, checked by `Row::check` (T32, V75,
 //! V76): `build` has a cache, `package` is a flake attribute name,
 //! `cron` is five fields, `token` is a secret name, a bump kind runs on
-//! one system.
+//! one system, `build`, `script` and `branch-prefix` are plain words.
 
-use super::{attribute, five_fields, secret_name};
+use super::{attribute, five_fields, plain_word, secret_name};
 use crate::kind::{Extras, RawRow, Row, WORKFLOWS, resolve};
 use crate::registry::{Schema, parse};
 
@@ -28,6 +28,11 @@ short|update-pins|-|-|cron=50 6 * *
 long|upstream|-|-|script=bump.sh, cron=0 50 6 * * *
 odd|upstream|-|-|script=bump.sh, cron=50 6 * * ?
 two|upstream|x86_64-linux, aarch64-linux|-|script=bump.sh
+target|update-pins|-|-|build=.#hk
+path|upstream|-|-|script=scripts/bump-hk.sh, branch-prefix=up/v#1+x:y@z_
+spaced|update-pins|-|-|build=a b
+flag|upstream|-|-|script=-rf
+subst|upstream|-|-|script=bump.sh, branch-prefix=$(x)
 ";
 
 fn raw(id: &str) -> Result<RawRow, String> {
@@ -56,7 +61,7 @@ fn refused(id: &str) -> String {
 
 #[test]
 fn rows_inside_the_rules_pass() -> Result<(), String> {
-    for id in ["fine", "gate", "pins", "named", "names"] {
+    for id in ["fine", "gate", "pins", "named", "names", "target", "path"] {
         checked(id)?;
     }
     Ok(())
@@ -147,5 +152,34 @@ fn five_fields_of_numbers_names_ranges_and_steps_pass() {
     }
     for cron in ["", "50 6 * *", "0 50 6 * * *", "50 6 * * ?", "a,b * * * *"] {
         assert!(!five_fields(cron), "{cron}");
+    }
+}
+
+#[test]
+fn a_build_that_is_no_plain_word_is_refused() {
+    assert_eq!(
+        refused("spaced"),
+        "line 22: arg `build` is `a b`, not a plain word (write `build=` \
+         with letters, digits and `._/#+:@-`)"
+    );
+}
+
+#[test]
+fn a_script_or_prefix_that_is_no_plain_word_is_refused() {
+    let error = refused("flag");
+    let want = "line 23: arg `script` is `-rf`, not a plain word";
+    assert!(error.starts_with(want), "{error}");
+    let error = refused("subst");
+    let want = "line 24: arg `branch-prefix` is `$(x)`, not a plain word";
+    assert!(error.starts_with(want), "{error}");
+}
+
+#[test]
+fn only_plain_words_pass() {
+    for word in [".#hk", "scripts/bump-hk.sh", "upstream/", "a+b:c@d#e"] {
+        assert!(plain_word(word), "{word}");
+    }
+    for word in ["", "-", "-rf", "a b", "$(x)", "a;b", "a'b", "a\"b", "a,b"] {
+        assert!(!plain_word(word), "{word}");
     }
 }
