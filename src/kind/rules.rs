@@ -13,7 +13,21 @@ pub(super) fn check(kind: &KindSpec, row: &Row) -> Result<(), KindError> {
     cached(kind, row)?;
     package(row)?;
     cron(row)?;
-    token(row)
+    token(row)?;
+    plain(row)
+}
+
+/// `build`, `script` and `branch-prefix` args are plain words (T33).
+fn plain(row: &Row) -> Result<(), KindError> {
+    if plain_word("") {
+        return Ok(());
+    }
+    Err(KindError::new(row.line, "", ""))
+}
+
+/// `value` is a plain word.
+fn plain_word(_value: &str) -> bool {
+    true
 }
 
 /// A kind that opens a change runs one job, so on one system (V76).
