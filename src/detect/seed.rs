@@ -60,12 +60,28 @@ pub fn seed_init(
     config: &str,
     rows: &[RawRow],
 ) -> Result<PathBuf, SeedError> {
+    seed_init_text(root, config, &text(rows))
+}
+
+/// Write `<root>/<config>` holding `text`, built by the forge (from
+/// [`text_with`](super::text_with())); returns its path. Same write as
+/// [`seed_init`]: created new, never over an existing file (V36, V79).
+///
+/// # Errors
+///
+/// [`SeedError::Exists`] if the file is there (it is not touched), else
+/// [`SeedError::Write`] with the I/O error.
+pub fn seed_init_text(
+    root: &Path,
+    config: &str,
+    text: &str,
+) -> Result<PathBuf, SeedError> {
     let path = root.join(config);
     let written = OpenOptions::new()
         .write(true)
         .create_new(true)
         .open(&path)
-        .and_then(|mut file| file.write_all(text(rows).as_bytes()));
+        .and_then(|mut file| file.write_all(text.as_bytes()));
     match written {
         Ok(()) => Ok(path),
         Err(e) if e.kind() == io::ErrorKind::AlreadyExists => {

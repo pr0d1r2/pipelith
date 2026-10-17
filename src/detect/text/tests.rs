@@ -1,7 +1,7 @@
 //! Row text round-trips through `src/registry` and `src/kind` (T16,
 //! V37).
 
-use super::{FIRST_ROW, header, row_line, text};
+use super::{FIRST_ROW, header, row_line, text, text_with};
 use crate::kind::{RawRow, SECTION, WORKFLOWS};
 use crate::registry::{Arg, RegistryError, Schema, parse};
 
@@ -77,4 +77,32 @@ fn text_parses_back_to_the_rows() {
     let rows = vec![full(), bare(6, "update-pins", "update-pins")];
     assert_eq!(parsed(&text(&rows)), Ok(rows));
     assert_eq!(parsed(&text(&[])), Ok(Vec::new()));
+}
+
+#[test]
+fn text_with_row_line_is_text() {
+    let rows = [full(), bare(6, "update-pins", "update-pins")];
+    assert_eq!(text_with(&rows, row_line), text(&rows));
+    assert_eq!(text_with(&[], row_line), header());
+}
+
+/// `update-pins` behind a note and commented out, as a forge proposes
+/// it off by default; every other row as [`row_line`] writes it.
+fn off_by_default(row: &RawRow) -> String {
+    if row.kind == "update-pins" {
+        return format!("# note\n# {}", row_line(row));
+    }
+    row_line(row)
+}
+
+#[test]
+fn a_line_writer_can_comment_a_row_out() {
+    let rows = [bare(5, "ci", "gate"), bare(6, "update-pins", "update-pins")];
+    let written = text_with(&rows, off_by_default);
+    let want = format!(
+        "{}ci|gate|-|-|-\n# note\n# update-pins|update-pins|-|-|-\n",
+        header()
+    );
+    assert_eq!(written, want);
+    assert_eq!(parsed(&written), Ok(vec![bare(5, "ci", "gate")]));
 }

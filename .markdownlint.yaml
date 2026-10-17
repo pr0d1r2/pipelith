@@ -1,3 +1,7 @@
 ---
 # SPEC.md is never hard-wrapped (mth-fmt), so line length is not a rule.
 MD013: false
+# Keep a Changelog repeats "### Added" under each release; only
+# headings under the same parent must differ.
+MD024:
+  siblings_only: true

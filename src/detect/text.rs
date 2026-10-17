@@ -18,8 +18,17 @@ pub fn header() -> String {
 /// A whole config file: [`header`], then one line per row.
 #[must_use]
 pub fn text(rows: &[RawRow]) -> String {
+    text_with(rows, row_line)
+}
+
+/// A whole config file: [`header`], then `line(row)` and a newline for
+/// each row. `line` may return several lines (a note, a commented-out
+/// row); they are written as given. [`text`] is `text_with(rows,
+/// row_line)` (V79).
+#[must_use]
+pub fn text_with(rows: &[RawRow], line: impl Fn(&RawRow) -> String) -> String {
     rows.iter().fold(header(), |mut out, row| {
-        out.push_str(&row_line(row));
+        out.push_str(&line(row));
         out.push('\n');
         out
     })
