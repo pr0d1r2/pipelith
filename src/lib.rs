@@ -14,3 +14,10 @@ pub mod kind;
 pub mod registry;
 pub mod system;
 pub mod yaml;
+
+/// The forge crate walk-through, whose Rust example runs as a doctest so
+/// it cannot drift from the API (SPEC.md V78). Compiled for doctests
+/// only; it is not part of the crate.
+#[cfg(doctest)]
+#[doc = include_str!("../docs/INTEGRATION.md")]
+struct Integration;
