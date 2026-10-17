@@ -112,11 +112,10 @@ from crates.io or pinned to a commit.
 
 ## Status
 
-`0.1.0` on crates.io, published before actlith's first release
-candidate. Every module is built and tested, with 100%
-line coverage. actlith still carries its own copies of these parts until
-it switches to pipelith, and that switch is where the byte-identical
-promise is checked against all of actlith's goldens.
+`0.1.1` on crates.io. Every module is built and tested, with 100% line
+coverage. actlith's `main` takes `registry`, `kind`, `system`, `yaml`
+and `files` from pipelith, with every one of its goldens byte-identical;
+its `detect` switch uses `text_with` and `seed_init_text` from 0.1.1.
 
 ## The name
 
