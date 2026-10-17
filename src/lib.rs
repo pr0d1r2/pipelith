@@ -5,6 +5,12 @@
 //! argument keys, its pipeline model, its expression dialect, its runner
 //! and pin tables and its file layout; pipelith owns what both share.
 //!
+//! From config file to pipeline file is four steps:
+//! [`registry::parse`] against the forge's schema, [`kind::resolve`] and
+//! [`kind::Row::check`] per `## workflows` row, [`yaml::document`] over
+//! the forge's tree, and [`files::write`] or [`files::check`] for the
+//! set. `docs/INTEGRATION.md` in the repository walks through it.
+//!
 //! This file only declares the node modules (src V12); each node's
 //! `SPEC.md` holds its design.
 
