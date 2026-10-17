@@ -31,7 +31,7 @@ sib|nix|repo gate: dev shell, guardrails, hk steps, CI, release
 
 ## §V INVARIANTS
 
-V12: `lib.rs` declares node modules & crate docs only, ⊥ logic.
+V12: `lib.rs` declares node modules & crate docs only (+ `#[cfg(doctest)]` doc include, `.:V78`), ⊥ logic.
 V13: node ⊥ dep sibling node except through its `pub` surface; ⊥ cycle (wave order above).
 V14: ∀ node unit-tested 1-to-1 (`<node>/<file>/tests.rs` beside `<file>.rs`, `rust-mirror`); fixtures in `tests/fixtures/<node>/`; ⊥ network, ⊥ clock in tests.
 

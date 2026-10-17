@@ -53,6 +53,7 @@ self|.|-
 - grammar: `format N` line · `## <section>` headings · pipe table w/ header row · `#` comments · `-` empty cell · `\|` literal pipe. section & column names from caller.
 - forge crate supplies: config file name, forge-only sections & columns & arg keys, pipeline YAML model, `yaml::Dialect`, runner table, pin table, file layout.
 - doc: `docs/KINDS.md` = neutral kind catalogue (intent, triggers as events, secrets as purposes, row values). forge pages `docs/KINDS-GITHUB.md` (actlith), `docs/KINDS-GITLAB.md` (lablith) map intent → syntax (D5).
+- doc: community pages as public fleet members: `docs/SECURITY.md` (private report, trust surface), `docs/CONTRIBUTING.md`, `docs/CODE_OF_CONDUCT.md`, `docs/INTEGRATION.md` (forge crate walk-through); README links each.
 - consumer: before publish, forge crate takes git dep pinned to full commit, allowed in its `deny.toml` `[sources]`, nix `outputHashes` entry. pipelith published before actlith `0.1.0-rc.1` (D11).
 - nix: flake `checks.<system>` build & test the crate (doctests incl.); `devShells` from pklith `lib.devShell`. ⊥ `packages` app (library).
 
@@ -79,6 +80,7 @@ V8: crate `pipelith`, lib only, ⊥ bin. rejected names → R2
 V9: public API = node modules declared in `lib.rs`; ∀ pub item documented (`missing_docs` = deny); `lib.rs` ⊥ logic (D15)
 V10: moved code keeps its unit tests & §V rows; moved rule cites actlith origin id (`actlith/V<n>`) ∴ moved rule keeps its proof (D2)
 V11: `docs/KINDS.md` ↔ `kind` catalogue parity: ∀ kind in doc has §V & code & vice versa; doc ≠ code = bug (as `actlith/V25`)
+V78: `docs/INTEGRATION.md` Rust example compiles & runs as doctest (`#[cfg(doctest)]` include in `lib.rs`) ∴ walk-through ⊥ drift from API
 
 ## §T TASKS
 
@@ -90,6 +92,7 @@ T4|.|lablith takes pipelith; neutral rows render there ! user approval|V4,V5
 T5|.|pklith issue proposing `registry` reuse, ⊥ naming private repos, after ship ! user approval|-
 T6|x|`docs/KINDS.md` neutral catalogue from actlith `docs/KINDS.md`: intent, events, secret purposes, row values; GitHub syntax stays in actlith|V11,V5
 T7|.|owner review of prompt round 2 (D13–D18) & neutral section name `## workflows`; OQ1 answer (`.actlith`/`.lablith` vs `.pipelith`) → new round|-
+T34|.|open-source prep, public members' shape: community pages, README links, doctested integration walk-through|V78,V9
 
 ## §B BUGS
 
