@@ -30,15 +30,32 @@
 
 Read [LLM-DISCLAIMER](docs/LLM-DISCLAIMER.md) first.
 
-The forge-neutral core of the fleet's CI materializers. A materializer
-renders a repository's CI pipeline from a small config file of pipe
-tables, and checks that the rendered files never drift from it.
-pipelith holds every part of that which does not depend on the forge;
-[actlith](https://github.com/pr0d1r2/actlith) renders it for GitHub
-Actions, and lablith for GitLab CI.
+The forge-neutral core of CI materializers. A materializer renders a
+repository's CI pipeline from a small config file of pipe tables, and
+checks that the rendered files never drift from it. pipelith holds every
+part of that which does not depend on the forge (the service hosting the
+repository and running its CI); [actlith](https://github.com/pr0d1r2/actlith)
+renders it for GitHub Actions, and
+[lablith](https://github.com/pr0d1r2/lablith) for GitLab CI.
 
 pipelith is a library only: there is no binary and no CLI. Users run
 actlith or lablith.
+
+## Why
+
+The author's repositories (the fleet) run CI on two forges. GitHub
+Actions runs the open-source ones; a self-hosted GitLab runs the
+unreleased and private ones. A project starts private on GitLab and
+moves to GitHub when it is released, so its CI declaration moves with
+it.
+
+A materializer for each forge needs the same parts again: the config
+file parser, a YAML writer, the generated-file drift check and the
+catalogue of what each kind of pipeline means. Two copies of a parser
+and a writer drift apart, which is the problem a materializer exists to
+solve. So they live here once, and a row that validates against the
+neutral catalogue renders on both forges: releasing a project changes
+the config file's name, not its rows.
 
 ## What it holds
 
@@ -57,26 +74,59 @@ actlith or lablith.
   for staleness.
 - `detect`: proposed rows from the files a repository tracks.
 
-## The forge contract
+## Use it as a library
 
 A forge crate depends on pipelith, never the reverse. It supplies the
 config file name, its forge-only sections, columns and argument keys,
 the pipeline YAML model, a `yaml::Dialect`, and its runner, pin and file
-layout tables. A row that passes the neutral `kind` validation renders
-on both forges, so moving a project from one forge to the other changes
-the config file's name, not its rows.
+layout tables. The path from config file to pipeline file is four calls:
+`registry::parse` against the forge's schema, `kind::resolve` and
+`Row::check` per `## workflows` row, `yaml::document` over the forge's
+tree, and `files::write` or `files::check` for the set.
 
-Output is deterministic: the same input and the same pipelith version
-give the same bytes, with no clock, host, environment, network or
-randomness involved. A change to the bytes the YAML writer or the
-generated header emits is at least a minor version, with a CHANGELOG
-entry naming it.
+[`docs/INTEGRATION.md`](docs/INTEGRATION.md) walks through it with an
+example that runs as a doctest, and says how to depend on pipelith
+before it is published.
+
+## Guarantees
+
+- **Deterministic.** The same input and the same pipelith version give
+  the same bytes, with no clock, host, environment, network or
+  randomness involved.
+- **No malformed YAML.** A value that would need one of YAML's
+  ambiguous forms is quoted, never written bare, and literal text never
+  reads back as a forge expression.
+- **Checked when validated, not when rendered.** Every rule a forge
+  would apply while rendering a row is checked with the row, so a row
+  that validates is never refused later.
+- **Stays under its root.** The only files pipelith reads or writes are
+  the ones its caller lists, under the root the caller passes.
+- **Byte-identical extraction.** pipelith was extracted from actlith at
+  commit `7ce69c6`; its tests rebuild actlith's own `ci.yml` through the
+  public API and require the same bytes.
+- **Small and strict.** No dependencies beyond std, no `unsafe`, and
+  lints that deny `unwrap`, `panic`, indexing and unchecked arithmetic.
+- **Versioned on bytes.** A change to the bytes the YAML writer or the
+  generated header emits is at least a minor version, with a CHANGELOG
+  entry naming it, since it changes every consumer's generated files.
 
 ## Status
 
-Pre-release. pipelith is being extracted from actlith at commit
-`7ce69c6` and is not on crates.io yet; it is published before actlith's
-first release candidate, with the owner's approval.
+Pre-release, and not on crates.io yet; it is published before actlith's
+first release candidate. Every module is built and tested, with 100%
+line coverage. actlith still carries its own copies of these parts until
+it switches to pipelith, and that switch is where the byte-identical
+promise is checked against all of actlith's goldens.
+
+## The name
+
+pipe(line) + lith: pipelith builds pipelines, and the grammar it owns is
+pipe tables. The `-lith` family names the author's small, single-purpose
+tools ([pklith](https://github.com/pr0d1r2/pklith),
+[microlith](https://github.com/pr0d1r2/microlith),
+[xenolith](https://github.com/pr0d1r2/xenolith), actlith, lablith): a
+lith is a stone, and each tool is one hard piece meant to be built into
+something larger.
 
 ## Read next
 
