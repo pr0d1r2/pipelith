@@ -85,8 +85,8 @@ layout tables. The path from config file to pipeline file is four calls:
 tree, and `files::write` or `files::check` for the set.
 
 [`docs/INTEGRATION.md`](docs/INTEGRATION.md) walks through it with an
-example that runs as a doctest, and says how to depend on pipelith
-before it is published.
+example that runs as a doctest, and says how to depend on pipelith,
+from crates.io or pinned to a commit.
 
 ## Guarantees
 
@@ -112,8 +112,8 @@ before it is published.
 
 ## Status
 
-Pre-release, and not on crates.io yet; it is published before actlith's
-first release candidate. Every module is built and tested, with 100%
+`0.1.0` on crates.io, published before actlith's first release
+candidate. Every module is built and tested, with 100%
 line coverage. actlith still carries its own copies of these parts until
 it switches to pipelith, and that switch is where the byte-identical
 promise is checked against all of actlith's goldens.

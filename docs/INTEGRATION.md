@@ -24,8 +24,15 @@ crate, and nothing forge-specific is written here.
 
 ## Depending on pipelith
 
-Until pipelith is on crates.io, take it as a git dependency pinned to a
-full commit:
+Take it from crates.io:
+
+```toml
+[dependencies]
+pipelith = "0.1"
+```
+
+To build against an unreleased commit, take it as a git dependency
+pinned to a full commit instead:
 
 ```toml
 [dependencies]
@@ -44,11 +51,9 @@ and give the nix build its hash, in `rustPlatform.buildRustPackage`:
 ```nix
 cargoLock = {
   lockFile = ./Cargo.lock;
-  outputHashes."pipelith-0.0.0" = "<hash nix reports>";
+  outputHashes."pipelith-0.1.0" = "<hash nix reports>";
 };
 ```
-
-Once pipelith is published, the git dependency becomes a version.
 
 ## From config file to pipeline
 
