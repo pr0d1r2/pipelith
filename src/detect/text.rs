@@ -18,11 +18,7 @@ pub fn header() -> String {
 /// A whole config file: [`header`], then one line per row.
 #[must_use]
 pub fn text(rows: &[RawRow]) -> String {
-    rows.iter().fold(header(), |mut out, row| {
-        out.push_str(&row_line(row));
-        out.push('\n');
-        out
-    })
+    text_with(rows, row_line)
 }
 
 /// A whole config file: [`header`], then `line(row)` and a newline for
@@ -31,8 +27,11 @@ pub fn text(rows: &[RawRow]) -> String {
 /// row_line)` (V79).
 #[must_use]
 pub fn text_with(rows: &[RawRow], line: impl Fn(&RawRow) -> String) -> String {
-    let _ = (rows, line);
-    String::new()
+    rows.iter().fold(header(), |mut out, row| {
+        out.push_str(&line(row));
+        out.push('\n');
+        out
+    })
 }
 
 /// One `id|kind|systems|cache|args` row; `-` for an empty cell, `\|` for

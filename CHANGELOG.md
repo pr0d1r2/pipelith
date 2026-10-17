@@ -9,6 +9,16 @@ consumers will see change.
 
 ## [Unreleased]
 
+### Added
+
+- `src/detect`: `text_with(rows, line)` writes the header, then
+  `line(row)` and a newline for each row, as given; `seed_init_text(root,
+  config, text)` writes that text with `seed_init`'s rule (created new,
+  never over an existing file). A forge can now propose a row that stays
+  off until the user opts in, such as a note line and a commented-out
+  `update-pins` row, with its own note text. `text` and `seed_init` are
+  these with `row_line`, and their bytes do not change.
+
 ## [0.1.0] - 2026-10-17
 
 ### Added

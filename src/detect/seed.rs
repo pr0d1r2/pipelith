@@ -60,19 +60,7 @@ pub fn seed_init(
     config: &str,
     rows: &[RawRow],
 ) -> Result<PathBuf, SeedError> {
-    let path = root.join(config);
-    let written = OpenOptions::new()
-        .write(true)
-        .create_new(true)
-        .open(&path)
-        .and_then(|mut file| file.write_all(text(rows).as_bytes()));
-    match written {
-        Ok(()) => Ok(path),
-        Err(e) if e.kind() == io::ErrorKind::AlreadyExists => {
-            Err(SeedError::Exists(path))
-        }
-        Err(e) => Err(SeedError::Write(path, e)),
-    }
+    seed_init_text(root, config, &text(rows))
 }
 
 /// Write `<root>/<config>` holding `text`, built by the forge (from
@@ -88,8 +76,19 @@ pub fn seed_init_text(
     config: &str,
     text: &str,
 ) -> Result<PathBuf, SeedError> {
-    let _ = (text, config);
-    Ok(root.to_path_buf())
+    let path = root.join(config);
+    let written = OpenOptions::new()
+        .write(true)
+        .create_new(true)
+        .open(&path)
+        .and_then(|mut file| file.write_all(text.as_bytes()));
+    match written {
+        Ok(()) => Ok(path),
+        Err(e) if e.kind() == io::ErrorKind::AlreadyExists => {
+            Err(SeedError::Exists(path))
+        }
+        Err(e) => Err(SeedError::Write(path, e)),
+    }
 }
 
 #[cfg(test)]
