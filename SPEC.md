@@ -92,7 +92,7 @@ T4|.|lablith takes pipelith; neutral rows render there ! user approval|V4,V5
 T5|.|pklith issue proposing `registry` reuse, ⊥ naming private repos, after ship ! user approval|-
 T6|x|`docs/KINDS.md` neutral catalogue from actlith `docs/KINDS.md`: intent, events, secret purposes, row values; GitHub syntax stays in actlith|V11,V5
 T7|.|owner review of prompt round 2 (D13–D18) & neutral section name `## workflows`; OQ1 answer (`.actlith`/`.lablith` vs `.pipelith`) → new round|-
-T34|.|open-source prep, public members' shape: community pages, README links, doctested integration walk-through|V78,V9
+T34|x|open-source prep, public members' shape: community pages, README links, doctested integration walk-through|V78,V9
 
 ## §B BUGS
 
