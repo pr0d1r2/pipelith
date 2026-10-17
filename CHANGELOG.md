@@ -9,6 +9,8 @@ consumers will see change.
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-10-17
+
 ### Added
 
 - `src/detect`: `text_with(rows, line)` writes the header, then
@@ -66,5 +68,6 @@ consumers will see change.
   in a plain scalar is quoted, and adjacent literal parts are escaped as
   one run.
 
-[Unreleased]: https://github.com/pr0d1r2/pipelith/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/pr0d1r2/pipelith/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/pr0d1r2/pipelith/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/pr0d1r2/pipelith/releases/tag/v0.1.0
