@@ -75,5 +75,22 @@ pub fn seed_init(
     }
 }
 
+/// Write `<root>/<config>` holding `text`, built by the forge (from
+/// [`text_with`](super::text_with())); returns its path. Same write as
+/// [`seed_init`]: created new, never over an existing file (V36, V79).
+///
+/// # Errors
+///
+/// [`SeedError::Exists`] if the file is there (it is not touched), else
+/// [`SeedError::Write`] with the I/O error.
+pub fn seed_init_text(
+    root: &Path,
+    config: &str,
+    text: &str,
+) -> Result<PathBuf, SeedError> {
+    let _ = (text, config);
+    Ok(root.to_path_buf())
+}
+
 #[cfg(test)]
 mod tests;

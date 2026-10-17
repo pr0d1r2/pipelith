@@ -4,7 +4,7 @@ use std::fs;
 use std::path::PathBuf;
 use std::sync::atomic::{AtomicUsize, Ordering};
 
-use super::{SeedError, seed_init};
+use super::{SeedError, seed_init, seed_init_text};
 use crate::detect::{detect, text};
 
 const CONFIG: &str = ".lablith";
@@ -87,4 +87,26 @@ fn an_unwritable_root_is_a_write_error() {
     assert_eq!(err.as_ref().map(SeedError::code), Some(2));
     let shown = err.map(|e| e.to_string()).unwrap_or_default();
     assert!(shown.contains("cannot write"), "{shown}");
+}
+
+#[test]
+fn seed_init_text_writes_the_text_as_given() {
+    let dir = Scratch::new("text");
+    let body = "format 1\n# forge-built\n";
+    let path = seed_init_text(&dir.0, CONFIG, body).ok();
+    assert_eq!(path, Some(dir.0.join(CONFIG)));
+    let written = fs::read_to_string(dir.0.join(CONFIG)).unwrap_or_default();
+    assert_eq!(written, body);
+}
+
+#[test]
+fn seed_init_text_refuses_an_existing_file_and_keeps_it() {
+    let dir = Scratch::new("text-exists");
+    let path = dir.0.join(CONFIG);
+    assert!(fs::write(&path, "format 1\n# mine\n").is_ok());
+    let err = seed_init_text(&dir.0, CONFIG, "format 1\n").err();
+    assert!(matches!(&err, Some(SeedError::Exists(p)) if *p == path));
+    assert_eq!(err.as_ref().map(SeedError::code), Some(1));
+    let kept = fs::read_to_string(&path).unwrap_or_default();
+    assert_eq!(kept, "format 1\n# mine\n");
 }

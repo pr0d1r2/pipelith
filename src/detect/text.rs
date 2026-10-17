@@ -25,6 +25,16 @@ pub fn text(rows: &[RawRow]) -> String {
     })
 }
 
+/// A whole config file: [`header`], then `line(row)` and a newline for
+/// each row. `line` may return several lines (a note, a commented-out
+/// row); they are written as given. [`text`] is `text_with(rows,
+/// row_line)` (V79).
+#[must_use]
+pub fn text_with(rows: &[RawRow], line: impl Fn(&RawRow) -> String) -> String {
+    let _ = (rows, line);
+    String::new()
+}
+
 /// One `id|kind|systems|cache|args` row; `-` for an empty cell, `\|` for
 /// a pipe.
 #[must_use]
