@@ -36,7 +36,7 @@ V79: `text`, `seed_init` = `text_with`, `seed_init_text` w/ `row_line`; `line` o
 
 id|status|task|cites
 T16|x|port `detect`, `has_node`, `text`, `row_line`, `seed_init` w/ tests; round-trip test|V35,V36,V37,`.:V10`
-T35|.|`text_with`, `seed_init_text`|V79,`.:V9`
+T35|x|`text_with`, `seed_init_text`|V79,`.:V9`
 
 ## §B BUGS
 
