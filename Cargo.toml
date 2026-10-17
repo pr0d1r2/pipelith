@@ -1,7 +1,6 @@
 [package]
 name = "pipelith"
-# Unpublished until the owner approves the first release (T2).
-version = "0.0.0"
+version = "0.1.0"
 edition = "2024"
 # The fleet pin: nixpkgs-lock (nixos-26.05) carries rustc 1.95.
 rust-version = "1.95"

@@ -9,6 +9,8 @@ consumers will see change.
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-10-17
+
 ### Added
 
 - `tests/golden/ci.yaml`: the `ci.yml` actlith rendered at `7ce69c6`
@@ -53,3 +55,6 @@ consumers will see change.
   expression whose rendered text would read as a mapping or a comment
   in a plain scalar is quoted, and adjacent literal parts are escaped as
   one run.
+
+[Unreleased]: https://github.com/pr0d1r2/pipelith/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/pr0d1r2/pipelith/releases/tag/v0.1.0
