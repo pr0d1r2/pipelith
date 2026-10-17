@@ -218,6 +218,8 @@
               ./tests
               # Read by the kind catalogue's parity test (SPEC.md V11).
               ./docs/KINDS.md
+              # Included by lib.rs as a doctest (SPEC.md V78).
+              ./docs/INTEGRATION.md
               # A workspace member cargo must find, though only pipelith
               # is built and tested here.
               ./dev
