@@ -80,8 +80,14 @@ first release candidate, with the owner's approval.
 
 ## Read next
 
+- [`docs/INTEGRATION.md`](docs/INTEGRATION.md): how a forge crate
+  builds on pipelith, with an example that runs as a doctest.
 - [`SPEC.md`](SPEC.md): the design, federated into node specs.
 - [`docs/KINDS.md`](docs/KINDS.md): the neutral kind catalogue.
+- [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md): how to send a change;
+  [`docs/CODE_OF_CONDUCT.md`](docs/CODE_OF_CONDUCT.md) applies.
+- [`docs/SECURITY.md`](docs/SECURITY.md): report a vulnerability
+  privately, and what pipelith can touch.
 - [`AGENTS.md`](AGENTS.md): how agents work here, and the gate's steps.
 - [`CHANGELOG.md`](CHANGELOG.md): what changed, in Keep a Changelog form.
 - [`docs/THIRD-PARTY-NOTICES.md`](docs/THIRD-PARTY-NOTICES.md): what
