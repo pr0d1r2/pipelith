@@ -14,8 +14,8 @@ pub enum ArgDefault {
     None,
     /// This value, the same on every forge.
     Value(&'static str),
-    /// The forge fills it in (e.g. `token`: the forge's built-in job
-    /// token); absent from the checked args (V34).
+    /// The forge fills it in (e.g. `token`: a secret the forge crate
+    /// names); absent from the checked args (V34).
     Forge,
 }
 
@@ -68,7 +68,9 @@ pub const DEFAULT_TIMEOUT: u32 = 30;
 pub const MAX_TIMEOUT: u32 = 360;
 
 /// `token`: the secret that pushes the bump branch and opens the change
-/// request; the forge's built-in job token by default.
+/// request. Its default is a token the forge crate names: the built-in
+/// job token where that token can open a change request, otherwise a
+/// dedicated secret.
 const TOKEN: ArgSpec = ArgSpec {
     key: "token",
     required: false,

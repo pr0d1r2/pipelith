@@ -105,6 +105,13 @@ fn upstream_takes_actlith_args_and_a_forge_token() -> Result<(), String> {
 }
 
 #[test]
+fn the_doc_leaves_the_token_default_to_the_forge() {
+    for name in ["GITHUB_TOKEN", "CI_JOB_TOKEN", "LABLITH_TOKEN"] {
+        assert!(!KINDS_MD.contains(name), "docs/KINDS.md names `{name}`");
+    }
+}
+
+#[test]
 fn default_systems_are_actlith_ones() -> Result<(), String> {
     assert_eq!(kind("gate")?.default_systems, DEFAULT_SYSTEMS);
     assert_eq!(kind("build")?.default_systems, DEFAULT_SYSTEMS);
