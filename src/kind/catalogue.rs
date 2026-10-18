@@ -14,8 +14,8 @@ pub enum ArgDefault {
     None,
     /// This value, the same on every forge.
     Value(&'static str),
-    /// The forge fills it in (e.g. `token`: the forge's built-in job
-    /// token); absent from the checked args (V34).
+    /// The forge fills it in (e.g. `token`: a secret the forge crate
+    /// names); absent from the checked args (V34).
     Forge,
 }
 
