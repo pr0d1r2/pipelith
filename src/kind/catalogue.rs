@@ -69,9 +69,8 @@ pub const MAX_TIMEOUT: u32 = 360;
 
 /// `token`: the secret that pushes the bump branch and opens the change
 /// request. Its default is a token the forge crate names: the built-in
-/// job token where that token can open a change request (GitHub's
-/// `GITHUB_TOKEN`), otherwise a dedicated secret (lablith's
-/// `LABLITH_TOKEN`).
+/// job token where that token can open a change request, otherwise a
+/// dedicated secret.
 const TOKEN: ArgSpec = ArgSpec {
     key: "token",
     required: false,
