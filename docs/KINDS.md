@@ -60,8 +60,8 @@ both forges.
   pull request (GitHub) or merge request (GitLab). Row arg `token` names
   it (letters, digits and `_`, not starting with a digit); its default
   is a token the forge crate names: the built-in job token where that
-  token can open a change request (GitHub's `GITHUB_TOKEN`), otherwise a
-  dedicated secret (lablith's `LABLITH_TOKEN`).
+  token can open a change request, otherwise a dedicated secret; the
+  forge pages name it.
 
 ## `gate`
 
