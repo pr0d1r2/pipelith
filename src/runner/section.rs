@@ -2,8 +2,10 @@
 //! whose jobs run on the repository's own runner, and the trust guard
 //! such a runner carries (V81).
 
-use crate::registry::{Document, RegistryError, SectionSpec};
-use crate::system::{System, SystemError};
+use crate::registry::{
+    Document, RegistryError, Row as Cells, SectionSpec, list, required,
+};
+use crate::system::{System, SystemError, parse_system};
 
 #[cfg(test)]
 mod tests;
@@ -42,7 +44,7 @@ impl Runner<'_> {
     /// every [`Runner::Labels`]; there is no opt-out.
     #[must_use]
     pub fn trusted_only(&self) -> bool {
-        false
+        matches!(self, Self::Labels(_))
     }
 }
 
@@ -62,10 +64,14 @@ impl Runners {
     /// An unknown system, an empty `labels` cell, or a label that is not
     /// letters, digits, `.`, `_`, `-` or starts with `-`, located.
     pub fn from_document(
-        _file: &str,
-        _doc: &Document,
+        file: &str,
+        doc: &Document,
     ) -> Result<Self, RegistryError> {
-        Ok(Self::default())
+        let rows = doc.section(SECTION).iter();
+        let rows = rows.map(|row| Ok((system(file, row)?, labels(file, row)?)));
+        Ok(Self {
+            rows: rows.collect::<Result<_, RegistryError>>()?,
+        })
     }
 
     /// The runner for `system`: the row's labels when there is one,
@@ -77,9 +83,54 @@ impl Runners {
     /// default, naming the `## runners` fix.
     pub fn pick(
         &self,
-        _system: System,
-        _has_default: bool,
+        system: System,
+        has_default: bool,
     ) -> Result<Runner<'_>, SystemError> {
-        Ok(Runner::Default)
+        match self.rows.iter().find(|(s, _)| *s == system) {
+            Some((_, labels)) => Ok(Runner::Labels(labels)),
+            None if has_default => Ok(Runner::Default),
+            None => Err(SystemError::NoRunner(system)),
+        }
+    }
+}
+
+/// The row's `system` cell, a known nix system.
+fn system(file: &str, row: &Cells) -> Result<System, RegistryError> {
+    let name = required(file, row, 0, "system")?;
+    parse_system(&name).map_err(|e| RegistryError {
+        what: e.to_string(),
+        fix: "write a nix system from the list".to_owned(),
+        ..at(file, row, 0)
+    })
+}
+
+/// The row's `labels` cell: at least one label, each a plain word.
+fn labels(file: &str, row: &Cells) -> Result<Vec<String>, RegistryError> {
+    required(file, row, 1, "labels")?;
+    let labels = list(file, row, 1, "labels")?;
+    if let Some(bad) = labels.iter().find(|l| !plain(l)) {
+        return Err(RegistryError {
+            what: format!("label `{bad}` is not a runner label"),
+            fix: "use letters, digits, `.`, `_`, `-`; no leading `-`"
+                .to_owned(),
+            ..at(file, row, 1)
+        });
+    }
+    Ok(labels)
+}
+
+/// Letters, digits and `._-`, not starting with `-`.
+fn plain(label: &str) -> bool {
+    let ok = |c: char| c.is_ascii_alphanumeric() || "._-".contains(c);
+    label.chars().all(ok) && !label.starts_with('-')
+}
+
+/// An error pointing at cell `index` of `row`; the caller says what.
+fn at(file: &str, row: &Cells, index: usize) -> RegistryError {
+    RegistryError {
+        file: file.to_owned(),
+        line: row.line,
+        column: row.cells.get(index).map_or(1, |c| c.column),
+        ..RegistryError::default()
     }
 }

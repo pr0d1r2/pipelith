@@ -1,5 +1,5 @@
-//! A `## workflows` row checked for its kind: systems resolved to ones
-//! some forge hosts (V52), the cache to a known key (V53), the args to
+//! A `## workflows` row checked for its kind: systems resolved to known
+//! nix systems (V52), the cache to a known key (V53), the args to
 //! the schema (V31). A forge builds a pipeline only from a checked row.
 
 use super::args::{Args, parse_args};
@@ -9,7 +9,7 @@ use super::error::KindError;
 use super::portable::Extras;
 use super::raw::RawRow;
 use super::rules;
-use crate::system::{System, ci_system, parse_system};
+use crate::system::{System, parse_system};
 
 /// A row a forge can build from.
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -18,7 +18,7 @@ pub struct Row {
     pub line: usize,
     /// The pipeline's name and file stem.
     pub id: String,
-    /// The systems, each with a hosted runner; the kind's default for `-`.
+    /// The systems, in row order; the kind's default for `-`.
     pub systems: Vec<System>,
     /// The cache to trust, if the row names one.
     pub cache: Option<Cache>,
@@ -31,7 +31,7 @@ impl Row {
     ///
     /// # Errors
     ///
-    /// An unknown, repeated or unhosted system; an unknown cache;
+    /// An unknown or repeated system; an unknown cache;
     /// a bad arg or `timeout` (V31, V52, V53).
     pub fn check(
         kind: &KindSpec,
@@ -61,7 +61,7 @@ fn systems(
     }
     let mut out = Vec::new();
     for name in &row.systems {
-        let system = hosted(row.line, name)?;
+        let system = known(row.line, name)?;
         if out.contains(&system) {
             return Err(twice(row.line, name));
         }
@@ -70,12 +70,12 @@ fn systems(
     Ok(out)
 }
 
-fn hosted(line: usize, name: &str) -> Result<System, KindError> {
-    let fix = "write systems with a hosted runner, or `-`";
+fn known(line: usize, name: &str) -> Result<System, KindError> {
+    let fix = "write nix systems from the list, or `-`";
     let refuse = |e: crate::system::SystemError| {
         KindError::new(line, e.to_string(), fix)
     };
-    parse_system(name).and_then(ci_system).map_err(refuse)
+    parse_system(name).map_err(refuse)
 }
 
 fn twice(line: usize, name: &str) -> KindError {

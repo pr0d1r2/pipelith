@@ -9,6 +9,42 @@ consumers will see change.
 
 ## [Unreleased]
 
+### Added
+
+- `src/runner`: the `## runners` section, header `system|labels`, where
+  a repository names its own runner for a nix system, for example
+  `x86_64-darwin|self-hosted, macOS, X64`. Its labels replace the
+  forge's default runner for that system in every `## workflows` row.
+  A forge puts `runner::RUNNERS` in its schema, reads the section with
+  `Runners::from_document` and calls `Runners::pick(system,
+  has_default)` for each system of each checked row. The answer is
+  `Runner::Default`, `Runner::Labels(..)`, or `SystemError::NoRunner`
+  when there is neither a row nor a forge default. An unknown system,
+  an empty `labels` cell, or a label other than letters, digits and
+  `._-` (or one starting with `-`) is refused, located.
+- `Runner::trusted_only()` is true for every `Runner::Labels`, with no
+  opt-out: a forge runs such a job only for a push, a schedule, a
+  manual run or a change request from the same repository, never for
+  a change request from a fork, whose code would otherwise run on the
+  repository's own machine.
+
+### Changed
+
+- `x86_64-darwin` is a CI system (paradigm T19, owner 2026-10-24).
+  `system::DEFAULT_SYSTEMS` is now all four systems, so a `gate` or
+  `build` row with `-` in `systems` runs on Intel macOS too, and a row
+  may list `x86_64-darwin`. Every consumer's generated pipeline gains
+  that system once it takes this version, and each forge's runner
+  table has to cover it, by a default label or by refusing with
+  `NoRunner`.
+- `system::ci_system` is removed: every system is a CI system.
+  `SystemError::NoRunner` now means "this forge has no default runner
+  and `## runners` names none", and its message names that fix.
+- `tests/golden/ci.yaml` differs from what actlith rendered at
+  `7ce69c6` by one thing: the gate matrix lists `x86_64-darwin`, with
+  GitHub's Intel macOS label in the test's runner table.
+- These are breaking API changes, so the next release is `0.2.0`.
+
 ## [0.1.1] - 2026-10-17
 
 ### Added

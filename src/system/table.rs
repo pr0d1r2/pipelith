@@ -15,7 +15,7 @@ pub enum System {
     Aarch64Linux,
     /// `aarch64-darwin`.
     Aarch64Darwin,
-    /// `x86_64-darwin`: known, but no forge hosts a runner for it.
+    /// `x86_64-darwin`: Intel macOS.
     X86_64Darwin,
 }
 
@@ -24,7 +24,8 @@ pub enum System {
 pub enum SystemError {
     /// The name is not a nix system in the table.
     Unknown(String),
-    /// The system is known but no forge hosts a CI runner for it (V21).
+    /// The forge has no default runner for the system and the
+    /// repository names none in `## runners` (V22, src/runner V80).
     NoRunner(System),
 }
 
@@ -48,12 +49,8 @@ pub const ALL: [System; 4] = [
 ];
 
 /// The systems a kind runs on when its row says `-`, and the set every
-/// forge's runner table must cover (V22).
-pub const DEFAULT_SYSTEMS: [System; 3] = [
-    System::X86_64Linux,
-    System::Aarch64Linux,
-    System::Aarch64Darwin,
-];
+/// forge's runner table must cover (V22): every system (V21).
+pub const DEFAULT_SYSTEMS: [System; 4] = ALL;
 
 impl System {
     /// The nix name, exactly as nix spells it.
@@ -79,19 +76,6 @@ pub fn parse_system(name: &str) -> Result<System, SystemError> {
         .ok_or_else(|| SystemError::Unknown(name.to_owned()))
 }
 
-/// `system` when some forge hosts a CI runner for it.
-///
-/// # Errors
-///
-/// [`SystemError::NoRunner`] for `x86_64-darwin` (V21).
-pub fn ci_system(system: System) -> Result<System, SystemError> {
-    if system == System::X86_64Darwin {
-        Err(SystemError::NoRunner(system))
-    } else {
-        Ok(system)
-    }
-}
-
 impl fmt::Display for System {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.write_str(self.name())
@@ -108,8 +92,9 @@ impl fmt::Display for SystemError {
             }
             Self::NoRunner(system) => write!(
                 f,
-                "system `{system}` has no hosted CI runner on any forge; \
-                 build and verify it by hand on an Intel Mac"
+                "system `{system}` has no default runner on this forge; \
+                 name the repository's own runner in `## runners`: \
+                 `{system}|<label>, <label>`"
             ),
         }
     }
