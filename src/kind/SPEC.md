@@ -11,9 +11,10 @@ up|.|-
 up|src|the library: grammar, YAML writer, systems, files, kinds, detect
 self|src/kind|neutral kind catalogue, row & arg validation, secret purposes, portability check
 sib|src/registry|pipe-table grammar: format line, sections, header rows, cells, errors
-sib|src/system|nix system names, CI coverage set, `x86_64-darwin` refusal
+sib|src/system|nix system names, CI coverage set
 sib|src/yaml|ordered YAML model & writer: quoting, layout, comments, `Dialect` trait
 sib|src/files|generated header, write, drift check, path safety
+sib|src/runner|own runner labels per system
 sib|src/detect|rows from tracked files, first config file
 
 ## §C CONSTRAINTS
@@ -36,7 +37,7 @@ V32: ∀ kind declares ∀ secret PURPOSE it needs; forge maps purpose → secre
 V33: `portable` → 1 finding per forge-only kind | key in row; empty ⇔ row renders on both forges (D4, D17)
 V34: catalogue values (names, keys, defaults) == actlith @ `7ce69c6` except `ArgDefault::Forge` where actlith default named a GitHub secret (`.:V3`)
 
-V52: systems `-` → kind default; ∀ system via `system::parse_system` + `ci_system` (`x86_64-darwin` refused); duplicate → error
+V52: systems `-` → kind default; ∀ system via `system::parse_system` (∀ 4 = CI systems, `src/system:V21`); duplicate → error
 V53: cache = cachix name w/ public key from built-in table (v1 `pr0d1r2`); other name refused w/ fix hint, ⊥ guessed key. cachix serves both forges ∴ neutral
 
 V75: `Row::check` refuses what actlith refused only at build: `build` w/o cache; `package` ∉ flake attr name (`[A-Za-z_][A-Za-z0-9_-]*`); `cron` ≠ 5 fields of `[A-Za-z0-9*/-]`; `token` ∉ secret name (`[A-Za-z_][A-Za-z0-9_]*`) ∴ passing row ⊥ refused by a forge (`.:V4`); messages = actlith's (`token` hint also names leading-digit rule)

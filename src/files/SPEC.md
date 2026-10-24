@@ -11,9 +11,10 @@ up|.|-
 up|src|the library: grammar, YAML writer, systems, files, kinds, detect
 self|src/files|generated header, write, drift check, path safety
 sib|src/registry|pipe-table grammar: format line, sections, header rows, cells, errors
-sib|src/system|nix system names, CI coverage set, `x86_64-darwin` refusal
+sib|src/system|nix system names, CI coverage set
 sib|src/yaml|ordered YAML model & writer: quoting, layout, comments, `Dialect` trait
 sib|src/kind|neutral kind catalogue, row & arg validation, secret purposes, portability check
+sib|src/runner|own runner labels per system
 sib|src/detect|rows from tracked files, first config file
 
 ## §C CONSTRAINTS
