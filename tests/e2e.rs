@@ -3,8 +3,10 @@
 //! schema holding `kind::WORKFLOWS`, its `ci` row is checked by `kind`,
 //! a GitHub-shaped tree is built here from the row's values and written
 //! by `yaml` under `files::header`; the bytes must equal the `ci.yml`
-//! actlith rendered from that row (tests V38, root V3). Everything GitHub
-//! (runner labels, pins, secret names, expression syntax) is test-local.
+//! actlith rendered from that row (tests V38, root V3), plus the
+//! `x86_64-darwin` matrix entry the gate default gained (src/system V21,
+//! CHANGELOG). Everything GitHub (runner labels, pins, secret names,
+//! expression syntax) is test-local.
 
 use std::error::Error;
 use std::fs;
@@ -25,7 +27,8 @@ const CONFIG: &str = ".actlith";
 const ACTLITH: &str = include_str!("fixtures/e2e/.actlith");
 
 /// What actlith @ `7ce69c6` rendered from that registry's `ci` row:
-/// `.github/workflows/ci.yml` (and its render fixture, the same bytes).
+/// `.github/workflows/ci.yml` (and its render fixture, the same bytes),
+/// with `x86_64-darwin` added to the matrix.
 const GOLDEN: &str = "tests/golden/ci.yaml";
 
 /// Where actlith writes the workflow of row `ci`.
@@ -57,10 +60,12 @@ const SECTIONS: [SectionSpec<'static>; 4] =
     [kind::WORKFLOWS, ACTIONS, HAND_WRITTEN, BOTS];
 
 /// GitHub-hosted runner labels, as actlith's `system::runner` maps them.
-const RUNNERS: [(System, &str); 3] = [
+/// `x86_64-darwin` maps to GitHub's Intel macOS image (SPEC.md R7, T38).
+const RUNNERS: [(System, &str); 4] = [
     (System::X86_64Linux, "ubuntu-latest"),
     (System::Aarch64Linux, "ubuntu-24.04-arm"),
     (System::Aarch64Darwin, "macos-latest"),
+    (System::X86_64Darwin, "macos-15-intel"),
 ];
 
 /// actlith's pin table @ `7ce69c6`: action, commit, version.
@@ -307,7 +312,15 @@ fn actlith_ci_row_renders_actlith_golden_byte_for_byte() -> Built<()> {
 fn ci_row_takes_the_gate_defaults_and_the_named_cache() -> Built<()> {
     let row = ci_row()?;
     let names: Vec<&str> = row.systems.iter().map(|s| s.name()).collect();
-    assert_eq!(names, ["x86_64-linux", "aarch64-linux", "aarch64-darwin"]);
+    assert_eq!(
+        names,
+        [
+            "x86_64-linux",
+            "aarch64-linux",
+            "aarch64-darwin",
+            "x86_64-darwin"
+        ]
+    );
     assert_eq!(row.cache.as_ref().map(Cache::name), Some("pr0d1r2"));
     assert_eq!(row.args.timeout()?, kind::DEFAULT_TIMEOUT);
     Ok(())
