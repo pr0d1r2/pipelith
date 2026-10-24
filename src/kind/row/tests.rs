@@ -76,13 +76,9 @@ fn listed_systems_keep_their_order() -> Result<(), String> {
 }
 
 #[test]
-fn a_system_without_a_runner_is_refused() {
-    assert_eq!(
-        refused("intel"),
-        "line 9: system `x86_64-darwin` has no hosted CI runner on any \
-         forge; build and verify it by hand on an Intel Mac (write systems \
-         with a hosted runner, or `-`)"
-    );
+fn intel_mac_is_a_ci_system() -> Result<(), String> {
+    assert_eq!(checked("intel")?.systems, [System::X86_64Darwin]);
+    Ok(())
 }
 
 #[test]

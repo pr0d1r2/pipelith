@@ -1,6 +1,4 @@
-use super::{
-    ALL, DEFAULT_SYSTEMS, System, SystemError, ci_system, parse_system,
-};
+use super::{ALL, DEFAULT_SYSTEMS, System, SystemError, parse_system};
 
 const NAMES: [(&str, System); 4] = [
     ("x86_64-linux", System::X86_64Linux),
@@ -53,48 +51,24 @@ fn unknown_message_names_it_and_the_known_ones() {
 }
 
 #[test]
-fn default_systems_are_ci_systems() {
-    for system in DEFAULT_SYSTEMS {
-        assert_eq!(ci_system(system), Ok(system), "{system}");
-    }
-}
-
-#[test]
-fn x86_64_darwin_is_refused_for_ci() {
-    assert_eq!(
-        ci_system(System::X86_64Darwin),
-        Err(SystemError::NoRunner(System::X86_64Darwin))
-    );
-}
-
-#[test]
-fn no_runner_message_names_hand_verification() {
+fn no_runner_message_names_the_runners_fix() {
     let msg = SystemError::NoRunner(System::X86_64Darwin).to_string();
     assert_eq!(
         msg,
-        "system `x86_64-darwin` has no hosted CI runner on any forge; \
-         build and verify it by hand on an Intel Mac"
+        "system `x86_64-darwin` has no default runner on this forge; \
+         name the repository's own runner in `## runners`: \
+         `x86_64-darwin|<label>, <label>`"
     );
 }
 
 #[test]
-fn default_systems_are_the_hosted_three() {
-    assert_eq!(
-        DEFAULT_SYSTEMS,
-        [
-            System::X86_64Linux,
-            System::Aarch64Linux,
-            System::Aarch64Darwin
-        ]
-    );
+fn every_system_is_a_default() {
+    assert_eq!(DEFAULT_SYSTEMS.as_slice(), ALL.as_slice());
 }
 
 #[test]
-fn every_system_but_x86_64_darwin_is_a_default() {
-    for system in ALL {
-        let hosted = system != System::X86_64Darwin;
-        assert_eq!(DEFAULT_SYSTEMS.contains(&system), hosted, "{system}");
-    }
+fn intel_mac_is_a_default() {
+    assert!(DEFAULT_SYSTEMS.contains(&System::X86_64Darwin));
 }
 
 #[test]

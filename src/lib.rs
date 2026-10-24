@@ -18,6 +18,7 @@ pub mod detect;
 pub mod files;
 pub mod kind;
 pub mod registry;
+pub mod runner;
 pub mod system;
 pub mod yaml;
 
