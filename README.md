@@ -72,7 +72,11 @@ the config file's name, not its rows.
 - `yaml`: a YAML writer that cannot emit malformed YAML: ordered maps,
   sequences, scalars under one quoting rule, comments on nodes, a fixed
   layout. Expression syntax comes from the forge through a `Dialect`.
-- `system`: the nix system names every forge must cover.
+- `system`: the nix system names every forge must cover, Intel macOS
+  included.
+- `runner`: the `## runners` section, where a repository names its own
+  runner's labels for a system, over the forge's default, and the trust
+  guard that keeps a fork's change request off that machine.
 - `kind`: the neutral catalogue of CI kinds (`gate`, `build`,
   `update-pins`, `upstream`), their row columns, argument schemas and
   secrets by purpose, with row validation and a portability check.
@@ -109,7 +113,8 @@ from crates.io or pinned to a commit.
   the ones its caller lists, under the root the caller passes.
 - **Byte-identical extraction.** pipelith was extracted from actlith at
   commit `7ce69c6`; its tests rebuild actlith's own `ci.yml` through the
-  public API and require the same bytes.
+  public API and require the same bytes, plus the `x86_64-darwin` matrix
+  entry the gate default gained since (CHANGELOG).
 - **Small and strict.** No dependencies beyond std, no `unsafe`, and
   lints that deny `unwrap`, `panic`, indexing and unchecked arithmetic.
 - **Versioned on bytes.** A change to the bytes the YAML writer or the

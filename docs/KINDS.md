@@ -41,7 +41,9 @@ both forges.
 - `kind`: one of the kinds below, or a forge-only kind the forge crate
   declares (reported by the portability check).
 - `systems`: nix systems, comma-separated; `-` takes the kind's default.
-  `x86_64-darwin` is refused: no forge hosts a runner for it.
+  All four are CI systems: `x86_64-linux`, `aarch64-linux`,
+  `aarch64-darwin`, `x86_64-darwin`. Which runner runs each is the
+  forge's default or the repository's own (`## runners` below).
 - `cache`: a cachix cache whose public key pipelith knows (v1:
   `pr0d1r2`); `-` means no cache steps.
 - `args`: `key=value` pairs, comma-separated, checked against the kind's
@@ -52,6 +54,38 @@ both forges.
   letters, digits and `._/#+:@-`, not empty, not starting with `-`.
 - A row that validates is never refused later by a forge: every rule a
   forge would apply while rendering is checked with the row.
+
+## Runners
+
+Section `## runners`, columns `system|labels`, optional, the same on
+both forges. A row puts that system's jobs, in every `## workflows`
+row, on the repository's own runner: one carrying every listed label.
+
+```text
+## runners
+system|labels
+x86_64-darwin|self-hosted, macOS, X64
+```
+
+- `system`: a nix system, once per section.
+- `labels`: the runner's labels (GitHub) or tags (GitLab),
+  comma-separated, at least one; each is letters, digits and `._-`, not
+  starting with `-`.
+- A system without a row runs on the forge's default runner. A forge
+  with no default for it (GitLab hosts no Intel Mac, and the fleet's
+  GitLab runs only its own runners) refuses the row and names the
+  `## runners` fix; the refusal comes while the row is validated.
+- Trust: a job on the repository's own runner runs only for a push, a
+  schedule, a manual run or a change request from a branch of the same
+  repository. It never runs for a change request from a fork, since that
+  would run a stranger's code on the owner's machine with its network
+  and files. There is no switch to allow it. On a public repository,
+  also keep the runner registered to that one repository and, where the
+  forge allows it, require approval before fork pipelines run at all.
+  The forge pages name the syntax.
+- A required check whose Intel job was skipped for a fork change request
+  reads as skipped, not failed; the job runs again on the push after
+  the merge.
 
 ## Secrets, by purpose
 
@@ -72,7 +106,8 @@ The hk gate on every supported system.
   protection reads it.
 - Steps: full-history checkout (the semver step needs tags), nix, cache,
   then the gate command.
-- Default systems: `x86_64-linux`, `aarch64-linux`, `aarch64-darwin`.
+- Default systems: `x86_64-linux`, `aarch64-linux`, `aarch64-darwin`,
+  `x86_64-darwin`.
 - args: `command` (default `nix develop --command hk check --all
   --check`), `timeout`.
 
@@ -85,7 +120,7 @@ has it. For packaging repositories.
 - Job `build`: per system, build `.#packages.<system>.<package>`; cache
   push only from the default branch.
 - Job `check`: `nix flake check --all-systems`, then evaluation only for
-  systems without a runner (`x86_64-darwin`), so they cannot rot.
+  flake systems the row does not build, so they cannot rot.
 - Job `verify-cache` (after `build`, default branch only): every
   system's output path answers from the cache, since a failed cache push
   does not fail its job.
