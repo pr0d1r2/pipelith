@@ -11,7 +11,10 @@ pipelith owns what every forge shares:
 
 - the pipe-table grammar of the config file (`registry`);
 - the neutral `## workflows` rows, the kind catalogue and its checks
-  (`kind`), and the nix system names (`system`);
+  (`kind`), the nix system names and the set every forge covers
+  (`system`);
+- the `## runners` section, where a repository names its own runner
+  for a system, and the trust guard such a runner carries (`runner`);
 - a YAML writer that cannot emit malformed YAML (`yaml`);
 - the generated header, the write and the drift check (`files`);
 - proposed rows from tracked files and the first config file (`detect`).
@@ -19,7 +22,12 @@ pipelith owns what every forge shares:
 The forge crate supplies the rest: its config file name, its forge-only
 sections, kinds and argument keys, its pipeline model lowered to a
 `yaml` tree, a `yaml::Dialect` for its expression syntax, its runner and
-pin tables, and where each file lands. pipelith depends on no forge
+pin tables, and where each file lands. Its runner table covers every
+system in `system::DEFAULT_SYSTEMS`, with a default label or none; for
+each system of each checked row it asks `runner::Runners::pick` with
+that answer while it validates, renders `Runner::Labels` as the
+repository's own runner, and runs that job only when
+`Runner::trusted_only` allows: never for a change request from a fork. pipelith depends on no forge
 crate, and nothing forge-specific is written here.
 
 ## Depending on pipelith
