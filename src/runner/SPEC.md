@@ -38,7 +38,7 @@ V81: `Labels` ⇒ `trusted_only`: forge runs job only for push, schedule, manual
 ## §T TASKS
 
 id|status|task|cites
-T37|.|`RUNNERS`, `Runners`, `Runner`, `trusted_only` w/ tests; `lib.rs` declares node|V80,V81,`.:V9`,`.:T38`
+T37|x|`RUNNERS`, `Runners`, `Runner`, `trusted_only` w/ tests; `lib.rs` declares node|V80,V81,`.:V9`,`.:T38`
 
 ## §B BUGS
 

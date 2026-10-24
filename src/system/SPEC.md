@@ -36,7 +36,7 @@ V22: `DEFAULT_SYSTEMS` = `ALL` = set ∀ forge runner table ! cover: label | ⊥
 
 id|status|task|cites
 T11|x|port `System`, parse & names w/ tests; `ci_system` refusal; ⊥ runner table|V20,V21,V22,`.:V10`
-T36|.|`DEFAULT_SYSTEMS` = `ALL`; drop `ci_system`; `NoRunner` message names `## runners` fix|V21,V22,`.:T38`
+T36|x|`DEFAULT_SYSTEMS` = `ALL`; drop `ci_system`; `NoRunner` message names `## runners` fix|V21,V22,`.:T38`
 
 ## §B BUGS
 
