@@ -46,7 +46,8 @@ self|.|-
 
 - lib: `pipelith::registry` → parse pipe-table text vs caller schema → sections of rows of cells w/ line numbers; error names file, line, column; refuses newer `format` (`src/registry`).
 - lib: `pipelith::yaml` → ordered maps, sequences, scalars w/ 1 quoting rule, comments on nodes; `render` → bytes, fixed layout; forge expression syntax via `Dialect` (`src/yaml`).
-- lib: `pipelith::system` → nix system names, set every forge ! cover, refusal of `x86_64-darwin` (`src/system`).
+- lib: `pipelith::system` → nix system names, set every forge ! cover, ∀ 4 incl. `x86_64-darwin` (`src/system`).
+- lib: `pipelith::runner` → `## runners` section: repo's own runner labels per system over forge default; trust guard (`src/runner`).
 - lib: `pipelith::kind` → neutral catalogue: kinds `gate` `build` `update-pins` `upstream`, row columns, arg schemas, secrets by purpose; row validation; portability check (`src/kind`).
 - lib: `pipelith::files` → file set (path, bytes); generated header from tool & config name; `write` & `check` (stale | missing) (`src/files`).
 - lib: `pipelith::detect` → proposed rows from tracked files; first config file ⊥ over existing (`src/detect`).
@@ -66,6 +67,7 @@ R3|pklith grammar|`.pklith` uses same pipe-table grammar w/ own parser ∴ later
 R4|rejected designs|1 tool w/ `--forge` (pins, hardening, layout, linters per forge ∴ most code per forge) · copy into lablith (2 copies drift) · 1 cargo workspace for 3 crates (fleet = 1 repo per tool; actlith gate & release assume 1 crate) · extract after copy (2nd consumer certain)|`SPEC-PROMPT.md` Prior art
 R5|actlith ties|actlith spec already plans its side: byte-identical switch, both-forge kinds rule, rows & KINDS split, git pin of pipelith (its `tests` `src/kind` `nix` nodes)|actlith `SPEC.md` tree 2026-10-16
 R6|expressions|actlith `yaml::text::Expr` renders `${{ }}` & escapes literal `${{` as `${{ '${{' }}` = GitHub syntax ∴ ⊥ neutral; GitLab expands `$VAR`, escapes `$$` ∴ forge supplies `Dialect`|actlith `src/yaml/text.rs` @ `7ce69c6`
+R7|Intel macOS|2026-10-24: GitHub hosts 1 Intel macOS standard image, last x86_64 one, until 2027-08 (label = actlith's); GitLab.com hosted macOS = Apple silicon only; fleet GitLab self-hosted ∴ its runners = repo's own. GitHub advises ⊥ self-hosted on public repo: fork change request runs code there|`actions/runner-images` README & #13045; GitHub docs "self-hosted runner security"
 
 ## §V INVARIANTS
 
@@ -93,6 +95,7 @@ T5|.|pklith issue proposing `registry` reuse, ⊥ naming private repos, after sh
 T6|x|`docs/KINDS.md` neutral catalogue from actlith `docs/KINDS.md`: intent, events, secret purposes, row values; GitHub syntax stays in actlith|V11,V5
 T7|.|owner review of prompt round 2 (D13–D18) & neutral section name `## workflows`; OQ1 answer (`.actlith`/`.lablith` vs `.pipelith`) → new round|-
 T34|x|open-source prep, public members' shape: community pages, README links, doctested integration walk-through|V78,V9
+T38|.|paradigm T19 (owner 2026-10-24): CI covers `x86_64-darwin`. actlith: GitHub Intel image as default (R7), `## runners` labels, `src/runner` guard; lablith: ⊥ hosted Intel Mac → `NoRunner` unless `## runners` tags. each ! user approval|`src/system:V21`,`src/runner:V80`,`src/runner:V81`,V4
 
 ## §B BUGS
 

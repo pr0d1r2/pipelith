@@ -8,10 +8,11 @@
 
 dir|owns|⊥owns|tokens
 registry|pipe-table grammar: format line, sections, header rows, cells, errors|what any section means|-
-system|nix system names, CI coverage set, `x86_64-darwin` refusal|runner labels|-
+system|nix system names, CI coverage set|runner labels|-
 yaml|ordered YAML model & writer: quoting, layout, comments, `Dialect` trait|pipeline keys, expression syntax|-
 files|generated header, write, drift check, path safety|file contents, forge layout|-
 kind|neutral kind catalogue, row & arg validation, secret purposes, portability check|pipeline shapes, secret names|-
+runner|own runner labels per system|default labels, guard syntax|-
 detect|rows from tracked files, first config file|rendering, listing files|-
 
 ## §N NAV
@@ -26,7 +27,7 @@ sib|nix|repo gate: dev shell, guardrails, hk steps, CI, release
 ## §C CONSTRAINTS
 
 - module = dir + `mod.rs`. `mod.rs` composes & re-exports, ⊥ implements.
-- dep order (waves): `registry`, `system`, `yaml`, `files` → `kind` → `detect`. edges = `use crate::<node>` imports between siblings; scaffold used `use crate::<node> as _;` until real imports landed.
+- dep order (waves): `registry`, `system`, `yaml`, `files` → `kind`, `runner` → `detect`. edges = `use crate::<node>` imports between siblings; scaffold used `use crate::<node> as _;` until real imports landed.
 - port from actlith @ `7ce69c6` = `pub(crate)` → `pub` + rustdoc; behaviour & bytes unchanged unless a §V here says otherwise.
 
 ## §V INVARIANTS
