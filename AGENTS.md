@@ -31,7 +31,7 @@ Instructions for coding agents working in this repository.
 Generated from `hk.pkl`; the `agents-table` step fails when it is stale.
 
 <!-- BEGIN steps: generated from hk.pkl by `cargo run -p pipelith-dev -- agents`; do not edit -->
-46 steps run on every commit and 48 on push and `hk check`; the commit-msg hook checks the message.
+47 steps run on every commit and 49 on push and `hk check`; the commit-msg hook checks the message.
 
 | step | runs on | files | fixes |
 | --- | --- | --- | --- |
@@ -79,6 +79,7 @@ Generated from `hk.pkl`; the `agents-table` step fails when it is stale.
 | `deny` | commit | `Cargo.toml` `Cargo.lock` `deny.toml` | - |
 | `gen-check` | commit | `.pklith` `hk.pklith.pkl` `nix/pklith.nix` | yes |
 | `pklith-check` | commit | whole tree | - |
+| `actlith-gen-check` | commit | `.actlith` `.github/workflows/**` | yes |
 | `no-core-worktree` | commit | whole tree | - |
 | `tdd-order` | push | `**/*.rs` `nix/guard/tdd-order.sh` `nix/guard/tdd-order.exempt` | - |
 | `test` | push | `**/*.rs` `Cargo.toml` `Cargo.lock` | - |

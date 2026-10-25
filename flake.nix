@@ -57,6 +57,12 @@
       inputs.nixpkgs-lock.follows = "nixpkgs-lock";
       inputs.nix-hk.follows = "nix-hk";
     };
+    # Renders and checks the workflows from `.actlith` (nix T30).
+    actlith = {
+      url = "github:pr0d1r2/actlith/v0.1.0";
+      inputs.nixpkgs-lock.follows = "nixpkgs-lock";
+      inputs.nix-hk.follows = "nix-hk";
+    };
     # One language per file, 1:1 test mirror, TDD order (`xnl`).
     xenolith = {
       url = "github:pr0d1r2/xenolith/v0.1.0";
@@ -75,6 +81,7 @@
       pklith,
       rekall,
       xenolith,
+      actlith,
       ...
     }:
     let
@@ -97,6 +104,7 @@
           pklith
           rekall
           xenolith
+          actlith
           ;
       };
 

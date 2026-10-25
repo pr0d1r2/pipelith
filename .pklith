@@ -35,6 +35,9 @@ rust-mirror|lint|-|**/*.rs, nix/guard/rust-mirror.sh|bash nix/guard/rust-mirror.
 # Forge tokens stay out of the library (SPEC.md V2, nix V50).
 forge-neutral|lint|-|src/**/*.rs, nix/guard/forge-neutral.sh|bash nix/guard/forge-neutral.sh|-|-|forge-specific text in the library; it belongs in actlith or lablith
 
+# Dogfood (nix T30): this repository's workflow comes from .actlith.
+actlith-gen-check|gate|-|.actlith, .github/workflows/**|actlith gen --check|actlith gen|-|a generated workflow no longer matches .actlith; run `actlith gen`
+
 # Shared git config stays clean for parallel workers (nix V47).
 no-core-worktree|gate|-|-|bash nix/guard/no-core-worktree.sh|-|-|.git/config sets core.worktree, which every worktree shares
 
@@ -87,7 +90,8 @@ rs|rustfmt, clippy, rust-mirror, tdd-order, doctest, rustdoc, test, coverage|-|-
 path:src/**/*.rs|rustfmt, clippy, rust-mirror, forge-neutral, tdd-order, doctest, rustdoc, test, coverage|-|-
 LICENSE|-|-|license text, nothing to lint
 exempt|tdd-order|-|-
-yml|yamllint, actionlint, zizmor|-|-
+path:.github/workflows/*.yml|yamllint, actionlint, zizmor, actlith-gen-check|-|-
+path:.actlith|actlith-gen-check|-|-
 coverage|coverage|-|-
 actlith|-|-|registry grammar and detect fixtures copied 1-to-1 from actlith; src/registry and src/detect unit tests read them
 path:tests/fixtures/**/*.lock|-|-|src/detect test fixtures: flake.lock samples read by its tests
