@@ -25,8 +25,18 @@ allow-branch = ["main"]
 # The gate, called rather than re-checked; a non-zero return aborts the
 # release. `--check` because a fixer would rewrite a tree cargo-release has
 # just found clean; `--no-fail-fast` because at release a complete list beats
-# an early one.
-pre-release-hook = ["hk", "check", "--all", "--check", "--no-fail-fast"]
+# an early one. `no-commit-to-branch` is skipped: it refuses HEAD on `main`,
+# where `allow-branch` requires a release to run, and it guards commits, not
+# the tag and upload that happen here.
+pre-release-hook = [
+  "hk",
+  "check",
+  "--all",
+  "--check",
+  "--no-fail-fast",
+  "--skip-step",
+  "no-commit-to-branch",
+]
 
 # `v<x.y.z>`: the fleet's tag scheme. A semver step (cargo-semver-checks is
 # in the dev shell) can then diff the public API against the newest tag.
