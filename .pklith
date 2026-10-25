@@ -38,6 +38,9 @@ forge-neutral|lint|-|src/**/*.rs, nix/guard/forge-neutral.sh|bash nix/guard/forg
 # Shared git config stays clean for parallel workers (nix V47).
 no-core-worktree|gate|-|-|bash nix/guard/no-core-worktree.sh|-|-|.git/config sets core.worktree, which every worktree shares
 
+# Work lands by branch and pull request, never on main (nix T28, V42).
+no-commit-to-branch|gate|-|-|bash nix/guard/no-commit-to-branch.sh main|-|-|HEAD is main; commit on a branch and open a pull request
+
 tdd-order|coverage|-|**/*.rs, nix/guard/tdd-order.sh, nix/guard/tdd-order.exempt|bash nix/guard/tdd-order.sh|-|-|a commit adds Rust code with no test: commit before it in the push range
 
 test|coverage|cargo-nextest|**/*.rs, Cargo.toml, Cargo.lock|cargo nextest run --workspace --no-fail-fast --status-level fail --final-status-level fail|-|-|a test failed, or the suite is empty
@@ -60,7 +63,7 @@ gitattributes|-|-|written by pklith (seed or gen)
 md|markdownlint|-|-
 nix|nixfmt, statix, deadnix, xnl-check, xnl-lint|-|-
 path:**/SPEC.md|markdownlint, mth-fmt, mth-check, sherd-check, sherd-nav, sherd-budget, itok|-|-
-pklith|pklith-check, gen-check, no-core-worktree|-|-
+pklith|pklith-check, gen-check, no-core-worktree, no-commit-to-branch|-|-
 pkl|xnl-check, xnl-lint|-|-
 pre-commit|shellcheck, xnl-check, xnl-lint|-|-
 pre-push|shellcheck, xnl-check, xnl-lint|-|-
