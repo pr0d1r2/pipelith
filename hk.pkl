@@ -14,7 +14,17 @@ hooks {
   ["pre-commit"] {
     fix = false
     stash = "none"
-    steps = generated.steps
+    steps = (generated.steps) {
+      // nix T28, V42: work lands by branch and pull request, never on main.
+      // HERE, not in .pklith: it is a rule about making a commit, which
+      // happens only through this hook. pre-push, `hk check`, CI and the
+      // release hook all run on main by design, so there the step could
+      // only fail; it refused `cargo release hook` and the v0.2.0 tag push.
+      // As actlith.
+      ["no-commit-to-branch"] {
+        check = "bash nix/guard/no-commit-to-branch.sh main"
+      }
+    }
   }
   // nix T21, dev V41: subject `type(scope): claim`, at most 72 characters,
   // a body that says why; tested Rust in pipelith-dev. hk passes the file
