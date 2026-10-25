@@ -4,13 +4,13 @@
 
 `pipelith` (lib, ⊥ bin) — forge-NEUTRAL core of fleet CI materializers: pipe-table registry grammar, YAML writer that cannot emit malformed YAML, generated-file set w/ drift check, neutral catalogue of CI kinds. `actlith` renders it for GitHub Actions, `lablith` for GitLab CI.
 
-WHY: project starts private on GitLab, moves to GitHub on release ∴ CI rows move w/ it. actlith holds every shared part mixed w/ GitHub code; copy into lablith = the drift actlith exists to end (R4).
+WHY: starts private on GitLab, moves to GitHub on release ∴ CI rows move w/ it. actlith mixes every shared part w/ GitHub code; copy into lablith = the drift actlith exists to end (R4).
 
-GOALS: 1 impl of grammar, writer & drift check used by both forges · 1 neutral kind catalogue (kind names, columns, arg schemas, nix systems mean same on both) · row valid vs catalogue renders on both ∴ release changes file name, ⊥ rows · extraction changes ⊥ byte of any workflow actlith renders.
+GOALS: 1 impl of grammar, writer & drift check, both forges · 1 neutral kind catalogue (kind names, columns, arg schemas, nix systems mean same on both) · row valid vs catalogue renders on both ∴ release changes file name, ⊥ rows · extraction changes ⊥ byte of any actlith workflow.
 
 NAME: pipe(line) + lith; pipe tables = the grammar it owns. fleet family `pklith` `actlith` `lablith` `microlith` `xenolith` (V8).
 
-SOURCES: `SPEC-PROMPT.md` (decisions D1–D18), actlith @ `7ce69c6` (extraction source, D2). this spec wins where they differ.
+SOURCES: `SPEC-PROMPT.md` (decisions D1–D18), actlith @ `7ce69c6` (D2). this spec wins where they differ.
 
 ## §F FEDERATION
 
@@ -30,11 +30,11 @@ self|.|-
 
 - deterministic & offline: ⊥ network, ⊥ clock, ⊥ host, ⊥ env, ⊥ rng in any output (D7, `actlith/V1`). pin resolution (networked) stays in forge crates.
 - library only: ⊥ binary, ⊥ CLI. users run actlith | lablith.
-- forge-neutral: ⊥ GitHub Actions | GitLab CI keys, runner labels, action pins, image digests, API calls. pipelith deps on ⊥ forge crate; forge crates dep on pipelith (D1).
+- forge-neutral: ⊥ GitHub Actions | GitLab CI keys, runner labels, action pins, image digests, API calls. pipelith deps on ⊥ forge crate; forge crates dep on it (D1).
 - lang: Rust edition 2024, stable, MSRV 1.95 = fleet pin (`nixpkgs-lock` → nixos-26.05). MIT. `unsafe_code = "forbid"`.
 - runtime deps: std only. ∀ dep (dev-deps too) ! §R row (D8).
 - layout: ONE published crate `pipelith` (lib); `dev/` = `pipelith-dev`, `publish = false` (D18). module = dir + `mod.rs` = node; node modules `pub` & documented (D15).
-- extraction: source actlith @ `7ce69c6`; code moves w/ its unit tests & §V rows (D2). actlith repo ⊥ edited from here.
+- extraction: actlith @ `7ce69c6`; code moves w/ its unit tests & §V rows (D2). actlith repo ⊥ edited from here.
 - ⊥ YAML reader. ⊥ generic templating: kinds' shapes = typed Rust data in forge crates; pipelith holds only kind names, columns, schemas, secret purposes.
 - neutral section: rows live in `## workflows` w/ columns `id|kind|systems|cache|args` on both forges (actlith's names kept ∴ ⊥ actlith interface change; owner review `.:T7`).
 - TDD RED → GREEN → REFACTOR. 1-to-1 unit coverage, hard floor + `.coverage` ratchet, aim 100%.
@@ -55,7 +55,7 @@ self|.|-
 - forge crate supplies: config file name, forge-only sections & columns & arg keys, pipeline YAML model, `yaml::Dialect`, runner table, pin table, file layout.
 - doc: `docs/KINDS.md` = neutral kind catalogue (intent, triggers as events, secrets as purposes, row values). forge pages `docs/KINDS-GITHUB.md` (actlith), `docs/KINDS-GITLAB.md` (lablith) map intent → syntax (D5).
 - doc: community pages as public fleet members: `docs/SECURITY.md` (private report, trust surface), `docs/CONTRIBUTING.md`, `docs/CODE_OF_CONDUCT.md`, `docs/INTEGRATION.md` (forge crate walk-through); README links each.
-- consumer: before publish, forge crate takes git dep pinned to full commit, allowed in its `deny.toml` `[sources]`, nix `outputHashes` entry. pipelith published before actlith `0.1.0-rc.1` (D11).
+- consumer: before publish, forge crate takes git dep pinned to full commit, allowed in `deny.toml` `[sources]`, nix `outputHashes`. pipelith published before actlith `0.1.0-rc.1` (D11).
 - nix: flake `checks.<system>` build & test the crate (doctests incl.); `devShells` from pklith `lib.devShell`. ⊥ `packages` app (library).
 
 ## §R RESEARCH
@@ -65,22 +65,22 @@ R1|actlith survey|LoC @ `7ce69c6`: `registry` 686 split (`format` `table` `cells
 R2|name|`pipelith` free 2026-10-16: crates.io API 404, ⊥ GitHub repo `pr0d1r2/pipelith`. rejected `piplith` (reads as Python `pip`), `lithcore` `corelith` (break `<purpose>lith`)|`curl https://crates.io/api/v1/crates/pipelith`, `gh repo view pr0d1r2/pipelith`
 R3|pklith grammar|`.pklith` uses same pipe-table grammar w/ own parser ∴ later `registry` consumer; proposal = pklith issue after ship (D12)|pklith source
 R4|rejected designs|1 tool w/ `--forge` (pins, hardening, layout, linters per forge ∴ most code per forge) · copy into lablith (2 copies drift) · 1 cargo workspace for 3 crates (fleet = 1 repo per tool; actlith gate & release assume 1 crate) · extract after copy (2nd consumer certain)|`SPEC-PROMPT.md` Prior art
-R5|actlith ties|actlith spec already plans its side: byte-identical switch, both-forge kinds rule, rows & KINDS split, git pin of pipelith (its `tests` `src/kind` `nix` nodes)|actlith `SPEC.md` tree 2026-10-16
+R5|actlith ties|actlith spec plans its side: byte-identical switch, both-forge kinds rule, rows & KINDS split, git pin (its `tests` `src/kind` `nix` nodes)|actlith `SPEC.md` tree 2026-10-16
 R6|expressions|actlith `yaml::text::Expr` renders `${{ }}` & escapes literal `${{` as `${{ '${{' }}` = GitHub syntax ∴ ⊥ neutral; GitLab expands `$VAR`, escapes `$$` ∴ forge supplies `Dialect`|actlith `src/yaml/text.rs` @ `7ce69c6`
-R7|Intel macOS|2026-10-24: GitHub hosts 1 Intel macOS standard image, last x86_64 one, until 2027-08 (label = actlith's); GitLab.com hosted macOS = Apple silicon only; fleet GitLab self-hosted ∴ its runners = repo's own. GitHub advises ⊥ self-hosted on public repo: fork change request runs code there|`actions/runner-images` README & #13045; GitHub docs "self-hosted runner security"
+R7|Intel macOS|2026-10-24: GitHub hosts 1 Intel macOS standard image, last x86_64 one, until 2027-08 (label = actlith's); GitLab.com hosted macOS = Apple silicon only; fleet GitLab self-hosted ∴ its runners = repo's own. GitHub advises ⊥ self-hosted on public repo (fork PRs run code)|`actions/runner-images` README & #13045; GitHub docs "self-hosted runner security"
 
 ## §V INVARIANTS
 
 V1: deterministic: same input + same pipelith version → byte-identical output. ⊥ clock, ⊥ host, ⊥ env, ⊥ network, ⊥ rng anywhere in crate (D7)
-V2: forge-neutral: ⊥ forge key (`runs-on`, `uses:`, `stages:`, `image:`), runner label, action pin, `${{`, API host in `src/` code; pipelith ⊥ deps on forge crate (D1). gate step greps for them
-V3: byte-identical extraction: actlith goldens unchanged when actlith switches to pipelith; golden diff in switch commit = extraction bug (D3). pipelith `tests/golden/` replays them first (`tests`)
+V2: forge-neutral: ⊥ forge key (`runs-on`, `uses:`, `stages:`, `image:`), runner label, action pin, `${{`, API host in `src/` code; pipelith ⊥ deps on forge crate (D1). gate greps for them
+V3: byte-identical extraction: actlith goldens unchanged when actlith switches to pipelith; golden diff in switch commit = extraction bug (D3). pipelith `tests/golden/` replays them (`tests`)
 V4: neutral rows: row passing `kind` validation renders on both forges; ∀ forge-only key | section declared by forge crate & reported by portability check (D4)
 V5: kind ∈ catalogue only when it renders on both forges; forge-only kind lives in forge crate, refused by other forge's portability check (D6, refines `actlith/V24`)
 V6: runtime deps = std only; ∀ dep incl. dev-deps ! §R row (D8)
 V7: rendered bytes of YAML writer | generated header change for same input → ≥ minor version + CHANGELOG entry naming the change (D9, `actlith/V18`)
 V8: crate `pipelith`, lib only, ⊥ bin. rejected names → R2
 V9: public API = node modules declared in `lib.rs`; ∀ pub item documented (`missing_docs` = deny); `lib.rs` ⊥ logic (D15)
-V10: moved code keeps its unit tests & §V rows; moved rule cites actlith origin id (`actlith/V<n>`) ∴ moved rule keeps its proof (D2)
+V10: moved code keeps its unit tests & §V rows; moved rule cites actlith origin id (`actlith/V<n>`) ∴ it keeps its proof (D2)
 V11: `docs/KINDS.md` ↔ `kind` catalogue parity: ∀ kind in doc has §V & code & vice versa; doc ≠ code = bug (as `actlith/V25`)
 V78: `docs/INTEGRATION.md` Rust example compiles & runs as doctest (`#[cfg(doctest)]` include in `lib.rs`) ∴ walk-through ⊥ drift from API
 
@@ -93,10 +93,10 @@ T3|.|actlith switch to pipelith (git dep pinned, `deny.toml` `[sources]`, `outpu
 T4|.|lablith takes pipelith; neutral rows render there ! user approval|V4,V5
 T5|.|pklith issue proposing `registry` reuse, ⊥ naming private repos, after ship ! user approval|-
 T6|x|`docs/KINDS.md` neutral catalogue from actlith `docs/KINDS.md`: intent, events, secret purposes, row values; GitHub syntax stays in actlith|V11,V5
-T7|.|owner review of prompt round 2 (D13–D18) & neutral section name `## workflows`; OQ1 answer (`.actlith`/`.lablith` vs `.pipelith`) → new round|-
-T34|x|open-source prep, public members' shape: community pages, README links, doctested integration walk-through|V78,V9
+T7|.|owner review of prompt round 2 (D13–D18) & section name `## workflows`; OQ1 answer (`.actlith`/`.lablith` vs `.pipelith`) → new round|-
+T34|x|open-source prep: community pages, README links, doctested walk-through|V78,V9
 T38|.|paradigm T19 (owner 2026-10-24): CI covers `x86_64-darwin`. actlith: GitHub Intel image as default (R7), `## runners` labels, `src/runner` guard; lablith: ⊥ hosted Intel Mac → `NoRunner` unless `## runners` tags. each ! user approval|`src/system:V21`,`src/runner:V80`,`src/runner:V81`,V4
-T39|.|next milestone ships `0.2.0`: minor step from `v0.1.1` (pre-1.0) allows the breaking removal of `system::ci_system`, so main's API matches the plan; publish after bump PR ! user approval|V7
+T39|.|next milestone ships `0.2.0`: minor step from `v0.1.1` (pre-1.0) allows breaking removal of `system::ci_system`, so main = plan; publish after bump PR ! user approval|V7
 
 ## §B BUGS
 
