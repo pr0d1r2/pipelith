@@ -1,0 +1,11 @@
+format 1
+
+# pipelith's own registry: the workflows this repository's CI runs,
+# rendered by `actlith gen` (nix T30, dogfood). The gate kind runs the hk
+# gate with the pr0d1r2 cache on the three systems whose dev shell has the
+# gate's tools: pklith has no x86_64-darwin build, so that shell lacks them
+# and the gate cannot run there (nix C).
+
+## workflows
+id|kind|systems|cache|args
+ci|gate|x86_64-linux, aarch64-linux, aarch64-darwin|pr0d1r2|-
