@@ -36,7 +36,7 @@ Take it from crates.io:
 
 ```toml
 [dependencies]
-pipelith = "0.1"
+pipelith = "0.2"
 ```
 
 To build against an unreleased commit, take it as a git dependency
@@ -59,7 +59,7 @@ and give the nix build its hash, in `rustPlatform.buildRustPackage`:
 ```nix
 cargoLock = {
   lockFile = ./Cargo.lock;
-  outputHashes."pipelith-0.1.1" = "<hash nix reports>";
+  outputHashes."pipelith-0.2.0" = "<hash nix reports>";
 };
 ```
 

@@ -123,10 +123,12 @@ from crates.io or pinned to a commit.
 
 ## Status
 
-`0.1.1` on crates.io. Every module is built and tested, with 100% line
+`0.2.0` on crates.io. Every module is built and tested, with 100% line
 coverage. actlith's `main` takes `registry`, `kind`, `system`, `yaml`
 and `files` from pipelith, with every one of its goldens byte-identical;
 its `detect` switch uses `text_with` and `seed_init_text` from 0.1.1.
+0.2.0 breaks the API: `system::ci_system` is gone, `x86_64-darwin` is a
+CI system, and `runner` picks each system's runner (CHANGELOG).
 
 ## The name
 

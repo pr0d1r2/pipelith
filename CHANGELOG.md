@@ -9,6 +9,8 @@ consumers will see change.
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-10-25
+
 ### Added
 
 - `src/runner`: the `## runners` section, header `system|labels`, where
@@ -104,6 +106,7 @@ consumers will see change.
   in a plain scalar is quoted, and adjacent literal parts are escaped as
   one run.
 
-[Unreleased]: https://github.com/pr0d1r2/pipelith/compare/v0.1.1...HEAD
+[Unreleased]: https://github.com/pr0d1r2/pipelith/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/pr0d1r2/pipelith/compare/v0.1.1...v0.2.0
 [0.1.1]: https://github.com/pr0d1r2/pipelith/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/pr0d1r2/pipelith/releases/tag/v0.1.0
