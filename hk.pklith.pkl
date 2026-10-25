@@ -200,6 +200,9 @@ steps: Mapping<String, Config.Step> = new {
   ["no-core-worktree"] {
     check = "command -v bash >/dev/null 2>&1 || { echo 'no-core-worktree: bash is not on PATH; re-enter the dev shell. A MISSING TOOL, not a finding.' >&2; exit 1; }; bash nix/guard/no-core-worktree.sh || { echo 'no-core-worktree: .git/config sets core.worktree, which every worktree shares' >&2; exit 1; }"
   }
+  ["no-commit-to-branch"] {
+    check = "command -v bash >/dev/null 2>&1 || { echo 'no-commit-to-branch: bash is not on PATH; re-enter the dev shell. A MISSING TOOL, not a finding.' >&2; exit 1; }; bash nix/guard/no-commit-to-branch.sh main || { echo 'no-commit-to-branch: HEAD is main; commit on a branch and open a pull request' >&2; exit 1; }"
+  }
 }
 
 push: Mapping<String, Config.Step> = new {
