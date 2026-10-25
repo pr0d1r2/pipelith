@@ -96,7 +96,7 @@ T6|x|`docs/KINDS.md` neutral catalogue from actlith `docs/KINDS.md`: intent, eve
 T7|.|owner review of prompt round 2 (D13–D18) & neutral section name `## workflows`; OQ1 answer (`.actlith`/`.lablith` vs `.pipelith`) → new round|-
 T34|x|open-source prep, public members' shape: community pages, README links, doctested integration walk-through|V78,V9
 T38|.|paradigm T19 (owner 2026-10-24): CI covers `x86_64-darwin`. actlith: GitHub Intel image as default (R7), `## runners` labels, `src/runner` guard; lablith: ⊥ hosted Intel Mac → `NoRunner` unless `## runners` tags. each ! user approval|`src/system:V21`,`src/runner:V80`,`src/runner:V81`,V4
-T39|.|publish `0.2.0` next (`ci_system` removed) ! user approval|V7
+T39|.|publish `0.2.0` (`ci_system` removed) after bump PR ! user approval|V7
 
 ## §B BUGS
 
