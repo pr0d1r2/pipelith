@@ -11,7 +11,7 @@ set -euo pipefail
 
 protected="${1:-main}"
 
-if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+if [ "$(git rev-parse --is-inside-work-tree 2>/dev/null)" != true ]; then
   echo "no-commit-to-branch: not inside a git work tree, so nothing could be checked. This is a failure, not a pass." >&2
   exit 1
 fi
