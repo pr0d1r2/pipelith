@@ -8,7 +8,7 @@
 
 rel|path|lens
 up|.|-
-up|src|the library: grammar, YAML writer, systems, files, kinds, detect
+up|src|the library: grammar, YAML writer, systems, files, kinds, cache, detect
 self|src/runner|own runner labels per system
 sib|src/registry|pipe-table grammar: format line, sections, header rows, cells, errors
 sib|src/system|nix system names, CI coverage set

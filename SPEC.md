@@ -10,12 +10,12 @@ GOALS: 1 impl of grammar, writer & drift check, both forges · 1 neutral kind ca
 
 NAME: pipe(line) + lith; pipe tables = the grammar it owns. fleet family `pklith` `actlith` `lablith` `microlith` `xenolith` (V8).
 
-SOURCES: `SPEC-PROMPT.md` (decisions D1–D18), actlith @ `7ce69c6` (D2). this spec wins where they differ.
+SOURCES: `SPEC-PROMPT.md` (D1–D18), actlith @ `7ce69c6` (D2). this spec wins on conflict.
 
 ## §F FEDERATION
 
 dir|owns|⊥owns|tokens
-src|the library: grammar, YAML writer, systems, files, kinds, detect|forge code, repo gate|-
+src|the library: grammar, YAML writer, systems, files, kinds, cache, detect|forge code, repo gate|-
 tests|integration tests over public API, goldens copied from actlith|unit tests (beside their module)|-
 dev|`pipelith-dev`, `publish = false`: commit rules, badges, notices, AGENTS step table|anything a consumer runs|-
 nix|repo gate: dev shell, guardrails, hk steps, CI, release|the library|-

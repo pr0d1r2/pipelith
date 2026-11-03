@@ -9,7 +9,7 @@
 rel|path|lens
 up|.|-
 self|nix|repo gate: dev shell, guardrails, hk steps, CI, release
-sib|src|the library: grammar, YAML writer, systems, files, kinds, detect
+sib|src|the library: grammar, YAML writer, systems, files, kinds, cache, detect
 sib|tests|integration tests over public API, goldens copied from actlith
 sib|dev|`pipelith-dev`, `publish = false`: commit rules, badges, notices, AGENTS step table
 

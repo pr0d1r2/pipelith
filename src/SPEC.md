@@ -20,7 +20,7 @@ detect|rows from tracked files, first config file|rendering, listing files|-
 
 rel|path|lens
 up|.|-
-self|src|the library: grammar, YAML writer, systems, files, kinds, detect
+self|src|the library: grammar, YAML writer, systems, files, kinds, cache, detect
 sib|tests|integration tests over public API, goldens copied from actlith
 sib|dev|`pipelith-dev`, `publish = false`: commit rules, badges, notices, AGENTS step table
 sib|nix|repo gate: dev shell, guardrails, hk steps, CI, release

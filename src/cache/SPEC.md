@@ -8,7 +8,7 @@
 
 rel|path|lens
 up|.|-
-up|src|the library: grammar, YAML writer, systems, files, kinds, detect
+up|src|the library: grammar, YAML writer, systems, files, kinds, cache, detect
 self|src/cache|`## caches`: `cachix`, `https` caches
 sib|src/registry|pipe-table grammar: format line, sections, header rows, cells, errors
 sib|src/system|nix system names, CI coverage set
@@ -23,7 +23,7 @@ sib|src/detect|rows from tracked files, first config file
 - deps: std, `registry`. section shape, kinds & checks neutral; url & key values = the repo's, typed by the user.
 - some caches hide their host ∴ url, key & push may each name a secret instead of a literal; secret value ⊥ in config file, ⊥ in any error.
 - kinds v1 `cachix`, `https`. column set fixed ∴ a later kind (own CLI) reuses `name|kind|url|key|push` w/ its own cell meanings; `CacheKind` `#[non_exhaustive]`.
-- push credential ⊥ literal: a config file is committed, often public.
+- push credential ⊥ literal: config file committed, often public.
 - `https` push uploads paths as built, unsigned ∴ cache ! sign on serve | paths signed upstream; v1 ⊥ signing-key column.
 
 ## §I INTERFACES
