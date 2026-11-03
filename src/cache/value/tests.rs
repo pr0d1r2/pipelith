@@ -1,6 +1,6 @@
 //! Cell values and the literal shapes (T40, V83).
 
-use super::{CacheValue, https_url, public_key, secret_name};
+use super::{CacheValue, https_url, public_key, secret_name, userinfo};
 
 const KEY: &str = "example-cache-1:\
     NfWjbhgAj41byXhCKiaE+av3Vnphm1fTezHXEGsiQIM=";
@@ -39,7 +39,9 @@ const GOOD_URLS: [&str; 3] = [
     "https://cache.example.org:8443/nix?priority=40",
 ];
 
-const BAD_URLS: [&str; 7] = [
+const BAD_URLS: [&str; 9] = [
+    "https://user:token@cache.example.org",
+    "https://:8443",
     "http://cache.example.org",
     "https://",
     "https:///path",
@@ -65,7 +67,7 @@ const BAD_KEYS: [&str; 10] = [
 #[test]
 fn a_literal_url_is_https_with_a_host() {
     assert_eq!(GOOD_URLS.map(https_url), [true; 3]);
-    assert_eq!(BAD_URLS.map(https_url), [false; 7]);
+    assert_eq!(BAD_URLS.map(https_url), [false; 9]);
 }
 
 #[test]
@@ -75,4 +77,21 @@ fn a_literal_key_is_a_name_and_an_ed25519_key() {
         "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
     ));
     assert_eq!(BAD_KEYS.map(public_key), [false; 10]);
+}
+
+#[test]
+fn userinfo_is_an_at_before_the_path() {
+    let with = [
+        "https://user:token@cache.example.org",
+        "https://u@h/x",
+        "https://@h",
+    ];
+    assert_eq!(with.map(userinfo), [true; 3]);
+    let without = [
+        "https://cache.example.org/a@b",
+        "https://h?x=@",
+        "https://h#@",
+        "http://u@h",
+    ];
+    assert_eq!(without.map(userinfo), [false; 4]);
 }

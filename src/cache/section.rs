@@ -6,7 +6,7 @@ use super::entry::{
     BinaryCache, CacheKind, Push, builtin, builtin_key, builtin_names,
     cachix_url,
 };
-use super::value::{CacheValue, https_url, public_key, secret_name};
+use super::value::{CacheValue, https_url, public_key, secret_name, userinfo};
 use crate::registry::{
     Document, RegistryError, Row as Cells, SectionSpec, optional, required,
 };
@@ -197,13 +197,30 @@ fn cachix_key(at: Cell<'_>, name: &str) -> Result<CacheValue, RegistryError> {
 fn https_cell(at: Cell<'_>) -> Result<CacheValue, RegistryError> {
     let url = value(at, 2)?.ok_or_else(|| at.empty(2, "url"))?;
     match url.literal() {
-        Some(text) if !https_url(text) => Err(at.error(
-            2,
-            format!("url `{}` is not an https url", text.escape_debug()),
-            "write `https://<host>...`, or `secret:NAME` to keep it out of the file",
-        )),
+        Some(text) if userinfo(text) => Err(credential(at)),
+        Some(text) if !https_url(text) => Err(not_https(at, text)),
         _ => Ok(url),
     }
+}
+
+/// A literal url with userinfo: refused without echoing it, since the
+/// credential would land in the log as well as the file.
+fn credential(at: Cell<'_>) -> RegistryError {
+    at.error(
+        2,
+        "url holds a credential before `@`, so it is refused and not echoed",
+        "put the credential in the push netrc secret, or write the url as \
+         `secret:NAME`",
+    )
+}
+
+/// A literal url that is not `https://<host>...`.
+fn not_https(at: Cell<'_>, url: &str) -> RegistryError {
+    at.error(
+        2,
+        format!("url `{}` is not an https url", url.escape_debug()),
+        "write `https://<host>...`, or `secret:NAME` to keep it out of the file",
+    )
 }
 
 /// The `key` cell: `-`, a secret, or a literal public key.
