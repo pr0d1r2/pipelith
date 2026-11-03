@@ -67,6 +67,14 @@ pub(crate) fn https_url(url: &str) -> bool {
     clean && host.is_some()
 }
 
+/// `url` is `https://` with userinfo: an `@` before the path, query or
+/// fragment, which would put a credential in the config file.
+/// RED: never finds one.
+#[must_use]
+pub(crate) fn userinfo(_url: &str) -> bool {
+    false
+}
+
 /// `key` is `<keyname>:<base64>`, the base64 being 32 bytes in canonical
 /// padding: an ed25519 public key as nix's `trusted-public-keys` takes it.
 #[must_use]

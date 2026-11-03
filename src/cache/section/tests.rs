@@ -194,6 +194,26 @@ fn a_literal_url_must_be_https() {
 }
 
 #[test]
+fn a_literal_url_with_a_credential_is_refused_unechoed() {
+    let error = refused(&format!(
+        "x|https|https://user:hunter2@cache.example.org|{KEY}|-\n"
+    ));
+    assert_eq!(
+        error,
+        ".lablith:5:9: url holds a credential before `@`, so it is refused \
+         and not echoed (put the credential in the push netrc secret, or \
+         write the url as `secret:NAME`)"
+    );
+    assert!(!error.contains("hunter2"), "{error}");
+}
+
+#[test]
+fn a_literal_url_without_a_host_is_refused() {
+    let error = refused(&format!("x|https|https://:8443|{KEY}|-\n"));
+    assert!(error.contains("is not an https url"), "{error}");
+}
+
+#[test]
 fn a_malformed_literal_key_is_refused() {
     assert_eq!(
         refused("x|https|https://cache.example.org|example-cache-1:abc|-\n"),
