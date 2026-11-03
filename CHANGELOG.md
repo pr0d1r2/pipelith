@@ -24,7 +24,8 @@ consumers will see change.
   a non-https literal url (refused without echoing it, so a credential
   in it never reaches a log), a malformed literal key, a literal push, or
   a row naming a cache that is neither in `## caches` nor built in is
-  refused while the row is validated, located.
+  refused while the row is validated, located. Cells are checked url,
+  key, push, so a row with several bad ones is refused at the first.
 - `cache::BinaryCache`, `CacheKind`, `CacheValue`, `Push`, `Caches`,
   `CACHES`: a forge puts `CACHES` in its schema and reads it with
   `Caches::from_document`. `BinaryCache` gives `nix_settings()`,
