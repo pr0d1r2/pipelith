@@ -12,8 +12,8 @@ consumers will see change.
 ### Added
 
 - `src/cache`: the optional `## caches` section, header
-  `name|kind|url|key|push`, where a repository names any nix binary
-  cache a `## workflows` row's `cache` cell may use. Kinds are `cachix`
+  `name|kind|url|key|push`, where a repository names a `cachix` or
+  `https` cache a `## workflows` row's `cache` cell may use. Kinds are `cachix`
   (as before) and `https` (any standard nix binary cache). Each of
   `url`, `key` and `push` is `-`, a literal, or `secret:NAME`, so a
   cache whose host must stay private never appears in the config file.

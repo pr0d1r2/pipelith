@@ -15,8 +15,8 @@ pipelith owns what every forge shares:
   (`system`);
 - the `## runners` section, where a repository names its own runner
   for a system, and the trust guard such a runner carries (`runner`);
-- the `## caches` section, where a repository names any nix binary
-  cache by kind, with cells that are literals or secret names
+- the `## caches` section, where a repository names a `cachix` or
+  `https` cache by kind, with cells that are literals or secret names
   (`cache`);
 - a YAML writer that cannot emit malformed YAML (`yaml`);
 - the generated header, the write and the drift check (`files`);
