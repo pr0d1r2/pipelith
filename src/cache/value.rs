@@ -9,6 +9,7 @@ pub const SECRET_PREFIX: &str = "secret:";
 
 /// A cell value: in the config file as is, or held by a secret.
 #[derive(Clone, Debug, PartialEq, Eq)]
+#[non_exhaustive]
 pub enum CacheValue {
     /// Written in the config file as is.
     Literal(String),
