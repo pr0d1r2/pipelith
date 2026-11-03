@@ -21,7 +21,8 @@ consumers will see change.
   (`user@`); a literal key is `<keyname>:<base64>` of
   an ed25519 key; a push credential is only ever a secret, and `-`
   means read-only. An unknown kind, a repeated name, a bad secret name,
-  a non-https literal url, a malformed literal key, a literal push, or
+  a non-https literal url (refused without echoing it, so a credential
+  in it never reaches a log), a malformed literal key, a literal push, or
   a row naming a cache that is neither in `## caches` nor built in is
   refused while the row is validated, located.
 - `cache::BinaryCache`, `CacheKind`, `CacheValue`, `Push`, `Caches`,
