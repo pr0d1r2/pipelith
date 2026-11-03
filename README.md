@@ -77,6 +77,9 @@ the config file's name, not its rows.
 - `runner`: the `## runners` section, where a repository names its own
   runner's labels for a system, over the forge's default, and the trust
   guard that keeps a fork's change request off that machine.
+- `cache`: the `## caches` section, where a repository names any nix
+  binary cache (`cachix` or `https`) a row may use, each value a
+  literal or a secret's name, over a built-in cachix table.
 - `kind`: the neutral catalogue of CI kinds (`gate`, `build`,
   `update-pins`, `upstream`), their row columns, argument schemas and
   secrets by purpose, with row validation and a portability check.

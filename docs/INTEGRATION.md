@@ -15,6 +15,9 @@ pipelith owns what every forge shares:
   (`system`);
 - the `## runners` section, where a repository names its own runner
   for a system, and the trust guard such a runner carries (`runner`);
+- the `## caches` section, where a repository names any nix binary
+  cache by kind, with cells that are literals or secret names
+  (`cache`);
 - a YAML writer that cannot emit malformed YAML (`yaml`);
 - the generated header, the write and the drift check (`files`);
 - proposed rows from tracked files and the first config file (`detect`).
@@ -148,6 +151,31 @@ Every registry error carries the file, line, column and a fix hint. A
 `kind` error carries the line; `KindError::located(CONFIG)` turns it
 into a registry error with the file name, so a forge crate prints one
 error shape whatever went wrong.
+
+## Caches
+
+Put `cache::CACHES` in the schema, read it once with
+`Caches::from_document(CONFIG, &doc)?`, and check each row with
+`Row::check_with(spec, &raw, &extras, &caches)?` instead of
+`Row::check`, so a row naming a cache that is neither in `## caches`
+nor built in is refused while it is validated. It returns a
+`kind::Checked`: `.row` is the row `Row::check` would give, and
+`.cache` is the `cache::BinaryCache` the row trusts, whichever table
+named it. Render the cache from `.cache` only:
+
+- `nix_settings()` gives each nix setting with its value, a
+  `CacheValue::Literal` to write as is or a `CacheValue::Secret` to
+  inject the forge's way; `nix_config()` is the whole text when both
+  are literals.
+- `read_secrets()` names the secrets reading needs; `push()` says
+  whether and with which secret to push (`Push::Forge` is the forge's
+  own cache-push secret), and `kind()` how.
+
+`.row.cache` is the 0.2.0 `kind::Cache`, set only for a built-in
+cachix cache that no `## caches` row shadows, so code written for
+0.2.0 keeps working and never meets a secret-valued cache.
+`KindSpec::purposes(&row)` is unchanged; a `## caches` row's secrets
+come from the `BinaryCache`, not from `Purpose`.
 
 ## Forge-only extensions
 
