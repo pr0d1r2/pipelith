@@ -14,6 +14,7 @@
 //! This file only declares the node modules (src V12); each node's
 //! `SPEC.md` holds its design.
 
+pub mod cache;
 pub mod detect;
 pub mod files;
 pub mod kind;

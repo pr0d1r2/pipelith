@@ -34,7 +34,8 @@ pub struct RawRow {
     pub kind: String,
     /// Nix system names; empty = the kind's default (`-`).
     pub systems: Vec<String>,
-    /// Cachix cache name; `None` = no cache steps (`-`).
+    /// Cache name: a `## caches` row or a built-in cachix cache;
+    /// `None` = no cache steps (`-`).
     pub cache: Option<String>,
     /// `key=value` pairs, in cell order.
     pub args: Vec<Arg>,

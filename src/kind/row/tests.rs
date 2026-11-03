@@ -1,8 +1,9 @@
 //! A row checked for a kind: default and listed systems, cache, args
-//! (T14, V31, V52, V53).
+//! (T14, V31, V52, V53); a cache from `## caches` (T40).
 
+use crate::cache::{CACHES, CacheKind, Caches, builtin};
 use crate::kind::{
-    Cache, Extras, KindSpec, RawRow, Row, TIMEOUT, WORKFLOWS, lookup,
+    Cache, Checked, Extras, KindSpec, RawRow, Row, TIMEOUT, WORKFLOWS, lookup,
 };
 use crate::registry::{Schema, parse};
 use crate::system::System;
@@ -134,5 +135,79 @@ fn a_catalogue_kind_checks_its_own_row() -> Result<(), String> {
         command,
         Some("nix develop --command hk check --all --check")
     );
+    Ok(())
+}
+
+const CACHED: &str = "format 1
+
+## caches
+name|kind|url|key|push
+example-cache|https|https://cache.example.org|secret:CACHE_KEY|-
+
+## workflows
+id|kind|systems|cache|args
+mirror|probe|-|example-cache|-
+missing|probe|-|other-cache|-
+builtin|probe|-|pr0d1r2|-
+";
+
+/// The row `id` of [`CACHED`], checked with its `## caches` rows.
+fn checked_with(id: &str) -> Result<Checked, String> {
+    let schema = Schema {
+        sections: &[CACHES, WORKFLOWS],
+    };
+    let doc = parse(FILE, CACHED, &schema).map_err(|e| e.to_string())?;
+    let caches =
+        Caches::from_document(FILE, &doc).map_err(|e| e.to_string())?;
+    let row = doc
+        .section("workflows")
+        .iter()
+        .find(|r| r.cells.first().map(|c| &*c.text) == Some(id));
+    let row = RawRow::from_cells(FILE, row.ok_or("no such row")?);
+    let row = row.map_err(|e| e.to_string())?;
+    Row::check_with(&PROBE, &row, &Extras::default(), &caches)
+        .map_err(|e| e.to_string())
+}
+
+#[test]
+fn a_row_names_a_caches_row() -> Result<(), String> {
+    let checked = checked_with("mirror")?;
+    assert_eq!(checked.row.cache, None);
+    let cache = checked.cache.ok_or("no cache")?;
+    assert_eq!(cache.name(), "example-cache");
+    assert_eq!(cache.kind(), CacheKind::Https);
+    Ok(())
+}
+
+#[test]
+fn a_row_naming_a_missing_cache_is_refused() {
+    assert_eq!(
+        checked_with("missing").err().as_deref(),
+        Some(
+            "line 10: cache `other-cache` is in neither `## caches` nor the \
+             built-in table (add a `## caches` row named `other-cache`, use \
+             one of: example-cache, pr0d1r2, or `-` for no cache)"
+        )
+    );
+}
+
+#[test]
+fn the_builtin_cache_still_works_beside_rows() -> Result<(), String> {
+    let checked = checked_with("builtin")?;
+    let old = Cache::parse(11, "pr0d1r2").map_err(|e| e.to_string())?;
+    assert_eq!(checked.row.cache, Some(old));
+    assert_eq!(checked.cache, builtin("pr0d1r2"));
+    Ok(())
+}
+
+#[test]
+fn check_is_check_with_and_no_caches() -> Result<(), String> {
+    let row = raw("picked")?;
+    let extras = Extras::default();
+    let old = Row::check(&PROBE, &row, &extras).map_err(|e| e.to_string())?;
+    let new = Row::check_with(&PROBE, &row, &extras, &Caches::default());
+    let new = new.map_err(|e| e.to_string())?;
+    assert_eq!(new.row, old);
+    assert_eq!(new.cache, builtin("pr0d1r2"));
     Ok(())
 }

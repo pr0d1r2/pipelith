@@ -6,11 +6,16 @@
 use super::catalogue::{BUILD, KindSpec, Purpose};
 use super::error::KindError;
 use super::row::Row;
+use crate::cache::BinaryCache;
 
 /// `row` keeps every rule its kind and args call for.
-pub(super) fn check(kind: &KindSpec, row: &Row) -> Result<(), KindError> {
+pub(super) fn check(
+    kind: &KindSpec,
+    row: &Row,
+    cache: Option<&BinaryCache>,
+) -> Result<(), KindError> {
     one_system(kind, row)?;
-    cached(kind, row)?;
+    cached(kind, row.line, cache)?;
     package(row)?;
     cron(row)?;
     token(row)?;
@@ -60,16 +65,25 @@ fn one_system(kind: &KindSpec, row: &Row) -> Result<(), KindError> {
 }
 
 /// `build` pushes to the row's cache and asks it back (V75).
-fn cached(kind: &KindSpec, row: &Row) -> Result<(), KindError> {
-    if row.cache.is_some() || kind.name != BUILD.name {
+fn cached(
+    kind: &KindSpec,
+    line: usize,
+    cache: Option<&BinaryCache>,
+) -> Result<(), KindError> {
+    if kind.name != BUILD.name {
         return Ok(());
     }
-    Err(KindError::new(
-        row.line,
+    cache.map_or_else(|| Err(uncached(line)), |_| Ok(()))
+}
+
+/// A `build` row with no cache.
+fn uncached(line: usize) -> KindError {
+    KindError::new(
+        line,
         "kind `build` needs a cache: it pushes there and verify-cache \
          asks it for every built path",
         "name a cachix cache in the cache column",
-    ))
+    )
 }
 
 /// A `package` arg is a flake attribute name.
