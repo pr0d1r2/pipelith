@@ -31,6 +31,7 @@ pub struct Row {
 /// A row checked with the file's `## caches` rows: the row as
 /// [`Row::check`] gives it, and the cache it trusts.
 #[derive(Clone, Debug, PartialEq, Eq)]
+#[non_exhaustive]
 pub struct Checked {
     /// The row. Its `cache` is the 0.2.0 [`Cache`]: set only when the
     /// row names a built-in cachix cache no `## caches` row shadows, so

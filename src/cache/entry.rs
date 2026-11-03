@@ -47,6 +47,7 @@ impl CacheKind {
 
 /// Whether, and with what, a pipeline pushes to the cache.
 #[derive(Clone, Debug, PartialEq, Eq)]
+#[non_exhaustive]
 pub enum Push {
     /// Read only: no push step and no push secret.
     ReadOnly,

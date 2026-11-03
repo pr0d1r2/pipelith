@@ -29,6 +29,9 @@ consumers will see change.
   `Caches::from_document`. `BinaryCache` gives `nix_settings()`,
   `nix_config()` (`None` when the url or key is a secret),
   `read_secrets()` and `push()`.
+- `Push`, `CacheValue`, `CacheKind` and `kind::Checked` are
+  `#[non_exhaustive]`, so a later push mode, value form, kind or field
+  is not a breaking change.
 - `Row::check_with(kind, raw, extras, &caches)` returns a
   `kind::Checked`: `.row` as `Row::check` gives it, `.cache` the
   `BinaryCache` the row trusts. A `build` row whose cache is read-only
