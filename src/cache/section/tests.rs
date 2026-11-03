@@ -183,14 +183,42 @@ fn a_bad_secret_name_is_refused_in_every_cell() {
     }
 }
 
+/// The refusal of a literal url that is not `https://` and a host.
+const NOT_HTTPS: &str = ".lablith:5:9: url is not `https://` and a host, \
+    so it is refused and not echoed (write `https://<host>...`, or \
+    `secret:NAME` to keep it out of the file)";
+
 #[test]
 fn a_literal_url_must_be_https() {
     assert_eq!(
         refused(&format!("x|https|http://cache.example.org|{KEY}|-\n")),
-        ".lablith:5:9: url `http://cache.example.org` is not an https url \
-         (write `https://<host>...`, or `secret:NAME` to keep it out of the \
-         file)"
+        NOT_HTTPS
     );
+}
+
+/// A password no refusal may print.
+const PASSWORD: &str = "pw-SECRET";
+
+/// Literal urls carrying [`PASSWORD`], each refused; built at run time so
+/// no credential-shaped literal sits in the source.
+fn credential_urls() -> Vec<String> {
+    let host = "cache.example.org";
+    let mut urls: Vec<String> = ["http://", "ftp://", "", "HTTPS://"]
+        .iter()
+        .map(|scheme| format!("{scheme}user:{PASSWORD}@{host}"))
+        .collect();
+    urls.push(format!("https://user:{PASSWORD}@"));
+    urls.push(format!("https://:{PASSWORD}@:8443"));
+    urls
+}
+
+#[test]
+fn no_url_refusal_echoes_a_password() {
+    for url in credential_urls() {
+        let error = refused(&format!("x|https|{url}|{KEY}|-\n"));
+        assert!(error.starts_with(".lablith:5:9: url "), "{error}");
+        assert!(!error.contains(PASSWORD), "{error}");
+    }
 }
 
 #[test]
@@ -210,7 +238,7 @@ fn a_literal_url_with_a_credential_is_refused_unechoed() {
 #[test]
 fn a_literal_url_without_a_host_is_refused() {
     let error = refused(&format!("x|https|https://:8443|{KEY}|-\n"));
-    assert!(error.contains("is not an https url"), "{error}");
+    assert_eq!(error, NOT_HTTPS);
 }
 
 #[test]
