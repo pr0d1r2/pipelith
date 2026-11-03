@@ -6,7 +6,7 @@
 use super::catalogue::{BUILD, KindSpec, Purpose};
 use super::error::KindError;
 use super::row::Row;
-use crate::cache::BinaryCache;
+use crate::cache::{BinaryCache, secret_name};
 
 /// `row` keeps every rule its kind and args call for.
 pub(super) fn check(
@@ -149,14 +149,6 @@ fn attribute(name: &str) -> bool {
     let first = name.chars().next();
     first.is_some_and(|c| c.is_ascii_alphabetic() || c == '_')
         && name.chars().all(word)
-}
-
-/// `name` is letters, digits and `_`, not starting with a digit: a
-/// secret name on every forge.
-fn secret_name(name: &str) -> bool {
-    let word = |c: char| c.is_ascii_alphanumeric() || c == '_';
-    let first = name.chars().next();
-    first.is_some_and(|c| !c.is_ascii_digit()) && name.chars().all(word)
 }
 
 /// `cron` is five fields of numbers, names, `*`, `-` ranges and `/`
