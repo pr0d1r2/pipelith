@@ -40,7 +40,6 @@ impl CacheKind {
 
     /// The kind a `kind` cell names, if any.
     #[must_use]
-    #[allow(dead_code)] // RED: wired in by the GREEN commit
     pub(crate) fn parse(name: &str) -> Option<Self> {
         Self::ALL.into_iter().find(|k| k.name() == name)
     }
@@ -130,7 +129,7 @@ impl BinaryCache {
     /// Whether a pipeline may push here (V85).
     #[must_use]
     pub fn can_push(&self) -> bool {
-        true
+        self.push != Push::ReadOnly
     }
 
     /// The names of the secrets reading needs, url's then key's (V84);
@@ -138,7 +137,10 @@ impl BinaryCache {
     /// them, so a forge lists these beside `KindSpec::purposes`.
     #[must_use]
     pub fn read_secrets(&self) -> Vec<&str> {
-        Vec::new()
+        [&self.url, &self.key]
+            .into_iter()
+            .filter_map(CacheValue::secret)
+            .collect()
     }
 
     /// The nix settings that trust the cache, in order, each with its
