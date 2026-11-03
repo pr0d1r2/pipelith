@@ -1,10 +1,12 @@
 //! actlith's build-time row rules, checked by `Row::check` (T32, V75,
 //! V76): `build` has a cache, `package` is a flake attribute name,
 //! `cron` is five fields, `token` is a secret name, a bump kind runs on
-//! one system, `build`, `script` and `branch-prefix` are plain words.
+//! one system, `build`, `script` and `branch-prefix` are plain words;
+//! `build`'s cache takes a push (T40).
 
 use super::{attribute, five_fields, plain_word, secret_name};
-use crate::kind::{Extras, RawRow, Row, WORKFLOWS, resolve};
+use crate::cache::{CACHES, Caches};
+use crate::kind::{Checked, Extras, RawRow, Row, WORKFLOWS, resolve};
 use crate::registry::{Schema, parse};
 
 const FILE: &str = ".lablith";
@@ -182,4 +184,58 @@ fn only_plain_words_pass() {
     for word in ["", "-", "-rf", "a b", "$(x)", "a;b", "a'b", "a\"b", "a,b"] {
         assert!(!plain_word(word), "{word}");
     }
+}
+
+/// The row `id` of `text`, checked with its `## caches` rows.
+fn checked_with_caches(text: &str, id: &str) -> Result<Checked, String> {
+    let schema = Schema {
+        sections: &[CACHES, WORKFLOWS],
+    };
+    let doc = parse(FILE, text, &schema).map_err(|e| e.to_string())?;
+    let caches =
+        Caches::from_document(FILE, &doc).map_err(|e| e.to_string())?;
+    let rows = doc.section("workflows");
+    let row = rows
+        .iter()
+        .find(|r| r.cells.first().map(|c| &*c.text) == Some(id));
+    let row = RawRow::from_cells(FILE, row.ok_or("no such row")?);
+    let row = row.map_err(|e| e.to_string())?;
+    let extras = Extras::default();
+    let kind = resolve(&row, &extras).map_err(|e| e.to_string())?;
+    Row::check_with(kind, &row, &extras, &caches).map_err(|e| e.to_string())
+}
+
+const CACHED: &str = "format 1
+
+## caches
+name|kind|url|key|push
+mirror|https|https://cache.example.org|secret:CACHE_KEY|-
+pushy|https|secret:CACHE_URL|secret:CACHE_KEY|secret:CACHE_NETRC
+
+## workflows
+id|kind|systems|cache|args
+ro|build|-|mirror|package=hk
+rw|build|-|pushy|package=hk
+";
+
+#[test]
+fn a_build_row_with_a_read_only_cache_is_refused() {
+    let error = checked_with_caches(CACHED, "ro").err();
+    assert_eq!(
+        error.as_deref(),
+        Some(
+            "line 10: kind `build` pushes to its cache, and cache `mirror` \
+             is read-only (give its `## caches` row a `push` secret)"
+        )
+    );
+}
+
+#[test]
+fn a_build_row_with_a_push_secret_passes() -> Result<(), String> {
+    let checked = checked_with_caches(CACHED, "rw")?;
+    assert_eq!(checked.row.cache, None);
+    let cache = checked.cache.ok_or("no cache")?;
+    assert_eq!(cache.name(), "pushy");
+    assert!(cache.can_push());
+    Ok(())
 }
