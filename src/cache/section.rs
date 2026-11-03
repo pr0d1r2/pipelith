@@ -98,8 +98,8 @@ fn cache(file: &str, row: &Cells) -> Result<BinaryCache, RegistryError> {
             (cachix_url_cell(at, &name)?, cachix_key(at, &name)?)
         }
         CacheKind::Https => {
-            let key = key_cell(at)?.ok_or_else(|| at.empty(3, "key"))?;
-            (https_cell(at)?, key)
+            let url = https_cell(at)?;
+            (url, key_cell(at)?.ok_or_else(|| at.empty(3, "key"))?)
         }
     };
     Ok(BinaryCache::new(&name, kind, url, key).pushed(push(at)?))
