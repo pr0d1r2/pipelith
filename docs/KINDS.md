@@ -44,8 +44,9 @@ both forges.
   All four are CI systems: `x86_64-linux`, `aarch64-linux`,
   `aarch64-darwin`, `x86_64-darwin`. Which runner runs each is the
   forge's default or the repository's own (`## runners` below).
-- `cache`: a cachix cache whose public key pipelith knows (v1:
-  `pr0d1r2`); `-` means no cache steps.
+- `cache`: a cache named in `## caches` (below), or a built-in cachix
+  cache whose public key pipelith knows (v1: `pr0d1r2`) when no
+  `## caches` row has that name; `-` means no cache steps.
 - `args`: `key=value` pairs, comma-separated, checked against the kind's
   schema; an unknown or repeated key is an error, never ignored. A
   forge-only key is accepted only by the forge that declares it. A
@@ -87,9 +88,61 @@ x86_64-darwin|self-hosted, macOS, X64
   reads as skipped, not failed; the job runs again on the push after
   the merge.
 
+## Caches
+
+Section `## caches`, columns `name|kind|url|key|push`, optional, the
+same on both forges. A row names a nix binary cache that a
+`## workflows` row's `cache` cell may use.
+
+```text
+## caches
+name|kind|url|key|push
+example-cache|https|https://cache.example.org|example-cache-1:<base64>|secret:EXAMPLE_NETRC
+hidden-cache|https|secret:HIDDEN_URL|secret:HIDDEN_KEY|-
+own-cachix|cachix|-|own-cachix.cachix.org-1:<base64>|secret:OWN_CACHIX_TOKEN
+```
+
+- `name`: what a `cache` cell writes, once per section. A row of a
+  built-in cache's name replaces the built-in entry.
+- `kind`: `cachix` or `https`. The columns stay the same for any later
+  kind, which gives the cells its own meaning.
+- `url`, `key`, `push`: each is `-`, a literal, or `secret:NAME`, where
+  `NAME` is a forge secret or CI/CD variable (letters, digits and `_`,
+  not starting with a digit). A secret keeps the value out of the
+  config file, for a cache whose host must stay private; no error
+  message ever prints a secret's value.
+- A literal url is `https://` and a host. A literal key is a nix public
+  key, `<keyname>:<base64>` of a 32-byte ed25519 key. A push credential
+  is never a literal, since the config file is committed; `-` in `push`
+  means read-only.
+- `cachix`: the name is the cachix cache name (lower-case letters,
+  digits, `-`). `url` is `-` or `https://<name>.cachix.org`; `key` may be
+  `-` only when pipelith knows the cache's key; `push` is the cachix
+  auth token.
+- `https`: any standard nix binary cache. `url` and `key` are required;
+  `push` is a secret holding a netrc file for the cache's host.
+- Reading: the job's nix config gains `extra-substituters` (the url)
+  and `extra-trusted-public-keys` (the key). Where either is a secret,
+  a run that does not get the secret (a fork's change request) runs
+  without the cache.
+- Pushing (`cachix`): as before, with the row's token secret.
+  Pushing (`https`): the netrc secret is written to a file in the job's
+  temporary directory, readable only by the job and removed after,
+  nix's `netrc-file` points at it, and `nix copy --to <url>` uploads
+  the built outputs. Never for a fork's change request. `nix copy`
+  uploads paths as built, so the cache signs them when it serves them
+  (or they were signed upstream); a signing key is not part of v1.
+- `build` pushes to its cache and asks it back, so a read-only cache
+  is refused for it.
+- Every rule here is checked while the rows are validated.
+
 ## Secrets, by purpose
 
-- Cache push: the cachix auth token. Read-only cache use needs none.
+- Cache push: the cachix auth token, or the `push` secret a
+  `## caches` row names (a cachix token, or a netrc file for `https`).
+  Read-only cache use needs none.
+- Cache read: the `url` or `key` secret a `## caches` row names, when
+  either is one; the forge lists it beside the purposes above.
 - Open a change request: a token allowed to push a branch and open a
   pull request (GitHub) or merge request (GitLab). Row arg `token` names
   it (letters, digits and `_`, not starting with a digit); its default
