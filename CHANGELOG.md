@@ -17,7 +17,8 @@ consumers will see change.
   (as before) and `https` (any standard nix binary cache). Each of
   `url`, `key` and `push` is `-`, a literal, or `secret:NAME`, so a
   cache whose host must stay private never appears in the config file.
-  A literal url is `https://`; a literal key is `<keyname>:<base64>` of
+  A literal url is `https://` and a host, never with a credential
+  (`user@`); a literal key is `<keyname>:<base64>` of
   an ed25519 key; a push credential is only ever a secret, and `-`
   means read-only. An unknown kind, a repeated name, a bad secret name,
   a non-https literal url, a malformed literal key, a literal push, or
