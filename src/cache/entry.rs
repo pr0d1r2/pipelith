@@ -26,8 +26,9 @@ pub enum CacheKind {
 }
 
 impl CacheKind {
-    /// Every kind, in `docs/KINDS.md` order.
-    pub const ALL: [Self; 2] = [Self::Cachix, Self::Https];
+    /// Every kind, in `docs/KINDS.md` order: a slice, so a later kind
+    /// leaves its type as it is.
+    pub const ALL: &'static [Self] = &[Self::Cachix, Self::Https];
 
     /// The name a `## caches` row writes in its `kind` cell.
     #[must_use]
@@ -41,7 +42,7 @@ impl CacheKind {
     /// The kind a `kind` cell names, if any.
     #[must_use]
     pub(crate) fn parse(name: &str) -> Option<Self> {
-        Self::ALL.into_iter().find(|k| k.name() == name)
+        Self::ALL.iter().copied().find(|k| k.name() == name)
     }
 }
 

@@ -33,7 +33,8 @@ consumers will see change.
   `read_secrets()` and `push()`.
 - `Push`, `CacheValue`, `CacheKind` and `kind::Checked` are
   `#[non_exhaustive]`, so a later push mode, value form, kind or field
-  is not a breaking change.
+  is not a breaking change. `CacheKind::ALL` is a `&'static [CacheKind]`
+  for the same reason: a later kind leaves its type as it is.
 - `Row::check_with(kind, raw, extras, &caches)` returns a
   `kind::Checked`: `.cache` is the `BinaryCache` the row trusts, and
   `.row` is what `Row::check` gives except `.row.cache`, which is `None`
