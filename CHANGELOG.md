@@ -33,9 +33,10 @@ consumers will see change.
   `#[non_exhaustive]`, so a later push mode, value form, kind or field
   is not a breaking change.
 - `Row::check_with(kind, raw, extras, &caches)` returns a
-  `kind::Checked`: `.row` as `Row::check` gives it, `.cache` the
-  `BinaryCache` the row trusts. A `build` row whose cache is read-only
-  is refused.
+  `kind::Checked`: `.cache` is the `BinaryCache` the row trusts, and
+  `.row` is what `Row::check` gives except `.row.cache`, which is `None`
+  when the cache comes from `## caches`, even one shadowing a built-in
+  name. A `build` row whose cache is read-only is refused.
 - Nothing else changes: every 0.2.0 item keeps its signature and
   behaviour: `Row::check`, `kind::Cache` (`parse`, `name`, `key`,
   `nix_config`), `Purpose`, `KindSpec::purposes`. A `## caches` row never reaches them:

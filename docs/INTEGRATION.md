@@ -159,9 +159,12 @@ Put `cache::CACHES` in the schema, read it once with
 `Row::check_with(spec, &raw, &extras, &caches)?` instead of
 `Row::check`, so a row naming a cache that is neither in `## caches`
 nor built in is refused while it is validated. It returns a
-`kind::Checked`: `.row` is the row `Row::check` would give, and
-`.cache` is the `cache::BinaryCache` the row trusts, whichever table
-named it. Render the cache from `.cache` only:
+`kind::Checked`: `.cache` is the `cache::BinaryCache` the row trusts,
+whichever table named it, and `.row` is the row `Row::check` would
+give except for `.row.cache`, which is `None` whenever the cache comes
+from `## caches`, including a row that shadows a built-in name (where
+`Row::check` would return the built-in). Render the cache from
+`.cache` only:
 
 - `nix_settings()` gives each nix setting with its value, a
   `CacheValue::Literal` to write as is or a `CacheValue::Secret` to

@@ -28,14 +28,16 @@ pub struct Row {
     pub args: Args,
 }
 
-/// A row checked with the file's `## caches` rows: the row as
-/// [`Row::check`] gives it, and the cache it trusts.
+/// A row checked with the file's `## caches` rows: the row, and the
+/// cache it trusts. The row is what [`Row::check`] gives except its
+/// `cache`, which is `None` when a `## caches` row names the cache, even
+/// one that shadows a built-in name: the 0.2.0 [`Cache`] would then say
+/// the built-in, which the file overrides.
 #[derive(Clone, Debug, PartialEq, Eq)]
 #[non_exhaustive]
 pub struct Checked {
     /// The row. Its `cache` is the 0.2.0 [`Cache`]: set only when the
-    /// row names a built-in cachix cache no `## caches` row shadows, so
-    /// a caller reading it sees exactly what 0.2.0 gave.
+    /// row names a built-in cachix cache no `## caches` row shadows.
     pub row: Row,
     /// The cache the row trusts, whichever table named it; `None` for
     /// `-`. A forge on `## caches` renders from this one.
