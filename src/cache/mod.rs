@@ -21,4 +21,5 @@ mod value;
 pub(crate) use entry::builtin_key;
 pub use entry::{BinaryCache, CacheKind, Push, builtin, builtin_names};
 pub use section::{CACHES, COLUMNS, Caches, SECTION};
+pub(crate) use value::secret_name;
 pub use value::{CacheValue, SECRET_PREFIX};
