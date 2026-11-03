@@ -2,14 +2,14 @@
 
 ## §G GOAL
 
-`src/cache` — `## caches`: ANY nix binary cache a `## workflows` row's `cache` cell names, by kind; built-in cachix table as fallback. ⊥ step syntax, ⊥ secret injection (forge).
+`src/cache` — `## caches` (`cachix`, `https`): caches a `## workflows` `cache` cell names; built-in cachix table fallback. ⊥ step syntax, ⊥ secret injection (forge).
 
 ## §N NAV
 
 rel|path|lens
 up|.|-
 up|src|the library: grammar, YAML writer, systems, files, kinds, detect
-self|src/cache|`## caches`: any nix binary cache
+self|src/cache|`## caches`: `cachix`, `https` caches
 sib|src/registry|pipe-table grammar: format line, sections, header rows, cells, errors
 sib|src/system|nix system names, CI coverage set
 sib|src/yaml|ordered YAML model & writer: quoting, layout, comments, `Dialect` trait

@@ -48,7 +48,7 @@ self|.|-
 - lib: `pipelith::yaml` → ordered maps, sequences, scalars w/ 1 quoting rule, comments on nodes; `render` → bytes, fixed layout; forge expression syntax via `Dialect` (`src/yaml`).
 - lib: `pipelith::system` → nix system names, set every forge ! cover, ∀ 4 incl. `x86_64-darwin` (`src/system`).
 - lib: `pipelith::runner` → `## runners` section: repo's own runner labels per system over forge default; trust guard (`src/runner`).
-- lib: `pipelith::cache` → `## caches`: any nix binary cache (`src/cache`).
+- lib: `pipelith::cache` → `## caches`: `cachix`, `https` caches (`src/cache`).
 - lib: `pipelith::kind` → neutral catalogue: kinds `gate` `build` `update-pins` `upstream`, row columns, arg schemas, secrets by purpose; row validation; portability check (`src/kind`).
 - lib: `pipelith::files` → file set (path, bytes); generated header from tool & config name; `write` & `check` (stale | missing) (`src/files`).
 - lib: `pipelith::detect` → proposed rows from tracked files; first config file ⊥ over existing (`src/detect`).

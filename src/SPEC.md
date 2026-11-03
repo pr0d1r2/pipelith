@@ -13,7 +13,7 @@ yaml|ordered YAML model & writer: quoting, layout, comments, `Dialect` trait|pip
 files|generated header, write, drift check, path safety|file contents, forge layout|-
 kind|neutral kind catalogue, row & arg validation, secret purposes, portability check|pipeline shapes, secret names|-
 runner|own runner labels per system|default labels, guard syntax|-
-cache|`## caches`: any nix binary cache|cache steps, secret injection|-
+cache|`## caches`: `cachix`, `https` caches|cache steps, secret injection|-
 detect|rows from tracked files, first config file|rendering, listing files|-
 
 ## §N NAV
