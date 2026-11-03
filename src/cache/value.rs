@@ -56,23 +56,29 @@ pub(crate) fn secret_name(name: &str) -> bool {
     first.is_some_and(|c| !c.is_ascii_digit()) && name.chars().all(word)
 }
 
-/// `url` is `https://` and a host, with no blank or control character:
-/// one item of nix's `substituters`.
+/// `url` is `https://` and a host, with no blank or control character,
+/// no userinfo, and a host before any `:port`: one item of nix's
+/// `substituters`.
 #[must_use]
 pub(crate) fn https_url(url: &str) -> bool {
     let clean = !url.chars().any(|c| c.is_whitespace() || c.is_control());
-    let host = url.strip_prefix("https://").and_then(|rest| {
-        rest.split(['/', '?', '#']).next().filter(|h| !h.is_empty())
-    });
+    let host = authority(url)
+        .filter(|a| !a.contains('@'))
+        .and_then(|a| a.split(':').next().filter(|h| !h.is_empty()));
     clean && host.is_some()
 }
 
 /// `url` is `https://` with userinfo: an `@` before the path, query or
 /// fragment, which would put a credential in the config file.
-/// RED: never finds one.
 #[must_use]
-pub(crate) fn userinfo(_url: &str) -> bool {
-    false
+pub(crate) fn userinfo(url: &str) -> bool {
+    authority(url).is_some_and(|a| a.contains('@'))
+}
+
+/// The text between `https://` and the path, query or fragment.
+fn authority(url: &str) -> Option<&str> {
+    let rest = url.strip_prefix("https://")?;
+    rest.split(['/', '?', '#']).next()
 }
 
 /// `key` is `<keyname>:<base64>`, the base64 being 32 bytes in canonical
