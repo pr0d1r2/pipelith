@@ -282,6 +282,14 @@ fn an_https_cache_needs_url_and_key() {
 }
 
 #[test]
+fn an_https_url_is_refused_before_its_key() {
+    let error = refused("x|https|http://cache.example.org|-|-\n");
+    assert_eq!(error, NOT_HTTPS);
+    let error = refused("x|https|-|example-cache-1:abc|-\n");
+    assert!(error.starts_with(".lablith:5:9: "), "{error}");
+}
+
+#[test]
 fn a_cachix_url_is_its_names() {
     for url in ["https://other.cachix.org", "secret:CACHE_URL"] {
         assert_eq!(
