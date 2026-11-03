@@ -49,7 +49,7 @@ V85: push (`Push::{Forge, Secret}`) ⇒ forge lists push secret (`Forge` → its
 ## §T TASKS
 
 id|status|task|cites
-T40|.|`CACHES`, `Caches`, `BinaryCache` & value types w/ tests; `Row::check_with` → `Checked`; 0.2.0 API unchanged; `lib.rs` declares node|V82,V83,V84,V85,`.:V4`,`.:V9`
+T40|x|`CACHES`, `Caches`, `BinaryCache` & value types w/ tests; `Row::check_with` → `Checked`; 0.2.0 API unchanged; `lib.rs` declares node|V82,V83,V84,V85,`.:V4`,`.:V9`
 T41|.|actlith & lablith render `cachix` & `https` caches per V84, V85; neutral rows render on both before release ! user approval|`.:V4`,`.:V7`
 
 ## §B BUGS
