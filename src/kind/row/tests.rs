@@ -149,6 +149,7 @@ id|kind|systems|cache|args
 mirror|probe|-|example-cache|-
 missing|probe|-|other-cache|-
 builtin|probe|-|pr0d1r2|-
+bare|probe|-|-|-
 ";
 
 /// The row `id` of [`CACHED`], checked with its `## caches` rows.
@@ -197,6 +198,13 @@ fn the_builtin_cache_still_works_beside_rows() -> Result<(), String> {
     let old = Cache::parse(11, "pr0d1r2").map_err(|e| e.to_string())?;
     assert_eq!(checked.row.cache, Some(old));
     assert_eq!(checked.cache, builtin("pr0d1r2"));
+    Ok(())
+}
+
+#[test]
+fn a_dash_cache_trusts_no_cache_beside_rows() -> Result<(), String> {
+    let checked = checked_with("bare")?;
+    assert_eq!((checked.row.cache, checked.cache), (None, None));
     Ok(())
 }
 
