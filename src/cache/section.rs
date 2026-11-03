@@ -198,7 +198,7 @@ fn https_cell(at: Cell<'_>) -> Result<CacheValue, RegistryError> {
     let url = value(at, 2)?.ok_or_else(|| at.empty(2, "url"))?;
     match url.literal() {
         Some(text) if userinfo(text) => Err(credential(at)),
-        Some(text) if !https_url(text) => Err(not_https(at, text)),
+        Some(text) if !https_url(text) => Err(not_https(at)),
         _ => Ok(url),
     }
 }
@@ -214,11 +214,13 @@ fn credential(at: Cell<'_>) -> RegistryError {
     )
 }
 
-/// A literal url that is not `https://<host>...`.
-fn not_https(at: Cell<'_>, url: &str) -> RegistryError {
+/// A literal url that is not `https://<host>...`: refused without
+/// echoing it, since any url may hold a credential (`user:pw@`) whatever
+/// its scheme.
+fn not_https(at: Cell<'_>) -> RegistryError {
     at.error(
         2,
-        format!("url `{}` is not an https url", url.escape_debug()),
+        "url is not `https://` and a host, so it is refused and not echoed",
         "write `https://<host>...`, or `secret:NAME` to keep it out of the file",
     )
 }
