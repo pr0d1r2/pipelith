@@ -15,6 +15,7 @@ sib|src/system|nix system names, CI coverage set
 sib|src/yaml|ordered YAML model & writer: quoting, layout, comments, `Dialect` trait
 sib|src/files|generated header, write, drift check, path safety
 sib|src/runner|own runner labels per system
+sib|src/cache|`## caches`: any nix binary cache
 sib|src/detect|rows from tracked files, first config file
 
 ## §C CONSTRAINTS
@@ -25,22 +26,22 @@ sib|src/detect|rows from tracked files, first config file
 
 ## §I INTERFACES
 
-- types: `KindSpec { name, schema: &[ArgSpec], default_systems, secrets: &[Purpose] }`, `ArgSpec { key, required, default: ArgDefault }`, `ArgDefault::{None, Value(&str), Forge}` (forge fills: e.g. `token`; absent from `Args`), `Purpose::{CachePush, OpenChange}`, `RawRow { line, id, kind, systems, cache, args }` (cells), `Row { line, id, systems: Vec<System>, cache: Option<Cache>, args }` (checked), `Cache` (`name()`, `key()`, `nix_config()`), `Args`, `KindError { line, what, fix }` (`located(file)` → `RegistryError`), `Extras<'a> { kinds: &[KindSpec], keys: &[ArgSpec] }` (forge-only; key valid on ∀ kind), `Finding::{Kind, Key}`.
+- types: `KindSpec { name, schema: &[ArgSpec], default_systems, secrets: &[Purpose] }`, `ArgSpec { key, required, default: ArgDefault }`, `ArgDefault::{None, Value(&str), Forge}` (forge fills: e.g. `token`; absent from `Args`), `Purpose::{CachePush, OpenChange}`, `RawRow { line, id, kind, systems, cache, args }` (cells), `Row { line, id, systems: Vec<System>, cache: Option<Cache>, args }` (checked), `Cache` (0.2.0: built-in cachix only; `name()`, `key()`, `nix_config()`), `Checked { row, cache: Option<BinaryCache> }`, `Args`, `KindError { line, what, fix }` (`located(file)` → `RegistryError`), `Extras<'a> { kinds: &[KindSpec], keys: &[ArgSpec] }` (forge-only; key valid on ∀ kind), `Finding::{Kind, Key}`.
 - consts: `SECTION` = `workflows`, `COLUMNS`, `WORKFLOWS` (`SectionSpec`, key col 0), `CATALOGUE` = `GATE` `BUILD` `UPDATE_PINS` `UPSTREAM`, `TIMEOUT` spec, `DEFAULT_TIMEOUT`, `MAX_TIMEOUT`.
-- fns: `RawRow::from_cells(file, &registry::Row) -> Result<RawRow, RegistryError>` (id = file stem), `lookup(name)`, `resolve(&RawRow, &Extras) -> Result<&KindSpec, KindError>`, `Row::check(&KindSpec, &RawRow, &Extras) -> Result<Row, KindError>` (+ timeout range, V75-V77), `Cache::parse(line, name)`, `parse_args(&KindSpec, &RawRow, &Extras) -> Result<Args, KindError>`, `Args::{get, number, line, timeout}`, `KindSpec::purposes(&Row)`, `portable(&RawRow, &Extras) -> Vec<Finding>`.
+- fns: `RawRow::from_cells(file, &registry::Row) -> Result<RawRow, RegistryError>` (id = file stem), `lookup(name)`, `resolve(&RawRow, &Extras) -> Result<&KindSpec, KindError>`, `Row::check(&KindSpec, &RawRow, &Extras) -> Result<Row, KindError>` (+ timeout range, V75-V77) = `Row::check_with(.., &Caches::default())` → `Result<Checked, KindError>`, `.row`, `Cache::parse(line, name)`, `parse_args(&KindSpec, &RawRow, &Extras) -> Result<Args, KindError>`, `Args::{get, number, line, timeout}`, `KindSpec::purposes(&Row)`, `portable(&RawRow, &Extras) -> Vec<Finding>`.
 - schemas: `gate` command?=`nix develop --command hk check --all --check`, timeout · `build` package!, timeout · `update-pins` cron?=`50 6 * * *`, build?=`.#default`, token?=forge, timeout · `upstream` script!, cron?=`20 6 * * *`, branch-prefix?=`upstream/`, token?=forge, timeout. timeout?=`30`, 1..=360.
 
 ## §V INVARIANTS
 
 V31: unknown | repeated | missing required arg key → error naming row line & key; ⊥ silent default; forge-only key valid only when in `Extras` (`actlith/V10`)
-V32: ∀ kind declares ∀ secret PURPOSE it needs; forge maps purpose → secret name & injection; fork change request needs ⊥ secret (`actlith/V14`)
+V32: ∀ kind declares ∀ secret PURPOSE it needs; forge maps purpose → secret name & injection; fork change request needs ⊥ secret (`actlith/V14`); `## caches` secrets from `BinaryCache`, ⊥ new `Purpose` (`src/cache:V84`)
 V33: `portable` → 1 finding per forge-only kind | key in row; empty ⇔ row renders on both forges (D4, D17)
 V34: catalogue values (names, keys, defaults) == actlith @ `7ce69c6` except `ArgDefault::Forge` where actlith default named a GitHub secret (`.:V3`)
 
 V52: systems `-` → kind default; ∀ system via `system::parse_system` (∀ 4 = CI systems, `src/system:V21`); duplicate → error
-V53: cache = cachix name w/ public key from built-in table (v1 `pr0d1r2`); other name refused w/ fix hint, ⊥ guessed key. cachix serves both forges ∴ neutral
+V53: cache cell → `## caches` row | built-in cachix entry (`src/cache:V82`); other name refused w/ fix hint, ⊥ guessed key. cachix & https caches serve both forges ∴ neutral
 
-V75: `Row::check` refuses what actlith refused only at build: `build` w/o cache; `package` ∉ flake attr name (`[A-Za-z_][A-Za-z0-9_-]*`); `cron` ≠ 5 fields of `[A-Za-z0-9*/-]`; `token` ∉ secret name (`[A-Za-z_][A-Za-z0-9_]*`) ∴ passing row ⊥ refused by a forge (`.:V4`); messages = actlith's (`token` hint also names leading-digit rule)
+V75: `Row::check` refuses what actlith refused only at build: `build` w/o cache | w/ read-only cache; `package` ∉ flake attr name (`[A-Za-z_][A-Za-z0-9_-]*`); `cron` ≠ 5 fields of `[A-Za-z0-9*/-]`; `token` ∉ secret name (`[A-Za-z_][A-Za-z0-9_]*`) ∴ passing row ⊥ refused by a forge (`.:V4`); messages = actlith's (`token` hint also names leading-digit rule)
 V76: kind w/ `Purpose::OpenChange` (bump) runs 1 job ∴ exactly 1 system; else error naming count
 V77: arg keys `build`, `script`, `branch-prefix` (any kind; today update-pins & upstream) ∉ `[A-Za-z0-9._/#+:@-]+` | leading `-` → refused by `Row::check` (actlith `plain()` at build); message = actlith's
 

@@ -15,6 +15,7 @@ sib|src/system|nix system names, CI coverage set
 sib|src/files|generated header, write, drift check, path safety
 sib|src/kind|neutral kind catalogue, row & arg validation, secret purposes, portability check
 sib|src/runner|own runner labels per system
+sib|src/cache|`## caches`: any nix binary cache
 sib|src/detect|rows from tracked files, first config file
 
 ## §C CONSTRAINTS
