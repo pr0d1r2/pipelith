@@ -29,10 +29,17 @@ fn https(url: CacheValue, key: CacheValue, push: Push) -> BinaryCache {
 
 #[test]
 fn kinds_are_cachix_and_https() {
-    let names = CacheKind::ALL.map(CacheKind::name);
+    let names: Vec<&str> = CacheKind::ALL.iter().map(|k| k.name()).collect();
     assert_eq!(names, ["cachix", "https"]);
-    let parsed = CacheKind::ALL.map(|k| CacheKind::parse(k.name()));
-    assert_eq!(parsed, CacheKind::ALL.map(Some));
+    for kind in CacheKind::ALL {
+        assert_eq!(CacheKind::parse(kind.name()), Some(*kind));
+    }
+}
+
+#[test]
+fn every_kind_is_a_slice_a_later_kind_keeps() {
+    let all: &'static [CacheKind] = CacheKind::ALL;
+    assert_eq!(all, [CacheKind::Cachix, CacheKind::Https]);
 }
 
 #[test]
