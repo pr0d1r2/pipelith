@@ -13,6 +13,7 @@ yaml|ordered YAML model & writer: quoting, layout, comments, `Dialect` trait|pip
 files|generated header, write, drift check, path safety|file contents, forge layout|-
 kind|neutral kind catalogue, row & arg validation, secret purposes, portability check|pipeline shapes, secret names|-
 runner|own runner labels per system|default labels, guard syntax|-
+cache|`## caches`: any nix binary cache|cache steps, secret injection|-
 detect|rows from tracked files, first config file|rendering, listing files|-
 
 ## §N NAV
@@ -27,7 +28,7 @@ sib|nix|repo gate: dev shell, guardrails, hk steps, CI, release
 ## §C CONSTRAINTS
 
 - module = dir + `mod.rs`. `mod.rs` composes & re-exports, ⊥ implements.
-- dep order (waves): `registry`, `system`, `yaml`, `files` → `kind`, `runner` → `detect`. edges = `use crate::<node>` imports between siblings; scaffold used `use crate::<node> as _;` until real imports landed.
+- dep order (waves): `registry`, `system`, `yaml`, `files` → `cache`, `runner` → `kind` → `detect`. edges = `use crate::<node>` imports between siblings; scaffold used `use crate::<node> as _;` until real imports landed.
 - port from actlith @ `7ce69c6` = `pub(crate)` → `pub` + rustdoc; behaviour & bytes unchanged unless a §V here says otherwise.
 
 ## §V INVARIANTS

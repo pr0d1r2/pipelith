@@ -14,12 +14,13 @@ SPEC.md                      3280
 nix/SPEC.md                  1930
 src/kind/SPEC.md             1750
 src/registry/SPEC.md         1070
-src/yaml/SPEC.md             860
+src/yaml/SPEC.md             890
 src/SPEC.md                  730
 src/files/SPEC.md            700
-src/detect/SPEC.md           650
+src/detect/SPEC.md           680
 src/system/SPEC.md           630
 src/runner/SPEC.md           840
+src/cache/SPEC.md            1610
 tests/SPEC.md                410
 dev/SPEC.md                  370
 
@@ -33,5 +34,6 @@ src/kind                     3920
 src/registry                 3730
 src/system                   3280
 src/runner                   3580
+src/cache                    4420
 src/yaml                     3520
 tests                        2720
