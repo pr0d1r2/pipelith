@@ -73,7 +73,22 @@ fn cached(
     if kind.name != BUILD.name {
         return Ok(());
     }
-    cache.map_or_else(|| Err(uncached(line)), |_| Ok(()))
+    match cache {
+        Some(cache) if cache.can_push() => Ok(()),
+        Some(cache) => Err(read_only(line, cache.name())),
+        None => Err(uncached(line)),
+    }
+}
+
+/// A `build` row whose cache takes no push.
+fn read_only(line: usize, name: &str) -> KindError {
+    KindError::new(
+        line,
+        format!(
+            "kind `build` pushes to its cache, and cache `{name}` is read-only"
+        ),
+        "give its `## caches` row a `push` secret",
+    )
 }
 
 /// A `build` row with no cache.
