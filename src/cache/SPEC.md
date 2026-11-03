@@ -35,7 +35,7 @@ sib|src/detect|rows from tracked files, first config file
 - key literal = `<keyname>:<base64 of 32 bytes>` (ed25519), keyname ⊥ empty, ⊥ blank, ⊥ `:`.
 - push `-` → read-only.
 - consts: `SECTION` = `caches`, `COLUMNS`, `CACHES` (`SectionSpec`, key col 0). forge crate puts `CACHES` in its schema.
-- types: `CacheKind::{Cachix, Https}` (`#[non_exhaustive]`), `CacheValue::{Literal(String), Secret(String)}`, `Push::{ReadOnly, Forge, Secret(String)}` (`Forge` = built-in entry: forge's own cache-push secret, as before), `BinaryCache` (`name()`, `kind()`, `url()`, `key()` → `&CacheValue`, `push()`, `can_push()`, `read_secrets()`, `nix_settings()`, `nix_config()` = `Some` ⇔ url & key literal), `Caches`. `kind::Cache` stays 0.2.0's.
+- types (enums `#[non_exhaustive]`): `CacheKind::{Cachix, Https}`, `CacheValue::{Literal(String), Secret(String)}`, `Push::{ReadOnly, Forge, Secret(String)}` (`Forge` = built-in entry: forge's own push secret, as before), `BinaryCache` (`name()`, `kind()`, `url()`, `key()` → `&CacheValue`, `push()`, `can_push()`, `read_secrets()`, `nix_settings()`, `nix_config()` = `Some` ⇔ url & key literal), `Caches`. `kind::Cache` stays 0.2.0's.
 - fns: `Caches::from_document(file, &Document) -> Result<Caches, RegistryError>`, `Caches::{find, has_row, is_empty, names}`, `builtin(name)`, `builtin_names()`; `SECRET_PREFIX` = `secret:`.
 - semver: pure addition to 0.2.0 ∴ next release `0.2.1`; `cargo semver-checks --baseline-rev v0.2.0` ! pass.
 
