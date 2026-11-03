@@ -109,9 +109,12 @@ own-cachix|cachix|-|own-cachix.cachix.org-1:<base64>|secret:OWN_CACHIX_TOKEN
 - `url`, `key`, `push`: each is `-`, a literal, or `secret:NAME`, where
   `NAME` is a forge secret or CI/CD variable (letters, digits and `_`,
   not starting with a digit). A secret keeps the value out of the
-  config file, for a cache whose host must stay private; no error
-  message ever prints a secret's value.
-- A literal url is `https://` and a host. A literal key is a nix public
+  config file, for a cache whose host must stay private. No error
+  message from pipelith prints a secret's value; output from `nix copy`
+  and nix's own errors is not pipelith's and can show the url, so the
+  forge masks a secret url in job logs.
+- A literal url is `https://` and a host, with no credential in it
+  (`user@`; a credential belongs in the push netrc). A literal key is a nix public
   key, `<keyname>:<base64>` of a 32-byte ed25519 key. A push credential
   is never a literal, since the config file is committed; `-` in `push`
   means read-only.
@@ -119,7 +122,8 @@ own-cachix|cachix|-|own-cachix.cachix.org-1:<base64>|secret:OWN_CACHIX_TOKEN
   digits, `-`). `url` is `-` or `https://<name>.cachix.org`; `key` may be
   `-` only when pipelith knows the cache's key; `push` is the cachix
   auth token.
-- `https`: any standard nix binary cache. `url` and `key` are required;
+- `https`: any standard nix binary cache; the name is letters, digits,
+  `.`, `_`, `-`, not starting with `-`. `url` and `key` are required;
   `push` is a secret holding a netrc file for the cache's host.
 - Reading: the job's nix config gains `extra-substituters` (the url)
   and `extra-trusted-public-keys` (the key). Where either is a secret,
@@ -129,7 +133,9 @@ own-cachix|cachix|-|own-cachix.cachix.org-1:<base64>|secret:OWN_CACHIX_TOKEN
   Pushing (`https`): the netrc secret is written to a file in the job's
   temporary directory, readable only by the job and removed after,
   nix's `netrc-file` points at it, and `nix copy --to <url>` uploads
-  the built outputs. Never for a fork's change request. `nix copy`
+  the built outputs over authenticated HTTP `PUT`, so the endpoint
+  must accept such uploads: a push secret alone does not make a
+  read-only cache writable. Never for a fork's change request. `nix copy`
   uploads paths as built, so the cache signs them when it serves them
   (or they were signed upstream); a signing key is not part of v1.
 - `build` pushes to its cache and asks it back, so a read-only cache
