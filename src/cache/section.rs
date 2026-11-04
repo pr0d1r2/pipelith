@@ -8,7 +8,8 @@ use super::entry::{
 };
 use super::value::{CacheValue, https_url, public_key, secret_name, userinfo};
 use crate::registry::{
-    Document, RegistryError, Row as Cells, SectionSpec, optional, required,
+    Arg, Document, RegistryError, Row as Cells, SectionSpec, args, optional,
+    required,
 };
 
 #[cfg(test)]
@@ -252,12 +253,68 @@ fn key_cell(at: Cell<'_>) -> Result<Option<CacheValue>, RegistryError> {
 
 /// The `push` cell: `-` is read-only, `secret:NAME` pushes, and
 /// `push=secret:P, read=secret:R` names either credential or both
-/// (V86). RED: args are not read yet.
+/// (V86). A credential is only ever a secret.
 fn credentials(
     at: Cell<'_>,
-    _kind: CacheKind,
+    kind: CacheKind,
 ) -> Result<(Push, Option<CacheValue>), RegistryError> {
-    Ok((push(at)?, None))
+    let text = optional(at.row, 4).unwrap_or_default();
+    if !text.contains('=') {
+        return Ok((push(at)?, None));
+    }
+    let mut out = (Push::ReadOnly, None);
+    for arg in args(at.file, at.row, 4, "push")? {
+        let name = arg_secret(at, &arg)?;
+        match arg.key.as_str() {
+            "push" => out.0 = Push::Secret(name),
+            _ if kind == CacheKind::Cachix => return Err(no_read(at)),
+            _ => out.1 = Some(CacheValue::Secret(name)),
+        }
+    }
+    Ok(out)
+}
+
+/// The secret one `push` cell arg names: a known key, a secret value.
+fn arg_secret(at: Cell<'_>, arg: &Arg) -> Result<String, RegistryError> {
+    let key = arg.key.as_str();
+    if !matches!(key, "push" | "read") {
+        return Err(unknown_arg(at, key));
+    }
+    match CacheValue::read(&arg.value) {
+        CacheValue::Secret(name) if secret_name(&name) => Ok(name),
+        CacheValue::Secret(name) => Err(not_a_secret(at, 4, &name)),
+        CacheValue::Literal(_) => Err(literal_arg(at, key)),
+    }
+}
+
+/// A `push` cell arg other than `push` and `read`.
+fn unknown_arg(at: Cell<'_>, key: &str) -> RegistryError {
+    at.error(
+        4,
+        format!("`push` arg `{}` is unknown", key.escape_debug()),
+        "use `push=secret:NAME` and/or `read=secret:NAME`",
+    )
+}
+
+/// A `push` cell arg whose value is a literal credential.
+fn literal_arg(at: Cell<'_>, key: &str) -> RegistryError {
+    at.error(
+        4,
+        format!(
+            "`push` arg `{key}` is a literal: a credential is never written \
+             in the config file"
+        ),
+        format!("write `{key}=secret:NAME`"),
+    )
+}
+
+/// `read` on a cachix row, whose cache reads without a netrc.
+fn no_read(at: Cell<'_>) -> RegistryError {
+    at.error(
+        4,
+        "a cachix cache reads without a netrc: `read` is for https caches",
+        "drop `read=`, or use kind `https`",
+    )
 }
 
 /// The `push` cell as one value: `-` is read-only; a credential is only

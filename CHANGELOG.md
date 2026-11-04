@@ -9,6 +9,22 @@ consumers will see change.
 
 ## [Unreleased]
 
+### Added
+
+- An `https` cache that answers only with credentials: the `## caches`
+  `push` cell takes args, `read=secret:R` for the netrc nix reads the
+  cache with and `push=secret:P` for the push one, either or both. A
+  plain `secret:NAME` still means push, so every existing file keeps
+  its meaning and no column is added. A literal credential, an unknown
+  arg and `read` on a cachix row are refused while the row is
+  validated.
+- `BinaryCache::read_netrc()`: the read netrc's secret. The forge
+  writes it to a file readable only by the job before nix runs and
+  sets `netrc-file`; a run that cannot see the secret (a fork's change
+  request) gets no cache. `read_secrets()` now names it too, and
+  `nix_config()` is `None` for such a cache, since its lines alone
+  would not reach it. No 0.2.1 item changes.
+
 ## [0.2.1] - 2026-11-04
 
 ### Added
