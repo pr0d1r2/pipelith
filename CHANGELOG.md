@@ -25,6 +25,13 @@ consumers will see change.
   `nix_config()` is `None` for such a cache, since its lines alone
   would not reach it. No 0.2.1 item changes.
 
+### Changed
+
+- A `## caches` refusal no longer repeats what the cell held when that
+  could be a credential: a malformed, unknown or repeated `push` cell
+  arg and a bad secret name in any cell get a generic message with the
+  fix. Only error text changes.
+
 ## [0.2.1] - 2026-11-04
 
 ### Added
