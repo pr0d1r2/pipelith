@@ -345,6 +345,27 @@ fn a_push_arg_alone_is_a_plain_push() -> Result<(), String> {
     Ok(())
 }
 
+#[test]
+fn the_read_netrc_follows_the_url_and_key_secrets() -> Result<(), String> {
+    let found = caches(
+        "hidden|https|secret:CACHE_URL|secret:CACHE_KEY|\
+         read=secret:CACHE_READ_NETRC\n",
+    )?;
+    let cache = found.find("hidden").ok_or("not found")?;
+    let want = ["CACHE_URL", "CACHE_KEY", "CACHE_READ_NETRC"];
+    assert_eq!(cache.read_secrets(), want);
+    Ok(())
+}
+
+#[test]
+fn a_cachix_row_takes_a_push_arg() -> Result<(), String> {
+    let arg = caches("pr0d1r2|cachix|-|-|push=secret:OWN_CACHIX_TOKEN\n")?;
+    let plain = caches("pr0d1r2|cachix|-|-|secret:OWN_CACHIX_TOKEN\n")?;
+    assert_eq!(arg.find("pr0d1r2"), plain.find("pr0d1r2"));
+    assert!(arg.find("pr0d1r2").is_some_and(|c| c.can_push()));
+    Ok(())
+}
+
 /// The refusal of the `push` cell `push` on an https row.
 fn refused_push(push: &str) -> String {
     refused(&format!("x|https|https://cache.example.org|{KEY}|{push}\n"))
