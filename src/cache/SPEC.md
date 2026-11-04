@@ -52,7 +52,7 @@ V86: read netrc (`https`, `read=secret:R`) → forge writes it to 0600 file in j
 id|status|task|cites
 T40|x|`CACHES`, `Caches`, `BinaryCache` & value types w/ tests; `Row::check_with` → `Checked`; 0.2.0 API unchanged; `lib.rs` declares node|V82,V83,V84,V85,`.:V4`,`.:V9`
 T41|.|actlith & lablith render `cachix` & `https` caches per V84, V85, V86 (`read_netrc()`); forge ! mask secret url in job logs (`nix copy` output ⊥ pipelith's); neutral rows render on both before release ! user approval|`.:V4`,`.:V7`
-T42|.|`read=` netrc arg in `push` cell; `BinaryCache::read_netrc` w/ tests; `nix_config` `None` w/ read netrc|V83,V86,`.:V9`
+T42|x|`read=` netrc arg in `push` cell; `BinaryCache::read_netrc` w/ tests; `nix_config` `None` w/ read netrc|V83,V86,`.:V9`
 
 ## §B BUGS
 
