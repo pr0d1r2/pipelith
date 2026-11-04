@@ -62,7 +62,7 @@ and give the nix build its hash, in `rustPlatform.buildRustPackage`:
 ```nix
 cargoLock = {
   lockFile = ./Cargo.lock;
-  outputHashes."pipelith-0.2.0" = "<hash nix reports>";
+  outputHashes."pipelith-0.2.1" = "<hash nix reports>";
 };
 ```
 
