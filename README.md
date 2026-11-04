@@ -126,7 +126,7 @@ from crates.io or pinned to a commit.
 
 ## Status
 
-`0.2.1` on crates.io. Every module is built and tested, with 100% line
+`0.2.2` on crates.io. Every module is built and tested, with 100% line
 coverage. actlith's `main` takes `registry`, `kind`, `system`, `yaml`
 and `files` from pipelith, with every one of its goldens byte-identical;
 its `detect` switch uses `text_with` and `seed_init_text` from 0.1.1.
@@ -134,6 +134,8 @@ its `detect` switch uses `text_with` and `seed_init_text` from 0.1.1.
 CI system, and `runner` picks each system's runner (CHANGELOG).
 0.2.1 adds `## caches` (`cachix` and `https` caches, cells literal or
 `secret:NAME`) without changing any 0.2.0 API (CHANGELOG).
+0.2.2 reads a private `https` cache with a netrc secret
+(`read=secret:NAME` in the `push` cell), again without an API change.
 
 ## The name
 
