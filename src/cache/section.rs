@@ -8,8 +8,7 @@ use super::entry::{
 };
 use super::value::{CacheValue, https_url, public_key, secret_name, userinfo};
 use crate::registry::{
-    Arg, Document, RegistryError, Row as Cells, SectionSpec, args, optional,
-    required,
+    Document, RegistryError, Row as Cells, SectionSpec, optional, required,
 };
 
 #[cfg(test)]
@@ -263,9 +262,9 @@ fn credentials(
         return Ok((push(at)?, None));
     }
     let mut out = (Push::ReadOnly, None);
-    for arg in args(at.file, at.row, 4, "push")? {
-        let name = arg_secret(at, &arg)?;
-        match arg.key.as_str() {
+    for (key, value) in push_args(at, &text)? {
+        let name = arg_secret(at, key, value)?;
+        match key {
             "push" => out.0 = Push::Secret(name),
             _ if kind == CacheKind::Cachix => return Err(no_read(at)),
             _ => out.1 = Some(CacheValue::Secret(name)),
@@ -274,38 +273,75 @@ fn credentials(
     Ok(out)
 }
 
-/// The secret one `push` cell arg names: a known key, a secret value.
-fn arg_secret(at: Cell<'_>, arg: &Arg) -> Result<String, RegistryError> {
-    let key = arg.key.as_str();
-    if !matches!(key, "push" | "read") {
-        return Err(unknown_arg(at, key));
+/// The `push` cell's `key=value` args, each key `push` or `read` and
+/// given once. Refusals repeat none of the cell: it may hold a pasted
+/// credential (V83).
+fn push_args<'t>(
+    at: Cell<'_>,
+    text: &'t str,
+) -> Result<Vec<(&'static str, &'t str)>, RegistryError> {
+    let mut out: Vec<(&'static str, &'t str)> = Vec::new();
+    for item in text.split(',') {
+        let (key, value) = item
+            .split_once('=')
+            .ok_or_else(|| arg_error(at, MALFORMED))?;
+        let key = arg_key(at, key)?;
+        if out.iter().any(|(k, _)| *k == key) {
+            return Err(arg_error(at, TWICE));
+        }
+        out.push((key, value.trim()));
     }
-    match CacheValue::read(&arg.value) {
+    Ok(out)
+}
+
+/// A `push` cell arg key: `push` or `read`.
+fn arg_key(at: Cell<'_>, key: &str) -> Result<&'static str, RegistryError> {
+    match key.trim() {
+        "push" => Ok("push"),
+        "read" => Ok("read"),
+        "" => Err(arg_error(at, MALFORMED)),
+        _ => Err(arg_error(at, UNKNOWN)),
+    }
+}
+
+/// A `push` cell arg that is not `key=value`.
+const MALFORMED: &str =
+    "a `push` arg is not `key=value`, so it is refused and not echoed";
+
+/// A `push` cell arg whose key is neither `push` nor `read`.
+const UNKNOWN: &str = "a `push` arg has a key other than `push` and `read`, \
+    so it is refused and not echoed";
+
+/// A `push` cell arg key given twice.
+const TWICE: &str = "a `push` arg key is given twice";
+
+/// A refusal of the `push` cell's args: `what`, and the one fix.
+fn arg_error(at: Cell<'_>, what: &str) -> RegistryError {
+    at.error(
+        4,
+        what,
+        "write `push=secret:NAME` and/or `read=secret:NAME`",
+    )
+}
+
+/// The secret the `push` cell arg `key` names in `value`.
+fn arg_secret(
+    at: Cell<'_>,
+    key: &str,
+    value: &str,
+) -> Result<String, RegistryError> {
+    match CacheValue::read(value) {
         CacheValue::Secret(name) if secret_name(&name) => Ok(name),
-        CacheValue::Secret(name) => Err(not_a_secret(at, 4, &name)),
-        CacheValue::Literal(_) => Err(literal_arg(at, key)),
+        CacheValue::Secret(_) => Err(not_a_secret(at, 4)),
+        CacheValue::Literal(_) => Err(at.error(
+            4,
+            format!(
+                "`push` arg `{key}` is a literal: a credential is never \
+                 written in the config file"
+            ),
+            format!("write `{key}=secret:NAME`"),
+        )),
     }
-}
-
-/// A `push` cell arg other than `push` and `read`.
-fn unknown_arg(at: Cell<'_>, key: &str) -> RegistryError {
-    at.error(
-        4,
-        format!("`push` arg `{}` is unknown", key.escape_debug()),
-        "use `push=secret:NAME` and/or `read=secret:NAME`",
-    )
-}
-
-/// A `push` cell arg whose value is a literal credential.
-fn literal_arg(at: Cell<'_>, key: &str) -> RegistryError {
-    at.error(
-        4,
-        format!(
-            "`push` arg `{key}` is a literal: a credential is never written \
-             in the config file"
-        ),
-        format!("write `{key}=secret:NAME`"),
-    )
 }
 
 /// `read` on a cachix row, whose cache reads without a netrc.
@@ -341,16 +377,18 @@ fn value(
     };
     let value = CacheValue::read(&text);
     match value.secret() {
-        Some(name) if !secret_name(name) => Err(not_a_secret(at, index, name)),
+        Some(name) if !secret_name(name) => Err(not_a_secret(at, index)),
         _ => Ok(Some(value)),
     }
 }
 
-/// Cell `index` names `secret:<name>`, which is not a secret name.
-fn not_a_secret(at: Cell<'_>, index: usize, name: &str) -> RegistryError {
+/// Cell `index` names `secret:` and no secret name. Refused without the
+/// name: a credential pasted there would otherwise reach the log.
+fn not_a_secret(at: Cell<'_>, index: usize) -> RegistryError {
     at.error(
         index,
-        format!("secret `{}` is not a secret name", name.escape_debug()),
+        "`secret:` is not followed by a secret name, so it is refused and \
+         not echoed",
         "write `secret:NAME`: letters, digits and `_`, not starting with a digit",
     )
 }
