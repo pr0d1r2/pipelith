@@ -111,9 +111,10 @@ own-cachix|cachix|-|own-cachix.cachix.org-1:<base64>|secret:OWN_CACHIX_TOKEN
   `NAME` is a forge secret or CI/CD variable (letters, digits and `_`,
   not starting with a digit). A secret keeps the value out of the
   config file, for a cache whose host must stay private. No error
-  message from pipelith prints a secret's value; output from `nix copy`
-  and nix's own errors is not pipelith's and can show the url, so the
-  forge masks a secret url in job logs.
+  message from pipelith prints a secret's value, a bad secret name or
+  what a `push` cell arg held; output from `nix copy` and nix's own
+  errors is not pipelith's and can show the url, so the forge masks a
+  secret url in job logs.
 - A literal url is `https://` and a host, with no credential in it
   (`user@`; a credential belongs in the push netrc). A literal key is a nix public
   key, `<keyname>:<base64>` of a 32-byte ed25519 key. A push credential
@@ -140,6 +141,11 @@ own-cachix|cachix|-|own-cachix.cachix.org-1:<base64>|secret:OWN_CACHIX_TOKEN
   uses that file for substituters too. Where any of these is a secret,
   a run that does not get the secret (a fork's change request) runs
   without the cache.
+- A netrc, read or push, goes only to an `https://` url. A url held by
+  a secret is known only when the job runs, so the forge checks the
+  resolved url there, before nix or curl sees the netrc, and stops
+  without echoing the url when it is anything else; otherwise the
+  credential would travel in cleartext.
 - Pushing (`cachix`): as before, with the row's token secret.
   Pushing (`https`): the netrc secret is written to a file in the job's
   temporary directory, readable only by the job and removed after,
