@@ -137,7 +137,8 @@ CI system, and `runner` picks each system's runner (CHANGELOG).
 0.2.1 adds `## caches` (`cachix` and `https` caches, cells literal or
 `secret:NAME`) without changing any 0.2.0 API (CHANGELOG).
 0.2.2 reads a private `https` cache with a netrc secret
-(`read=secret:NAME` in the `push` cell), again without an API change.
+(`read=secret:NAME` in the `push` cell) and adds
+`BinaryCache::read_netrc()`, without changing any 0.2.1 API.
 
 ## The name
 
