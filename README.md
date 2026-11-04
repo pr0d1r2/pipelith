@@ -126,7 +126,9 @@ from crates.io or pinned to a commit.
 
 ## Status
 
-`0.2.2` on crates.io. Every module is built and tested, with 100% line
+`0.2.2` is the current version; it reaches crates.io when the owner
+publishes it from `main` after the bump merges, and `0.2.1` is the
+newest there until then. Every module is built and tested, with 100% line
 coverage. actlith's `main` takes `registry`, `kind`, `system`, `yaml`
 and `files` from pipelith, with every one of its goldens byte-identical;
 its `detect` switch uses `text_with` and `seed_init_text` from 0.1.1.
