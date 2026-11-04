@@ -42,16 +42,17 @@ sib|src/detect|rows from tracked files, first config file
 ## §V INVARIANTS
 
 V82: `cache` cell → `## caches` row of that name, else built-in cachix entry (v1 `pr0d1r2`, `Push::Forge`). `Checked.cache` = either; `Checked.row.cache` = 0.2.0 `kind::Cache` only for built-in entry ∴ secret-valued cache ⊥ reaches 0.2.0 API, `Row::check` & golden bytes unchanged. ⊥ both → `Row::check_with` error naming cache & `## caches` fix (⊥ rows → 0.2.0 message); `-` → ⊥ cache steps
-V83: `## caches` checked at row-check time, located w/ line & column: unknown kind, repeated name, name ∉ its kind's charset, bad secret name, non-https | `user@` | host-less literal url (url ⊥ echoed, any scheme), malformed literal key, literal push, cachix url ≠ its name's, cachix key `-` w/o built-in key, https url | key `-` → error; ⊥ silent default; pipelith error ⊥ prints a secret's value (only its NAME)
+V83: `## caches` checked at row-check time, located w/ line & column: unknown kind, repeated name, name ∉ its kind's charset, bad secret name, non-https | `user@` | host-less literal url (url ⊥ echoed, any scheme), malformed literal key, literal push, cachix url ≠ its name's, cachix key `-` w/o built-in key, https url | key `-` → error; ⊥ silent default; pipelith error ⊥ echoes a secret's value, a bad secret name, `push` cell arg text | any url
 V84: read = forge adds `extra-substituters` url & `extra-trusted-public-keys` key to job nix config; secret url | key → its name in `read_secrets()`, rendered only where forge has the secret (⊥ fork change request: job runs w/o cache)
 V85: push (`Push::{Forge, Secret}`) ⇒ forge lists push secret (`Forge` → its `CachePush` secret); ⊥ on fork change request (`src/kind:V32`). `https` push: netrc from secret → file in job's temp dir (mode 0600, removed after), `netrc-file` set, `nix copy --to <url>` built outputs; ⊥ echo url. `ReadOnly` → ⊥ push step; `build` w/ read-only cache refused (`src/kind:V75`)
 V86: read netrc (`https`, `read=secret:R`) → forge writes it to 0600 file in job temp dir before nix runs, sets `netrc-file` in job nix config (nix reads it for substituters); run ⊥ secret (fork change request) → ⊥ cache. literal | unknown arg | `read` on cachix → error
+V87: forge hands a netrc (read | push) to nix | curl only after checking at run time that the RESOLVED url (secret | literal) starts `https://`; else stops before writing the netrc, error names cache & secret, ⊥ url (a `secret:` url ⊥ checked at row time)
 
 ## §T TASKS
 
 id|status|task|cites
 T40|x|`CACHES`, `Caches`, `BinaryCache` & value types w/ tests; `Row::check_with` → `Checked`; 0.2.0 API unchanged; `lib.rs` declares node|V82,V83,V84,V85,`.:V4`,`.:V9`
-T41|.|actlith & lablith render `cachix` & `https` caches per V84, V85, V86 (`read_netrc()`); forge ! mask secret url in job logs (`nix copy` output ⊥ pipelith's); neutral rows render on both before release ! user approval|`.:V4`,`.:V7`
+T41|.|actlith & lablith render `cachix` & `https` caches per V84-V87 (`read_netrc()`, run-time https check w/ test); forge ! mask secret url in job logs (`nix copy` output ⊥ pipelith's); neutral rows render on both before release ! user approval|`.:V4`,`.:V7`
 T42|x|`read=` netrc arg in `push` cell; `BinaryCache::read_netrc` w/ tests; `nix_config` `None` w/ read netrc|V83,V86,`.:V9`
 
 ## §B BUGS
