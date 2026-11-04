@@ -71,8 +71,6 @@ pub struct BinaryCache {
     url: CacheValue,
     key: CacheValue,
     push: Push,
-    /// RED: kept, never read.
-    #[allow(dead_code)]
     read: Option<CacheValue>,
 }
 
@@ -149,7 +147,7 @@ impl BinaryCache {
     /// public one. The forge writes it to a file and sets `netrc-file`.
     #[must_use]
     pub fn read_netrc(&self) -> Option<&CacheValue> {
-        None
+        self.read.as_ref()
     }
 
     /// The names of the secrets reading needs: the url's, the key's,
@@ -158,7 +156,7 @@ impl BinaryCache {
     /// beside `KindSpec::purposes`.
     #[must_use]
     pub fn read_secrets(&self) -> Vec<&str> {
-        [Some(&self.url), Some(&self.key)]
+        [Some(&self.url), Some(&self.key), self.read.as_ref()]
             .into_iter()
             .flatten()
             .filter_map(CacheValue::secret)
@@ -180,6 +178,9 @@ impl BinaryCache {
     /// since those lines alone would not reach the cache.
     #[must_use]
     pub fn nix_config(&self) -> Option<String> {
+        if self.read.is_some() {
+            return None;
+        }
         let line = |(setting, value): (&str, &CacheValue)| {
             value.literal().map(|v| format!("{setting} = {v}\n"))
         };
