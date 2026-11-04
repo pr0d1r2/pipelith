@@ -169,8 +169,12 @@ from `## caches`, including a row that shadows a built-in name (where
 - `nix_settings()` gives each nix setting with its value, a
   `CacheValue::Literal` to write as is or a `CacheValue::Secret` to
   inject the forge's way; `nix_config()` is the whole text when both
-  are literals.
-- `read_secrets()` names the secrets reading needs; `push()` says
+  are literals and the cache needs no read netrc.
+- `read_netrc()` is the netrc a private cache is read with: write it
+  to a file only the job can read before nix runs, and add
+  `netrc-file = <that file>` to the job's nix config.
+- `read_secrets()` names the secrets reading needs (url, key, read
+  netrc); `push()` says
   whether and with which secret to push (`Push::Forge` is the forge's
   own cache-push secret), and `kind()` how.
 
