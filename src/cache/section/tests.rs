@@ -309,3 +309,100 @@ fn a_cachix_key_is_needed_unless_built_in() {
          `secret:NAME`)"
     );
 }
+
+/// The cache `x` of an https row whose `push` cell is `push`.
+fn credentials(push: &str) -> Result<crate::cache::BinaryCache, String> {
+    let found =
+        caches(&format!("x|https|https://cache.example.org|{KEY}|{push}\n"))?;
+    found.find("x").ok_or_else(|| "not found".to_owned())
+}
+
+#[test]
+fn a_read_arg_names_the_read_netrc() -> Result<(), String> {
+    let cache = credentials("read=secret:CACHE_READ_NETRC")?;
+    assert_eq!(cache.read_netrc(), Some(&secret("CACHE_READ_NETRC")));
+    assert_eq!(cache.push(), &Push::ReadOnly);
+    assert_eq!(cache.read_secrets(), ["CACHE_READ_NETRC"]);
+    Ok(())
+}
+
+#[test]
+fn push_and_read_args_name_both() -> Result<(), String> {
+    let cache =
+        credentials("push=secret:CACHE_NETRC, read=secret:CACHE_NETRC")?;
+    assert_eq!(cache.push(), &Push::Secret("CACHE_NETRC".to_owned()));
+    assert_eq!(cache.read_netrc(), Some(&secret("CACHE_NETRC")));
+    Ok(())
+}
+
+#[test]
+fn a_push_arg_alone_is_a_plain_push() -> Result<(), String> {
+    let arg = credentials("push=secret:CACHE_NETRC")?;
+    let plain = credentials("secret:CACHE_NETRC")?;
+    assert_eq!(arg, plain);
+    assert_eq!(plain.read_netrc(), None);
+    Ok(())
+}
+
+/// The refusal of the `push` cell `push` on an https row.
+fn refused_push(push: &str) -> String {
+    refused(&format!("x|https|https://cache.example.org|{KEY}|{push}\n"))
+}
+
+/// Where an https row's `push` cell starts.
+fn push_column() -> usize {
+    KEY.len().saturating_add(36)
+}
+
+#[test]
+fn a_literal_read_credential_is_refused() {
+    assert_eq!(
+        refused_push("read=machine h login u password p"),
+        format!(
+            ".lablith:5:{}: `push` arg `read` is a literal: a credential is \
+             never written in the config file (write `read=secret:NAME`)",
+            push_column()
+        )
+    );
+}
+
+#[test]
+fn a_literal_push_arg_is_refused() {
+    let error = refused_push("push=netrc-text");
+    assert!(error.contains("`push` arg `push` is a literal"), "{error}");
+}
+
+#[test]
+fn an_unknown_push_arg_is_refused() {
+    assert_eq!(
+        refused_push("write=secret:X"),
+        format!(
+            ".lablith:5:{}: `push` arg `write` is unknown (use \
+             `push=secret:NAME` and/or `read=secret:NAME`)",
+            push_column()
+        )
+    );
+}
+
+#[test]
+fn a_bad_secret_name_in_an_arg_is_refused() {
+    let error = refused_push("read=secret:1X");
+    assert!(error.ends_with(NOT_A_SECRET), "{error}");
+}
+
+#[test]
+fn a_repeated_or_malformed_arg_is_refused() {
+    let twice = refused_push("read=secret:A, read=secret:B");
+    assert!(twice.contains("given twice"), "{twice}");
+    let bare = refused_push("read=secret:A, push");
+    assert!(bare.contains("push"), "{bare}");
+}
+
+#[test]
+fn a_cachix_row_takes_no_read_netrc() {
+    assert_eq!(
+        refused("pr0d1r2|cachix|-|-|read=secret:X\n"),
+        ".lablith:5:20: a cachix cache reads without a netrc: `read` is for \
+         https caches (drop `read=`, or use kind `https`)"
+    );
+}

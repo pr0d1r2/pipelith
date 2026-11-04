@@ -71,6 +71,9 @@ pub struct BinaryCache {
     url: CacheValue,
     key: CacheValue,
     push: Push,
+    /// RED: kept, never read.
+    #[allow(dead_code)]
+    read: Option<CacheValue>,
 }
 
 impl BinaryCache {
@@ -88,6 +91,7 @@ impl BinaryCache {
             url,
             key,
             push: Push::ReadOnly,
+            read: None,
         }
     }
 
@@ -95,6 +99,12 @@ impl BinaryCache {
     #[must_use]
     pub(crate) fn pushed(self, push: Push) -> Self {
         Self { push, ..self }
+    }
+
+    /// The same cache, read with the netrc `read` when there is one.
+    #[must_use]
+    pub(crate) fn read_with(self, read: Option<CacheValue>) -> Self {
+        Self { read, ..self }
     }
 
     /// The name a `cache` cell writes: the cachix cache name for
@@ -134,13 +144,23 @@ impl BinaryCache {
         self.push != Push::ReadOnly
     }
 
-    /// The names of the secrets reading needs, url's then key's (V84);
-    /// empty when both are literals. `kind::Purpose` has no variant for
-    /// them, so a forge lists these beside `KindSpec::purposes`.
+    /// The secret holding the netrc nix reads the cache with, for a
+    /// cache that answers only with credentials (V86); `None` for a
+    /// public one. The forge writes it to a file and sets `netrc-file`.
+    #[must_use]
+    pub fn read_netrc(&self) -> Option<&CacheValue> {
+        None
+    }
+
+    /// The names of the secrets reading needs: the url's, the key's,
+    /// then the read netrc's (V84, V86); empty when none is a secret.
+    /// `kind::Purpose` has no variant for them, so a forge lists these
+    /// beside `KindSpec::purposes`.
     #[must_use]
     pub fn read_secrets(&self) -> Vec<&str> {
-        [&self.url, &self.key]
+        [Some(&self.url), Some(&self.key)]
             .into_iter()
+            .flatten()
             .filter_map(CacheValue::secret)
             .collect()
     }
@@ -156,7 +176,8 @@ impl BinaryCache {
     }
 
     /// The nix config lines that trust the cache, when the url and key
-    /// are both literals; `None` when either is held by a secret.
+    /// are both literals and reading needs no netrc; `None` otherwise,
+    /// since those lines alone would not reach the cache.
     #[must_use]
     pub fn nix_config(&self) -> Option<String> {
         let line = |(setting, value): (&str, &CacheValue)| {

@@ -131,3 +131,26 @@ fn a_push_secret_takes_a_push() {
     assert!(cache.can_push());
     assert_eq!(cache.push(), &push);
 }
+
+#[test]
+fn a_read_netrc_is_a_read_secret_and_blocks_the_literal_config() {
+    let url = lit("https://cache.example.org");
+    let cache = https(url, lit(KEY), Push::ReadOnly)
+        .read_with(Some(secret("CACHE_READ_NETRC")));
+    assert_eq!(cache.read_netrc(), Some(&secret("CACHE_READ_NETRC")));
+    assert_eq!(cache.read_secrets(), ["CACHE_READ_NETRC"]);
+    assert_eq!(cache.nix_config(), None);
+    assert_eq!(cache.nix_settings()[0].1, &lit("https://cache.example.org"));
+}
+
+#[test]
+fn without_a_read_netrc_nothing_changes() {
+    let cache =
+        https(lit("https://cache.example.org"), lit(KEY), Push::ReadOnly);
+    assert_eq!(cache.read_netrc(), None);
+    assert!(cache.nix_config().is_some());
+    assert_eq!(
+        builtin("pr0d1r2").and_then(|c| c.read_netrc().cloned()),
+        None
+    );
+}
