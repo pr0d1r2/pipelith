@@ -166,8 +166,9 @@ fn a_name_that_is_not_a_cachix_name_is_refused() {
 }
 
 /// The message for a bad secret name, after the name.
-const NOT_A_SECRET: &str = "is not a secret name (write `secret:NAME`: \
-    letters, digits and `_`, not starting with a digit)";
+const NOT_A_SECRET: &str = "`secret:` is not followed by a secret name, so \
+    it is refused and not echoed (write `secret:NAME`: letters, digits and \
+    `_`, not starting with a digit)";
 
 #[test]
 fn a_bad_secret_name_is_refused_in_every_cell() {
@@ -177,7 +178,7 @@ fn a_bad_secret_name_is_refused_in_every_cell() {
         ("x|https|secret:U|secret:K|secret:", 27),
     ] {
         let error = refused(&format!("{row}\n"));
-        let at = format!(".lablith:5:{column}: secret `");
+        let at = format!(".lablith:5:{column}: ");
         assert!(error.starts_with(&at), "{error}");
         assert!(error.ends_with(NOT_A_SECRET), "{error}");
     }
@@ -372,13 +373,16 @@ fn a_literal_push_arg_is_refused() {
     assert!(error.contains("`push` arg `push` is a literal"), "{error}");
 }
 
+/// The fix every `push` cell arg refusal names.
+const ARG_FIX: &str = "(write `push=secret:NAME` and/or `read=secret:NAME`)";
+
 #[test]
 fn an_unknown_push_arg_is_refused() {
     assert_eq!(
         refused_push("write=secret:X"),
         format!(
-            ".lablith:5:{}: `push` arg `write` is unknown (use \
-             `push=secret:NAME` and/or `read=secret:NAME`)",
+            ".lablith:5:{}: a `push` arg has a key other than `push` and \
+             `read`, so it is refused and not echoed {ARG_FIX}",
             push_column()
         )
     );
@@ -391,11 +395,56 @@ fn a_bad_secret_name_in_an_arg_is_refused() {
 }
 
 #[test]
-fn a_repeated_or_malformed_arg_is_refused() {
-    let twice = refused_push("read=secret:A, read=secret:B");
-    assert!(twice.contains("given twice"), "{twice}");
-    let bare = refused_push("read=secret:A, push");
-    assert!(bare.contains("push"), "{bare}");
+fn a_repeated_arg_is_refused() {
+    assert_eq!(
+        refused_push("read=secret:A, read=secret:B"),
+        format!(
+            ".lablith:5:{}: a `push` arg key is given twice {ARG_FIX}",
+            push_column()
+        )
+    );
+}
+
+#[test]
+fn a_malformed_arg_is_refused() {
+    for push in ["read=secret:A, push", "read=secret:A,,push=secret:B"] {
+        assert_eq!(
+            refused_push(push),
+            format!(
+                ".lablith:5:{}: a `push` arg is not `key=value`, so it is \
+                 refused and not echoed {ARG_FIX}",
+                push_column()
+            )
+        );
+    }
+}
+
+/// `push` cells and other cells that carry [`PASSWORD`] where a key,
+/// an arg or a secret name belongs, each refused.
+fn leaking_rows() -> Vec<String> {
+    let url = "https://cache.example.org";
+    let pushes = [
+        format!("read=secret:A, machine h login u password {PASSWORD}"),
+        format!("{PASSWORD}=secret:A"),
+        format!("read=secret:{PASSWORD}"),
+        format!("secret:{PASSWORD}"),
+    ];
+    let mut rows: Vec<String> = pushes
+        .iter()
+        .map(|p| format!("x|https|{url}|{KEY}|{p}"))
+        .collect();
+    rows.push(format!("x|https|secret:{PASSWORD}|{KEY}|-"));
+    rows.push(format!("x|https|{url}|secret:{PASSWORD}|-"));
+    rows
+}
+
+#[test]
+fn no_cell_refusal_echoes_a_password() {
+    for row in leaking_rows() {
+        let error = refused(&format!("{row}\n"));
+        assert!(error.starts_with(".lablith:5:"), "{error}");
+        assert!(!error.contains(PASSWORD), "{error}");
+    }
 }
 
 #[test]
