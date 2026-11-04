@@ -99,6 +99,7 @@ same on both forges. A row names a nix binary cache that a
 name|kind|url|key|push
 example-cache|https|https://cache.example.org|example-cache-1:<base64>|secret:EXAMPLE_NETRC
 hidden-cache|https|secret:HIDDEN_URL|secret:HIDDEN_KEY|-
+private-cache|https|https://private.example.org|private-cache-1:<base64>|read=secret:PRIVATE_NETRC, push=secret:PRIVATE_NETRC
 own-cachix|cachix|-|own-cachix.cachix.org-1:<base64>|secret:OWN_CACHIX_TOKEN
 ```
 
@@ -125,8 +126,18 @@ own-cachix|cachix|-|own-cachix.cachix.org-1:<base64>|secret:OWN_CACHIX_TOKEN
 - `https`: any standard nix binary cache; the name is letters, digits,
   `.`, `_`, `-`, not starting with `-`. `url` and `key` are required;
   `push` is a secret holding a netrc file for the cache's host.
+- A private `https` cache, one that answers only with credentials,
+  names its read netrc in the `push` cell as an arg: `read=secret:R`,
+  with `push=secret:P` beside it when it is pushed to as well (the two
+  may name the same secret). A `push` cell without `=` keeps its plain
+  meaning, so no column is added and existing files stay valid. Each
+  arg is `push` or `read`, each value a secret; `read` is refused on a
+  `cachix` row.
 - Reading: the job's nix config gains `extra-substituters` (the url)
-  and `extra-trusted-public-keys` (the key). Where either is a secret,
+  and `extra-trusted-public-keys` (the key). With a read netrc, the
+  forge writes it to a file in the job's temporary directory, readable
+  only by the job, before nix runs, and sets `netrc-file` to it; nix
+  uses that file for substituters too. Where any of these is a secret,
   a run that does not get the secret (a fork's change request) runs
   without the cache.
 - Pushing (`cachix`): as before, with the row's token secret.
