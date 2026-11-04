@@ -93,16 +93,28 @@ fn cache(file: &str, row: &Cells) -> Result<BinaryCache, RegistryError> {
     let kind = kind(file, row)?;
     let at = Cell { file, row };
     named(at, kind, &name)?;
-    let (url, key) = match kind {
+    let (url, key) = location(at, kind, &name)?;
+    let (push, read) = credentials(at, kind)?;
+    Ok(BinaryCache::new(&name, kind, url, key)
+        .pushed(push)
+        .read_with(read))
+}
+
+/// The row's `url` and `key` cells, checked for its kind.
+fn location(
+    at: Cell<'_>,
+    kind: CacheKind,
+    name: &str,
+) -> Result<(CacheValue, CacheValue), RegistryError> {
+    Ok(match kind {
         CacheKind::Cachix => {
-            (cachix_url_cell(at, &name)?, cachix_key(at, &name)?)
+            (cachix_url_cell(at, name)?, cachix_key(at, name)?)
         }
         CacheKind::Https => {
             let url = https_cell(at)?;
             (url, key_cell(at)?.ok_or_else(|| at.empty(3, "key"))?)
         }
-    };
-    Ok(BinaryCache::new(&name, kind, url, key).pushed(push(at)?))
+    })
 }
 
 /// The `name` cell's shape for `kind` (V83).
@@ -238,7 +250,18 @@ fn key_cell(at: Cell<'_>) -> Result<Option<CacheValue>, RegistryError> {
     }
 }
 
-/// The `push` cell: `-` is read-only; a credential is only a secret.
+/// The `push` cell: `-` is read-only, `secret:NAME` pushes, and
+/// `push=secret:P, read=secret:R` names either credential or both
+/// (V86). RED: args are not read yet.
+fn credentials(
+    at: Cell<'_>,
+    _kind: CacheKind,
+) -> Result<(Push, Option<CacheValue>), RegistryError> {
+    Ok((push(at)?, None))
+}
+
+/// The `push` cell as one value: `-` is read-only; a credential is only
+/// a secret.
 fn push(at: Cell<'_>) -> Result<Push, RegistryError> {
     match value(at, 4)? {
         None => Ok(Push::ReadOnly),
@@ -261,13 +284,18 @@ fn value(
     };
     let value = CacheValue::read(&text);
     match value.secret() {
-        Some(name) if !secret_name(name) => Err(at.error(
-            index,
-            format!("secret `{}` is not a secret name", name.escape_debug()),
-            "write `secret:NAME`: letters, digits and `_`, not starting with a digit",
-        )),
+        Some(name) if !secret_name(name) => Err(not_a_secret(at, index, name)),
         _ => Ok(Some(value)),
     }
+}
+
+/// Cell `index` names `secret:<name>`, which is not a secret name.
+fn not_a_secret(at: Cell<'_>, index: usize, name: &str) -> RegistryError {
+    at.error(
+        index,
+        format!("secret `{}` is not a secret name", name.escape_debug()),
+        "write `secret:NAME`: letters, digits and `_`, not starting with a digit",
+    )
 }
 
 /// A row of `file`, for errors pointing at one of its cells.
