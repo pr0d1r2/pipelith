@@ -20,7 +20,7 @@ src/files/SPEC.md            700
 src/detect/SPEC.md           680
 src/system/SPEC.md           630
 src/runner/SPEC.md           840
-src/cache/SPEC.md            1610
+src/cache/SPEC.md            2110
 tests/SPEC.md                410
 dev/SPEC.md                  370
 
