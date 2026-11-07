@@ -15,7 +15,7 @@ sib|dev|`pipelith-dev`, `publish = false`: commit rules, badges, notices, AGENTS
 
 ## §C CONSTRAINTS
 
-- flake inputs as actlith: `nixpkgs-lock` (nixpkgs follows), `nix-hk`, `pklith`, `itok`, `microlith`, `sherd`, `characterminator`, `rekall`, `xenolith`; fleet tools pinned by tag. `pr0d1r2.cachix.org`. 4 systems. dev shell = pklith `lib.devShell`; `.envrc` `use flake`.
+- flake inputs as actlith: `nixpkgs-lock` (nixpkgs follows), `nix-hk`, `pklith`, `itok`, `microlith`, `sherd`, `characterminator`, `rekall`, `xenolith`, `nix-cargo-release` (holds cargo-release 1.1.6 via overlay while the channel's needs a newer rustc; drop once it builds); fleet tools pinned by tag. `pr0d1r2.cachix.org`. 4 systems. dev shell = pklith `lib.devShell`; `.envrc` `use flake`.
 - gate = hk via pklith-materialized `hk.pklith.pkl` from `.pklith`; `fast` pre-commit, `all` pre-push. guard scripts `nix/guard/`.
 - clippy: fleet deny list + all + pedantic, `missing_docs` deny, fleet `clippy.toml`; `rustfmt.toml` `max_width = 80`.
 - commit subject `type(scope): claim` ≤72 chars, body = WHY; changelog-touched. after `no-commit-to-branch`: branch + PR, merge ⊥ squash.
