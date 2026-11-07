@@ -106,7 +106,8 @@
         nixpkgs.lib.genAttrs systems (
           s:
           f (
-            (nixpkgs.legacyPackages.${s}.extend nix-hk.overlays.default).extend nix-cargo-release.overlays.default
+            (nixpkgs.legacyPackages.${s}.extend nix-hk.overlays.default).extend
+              nix-cargo-release.overlays.default
           )
         );
 
